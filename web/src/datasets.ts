@@ -26,11 +26,10 @@ let setup = (): HTMLElement => {
 let toHuman = (dataset: Dataset): string => dataset[1];
 // TODO: add fromHuman for pc_rpc update calls
 
-let create = (keypath: Keypath, dataset: Dataset) => {
+let create = (keypath: Keypath, dataset: Dataset): HTMLTableRowElement => {
     // TODO: on user input invoke pc_rpc update calls
     let row = document.createElement("tr");
     row.dataset.keypath = keypath;
-    body.append(row);
 
     let cellKeypath = document.createElement("th");
     cellKeypath.setAttribute("scope", "row");
@@ -49,10 +48,12 @@ let create = (keypath: Keypath, dataset: Dataset) => {
 
     let cellValue = document.createElement("td");
     let inputValue = document.createElement("input");
-    inputPersist.classList.add("value");
+    inputValue.classList.add("value");
     inputValue.value = toHuman(dataset);
     cellValue.append(inputValue);
     row.append(cellValue);
+
+    return row;
 };
 
 let update = (row: HTMLElement, dataset: Dataset) => {
@@ -71,16 +72,18 @@ sync_struct.from({
     masterHostname: "localhost",
     notifierName: "datasets",
     onReceive: (_, mod: sync_struct.Mod) => {
-        if (mod.action === "init") Object.entries(mod.struct)
-            .forEach(([keypath, dataset]) => create(keypath, dataset));
+        if (mod.action === "init") {
+            let rows = Array.from(mod.struct.entries())
+                .map(([keypath, dataset]) => create(keypath, dataset));
+            body.replaceChildren(...rows);
+        }
 
         if (mod.action === "setitem") {
             let row = body.querySelector(`tr[data-keypath="${keypath(mod)}"]`);
             if (row) return update((row as HTMLElement), mod.value);
-            create(keypath(mod), mod.value);
+            body.append(create(keypath(mod), mod.value));
         }
 
         if (mod.action === "delitem") body.querySelector(`tr[data-keypath="${keypath(mod)}"]`)!.remove();
     },
-    onError: err => console.error("Connection error. Is ARTIQ server running?", err),
 });

@@ -5,6 +5,8 @@ import * as vscode from "vscode";
 import "./proxy.js";
 
 import * as dbio from "./dbio.js";
+import * as proxy from "sipyco/proxy";
+
 import * as run from "./run.js";
 import * as experiment from "./experiment.js";
 
@@ -19,6 +21,8 @@ import * as viewDatasets from "./views/datasets.js";
 // Your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
 	dbio.init(context);
+
+	proxy.events.addEventListener("change", ({ detail }) => detail === "failed" && vscode.window.showErrorMessage("Connection error. Is ARTIQ server running?"));
 
 	await viewLog.init(context);
 	await viewSchedule.init(context);

@@ -87,7 +87,7 @@ const html = `
 type Value = number | number[] | boolean
 
 let switchSections = (sections: NodeListOf<Element>, type: string, widget: scanwidget.ScanWidget) => sections.forEach(s => {
-    s.classList.contains(type) ? s.classList.remove("hidden") : s.classList.add("hidden");
+    s.classList.toggle("hidden", !s.classList.contains(type));
     if (s.classList.contains("RangeScan")) { widget.updateLayout(); }
 });
 

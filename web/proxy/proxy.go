@@ -66,7 +66,6 @@ func bridge(wsConn *websocket.Conn, tcpConn net.Conn) error {
 	if err == nil {
 		wsConn.Close(websocket.StatusNormalClosure, "")
 	} else {
-		log.Printf("proxy forwarding err: %v", err)
 		wsConn.Close(websocket.StatusInternalError, "proxy connection failed")
 	}
 
@@ -77,20 +76,20 @@ func bridge(wsConn *websocket.Conn, tcpConn net.Conn) error {
 }
 
 func HandlerFunc(w http.ResponseWriter, r *http.Request) {
+	tcpConn, err := net.Dial("tcp", r.URL.Path[len("/proxy/"):])
+	if err != nil {
+		log.Print(err)
+		http.Error(w, "backend connection failed", http.StatusBadGateway)
+		return
+	}
+	defer tcpConn.Close()
+
 	wsConn, err := websocket.Accept(w, r, nil)
 	if err != nil {
 		log.Printf("ws accept err: %v", err)
 		return
 	}
 	defer wsConn.CloseNow()
-
-	tcpConn, err := net.Dial("tcp", r.URL.Path[len("/proxy/"):])
-	if err != nil {
-		log.Printf("tcp dial err: %v", err)
-		wsConn.Close(websocket.StatusInternalError, "backend connection failed")
-		return
-	}
-	defer tcpConn.Close()
 
 	if err := bridge(wsConn, tcpConn); err != nil {
 		log.Printf("proxy fwd err: %v", err)

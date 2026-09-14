@@ -12,3 +12,90 @@ export let chan = (host: string, port: number, banner: string, target: string) =
 
     return ws;
 };
+
+type Stop = () => void;
+type ConnectionState = "connecting" | "connected" | "failed";
+
+interface Events extends EventTarget {
+    addEventListener(
+        type: "change",
+        listener: (ev: CustomEvent<ConnectionState>) => void,
+        options?: boolean | AddEventListenerOptions,
+    ): void;
+
+    addEventListener(
+        type: string,
+        listener: EventListenerOrEventListenerObject | null,
+        options?: boolean | AddEventListenerOptions,
+    ): void;
+}
+
+let delayMin = 1000;
+let delayMax = 30_000;
+let connections = new Map<symbol, ConnectionState>();
+
+export let events = new EventTarget() as Events;
+
+let writeSingleState = (id: symbol, state?: ConnectionState) =>
+    state === undefined ? connections.delete(id) : connections.set(id, state);
+
+let readGlobalState = (): ConnectionState => {
+    let states = [ ...connections.values() ];
+    if (states.some(s => s === "failed")) return "failed";
+    if (states.length > 0 && states.every(s => s === "connected")) return "connected";
+    return "connecting";
+};
+
+let previous: ConnectionState | undefined;
+
+let status = (id: symbol, state?: ConnectionState): void => {
+    writeSingleState(id, state);
+    let current = readGlobalState();
+    if (current === previous) return;
+
+    previous = current;
+    events.dispatchEvent(new CustomEvent<ConnectionState>("change", { detail: current }));
+};
+
+export let reconnect = (params: {
+    open: () => WebSocket;
+    onReceive: (msg: any) => void,
+    onClose?: (err: string) => void,
+
+}): Stop => {
+    let id = Symbol();
+    let active = true;
+    let delay = delayMin;
+    let timeoutID: ReturnType<typeof setTimeout> | undefined;
+    let ch: WebSocket;
+
+    let connect = (): void => {
+        ch = params.open();
+
+        ch.addEventListener("open", () => active && status(id, "connected"));
+
+        ch.addEventListener("message", ev => {
+            params.onReceive(ev.data);
+            delay = delayMin;
+        });
+
+        ch.addEventListener("close", ev => {
+            if (!active) return;
+
+            status(id, "failed");
+            params.onClose?.(ev.reason);
+            timeoutID = globalThis.setTimeout(connect, delay);
+            delay = Math.min(delay * 2, delayMax);
+        });
+    };
+
+    status(id, "connecting");
+    connect();
+
+    return () => {
+        active = false;
+        if (timeoutID !== undefined) globalThis.clearTimeout(timeoutID);
+        status(id);
+        ch.close();
+    };
+};

@@ -176,7 +176,7 @@ func TestWebSocketDisconnectClosesBackend(t *testing.T) {
 	}
 }
 
-func TestBackendDialFailureClosesWebSocketWithError(t *testing.T) {
+func TestBackendDialFailureRejectsWebSocketHandshake(t *testing.T) {
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		t.Fatal(err)
@@ -198,25 +198,17 @@ func TestBackendDialFailureClosesWebSocketWithError(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), testTimeout)
 	defer cancel()
 
-	client, _, err := websocket.Dial(ctx, url, nil)
-	if err != nil {
-		t.Fatal(err)
+	client, resp, err := websocket.Dial(ctx, url, nil)
+	if client != nil {
+		defer client.CloseNow()
 	}
-	t.Cleanup(func() {
-		client.CloseNow()
-	})
-
-	_, _, err = client.Read(ctx)
 	if err == nil {
-		t.Fatal("WebSocket remained open")
+		t.Fatal("expected WebSocket handshake to fail")
 	}
-
-	if status := websocket.CloseStatus(err); status != websocket.StatusInternalError {
-		t.Fatalf(
-			"got WebSocket close status %v, want %v: %v",
-			status,
-			websocket.StatusInternalError,
-			err,
-		)
+	if resp == nil {
+		t.Fatal("expected an HTTP response")
+	}
+	if resp.StatusCode != http.StatusBadGateway {
+		t.Fatalf("expected HTTP 502, got %d", resp.StatusCode)
 	}
 }

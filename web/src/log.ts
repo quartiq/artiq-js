@@ -1,4 +1,5 @@
 import * as broadcast from "sipyco/broadcast";
+import * as proxy from "sipyco/proxy";
 
 type Record = [
     level: number,
@@ -30,5 +31,11 @@ broadcast.subscribe({
         append("td", record);
         if (atBottom) window.scrollTo(0, document.body.scrollHeight);
     },
-    onError: err => console.error("Connection error. Is ARTIQ server running?", err),
 });
+
+let status = document.createElement("div");
+status.classList.add("status", "hidden");
+status.textContent = "Connection error. Is ARTIQ server running?";
+document.body.append(status);
+
+proxy.events.addEventListener("change", ({ detail }) => status.classList.toggle("hidden", detail !== "failed"));

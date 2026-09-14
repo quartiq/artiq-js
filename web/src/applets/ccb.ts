@@ -82,5 +82,4 @@ export let listen = () => broadcast.subscribe({
 
         handler(normalize(msg));
     },
-    onError: err => console.error("applets: Connection error. Is ARTIQ server running?", err),
 });

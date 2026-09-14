@@ -26,7 +26,7 @@ let keypath = (mod: sync_struct.SetitemMod | sync_struct.DelitemMod) => {
 let deriveArgs = (argsMap: SubArgs, sets: Datasets) => Object.fromEntries(Object.entries(argsMap)
     .map(([ argName, keypath ]) => [ argName, sets.get(keypath)?.[1] ]));
 
-let scheduleUpdate = (key: ccb.AppletKey, datasets: Datasets) => {
+let scheduleUpdate = (key: ccb.AppletKey) => {
     // TODO test this, review this
     dirtyApplets.add(key);
     if (flushScheduled) return;
@@ -43,7 +43,7 @@ let scheduleUpdate = (key: ccb.AppletKey, datasets: Datasets) => {
             if (!applet) return;
 
             try {
-                applet.update(deriveArgs(applet.subs, datasets));
+                applet.update(deriveArgs(applet.subs, store.struct));
             } catch (err) {
                 console.error(`applets: failed to update "${k}"`, err);
             }
@@ -54,14 +54,10 @@ let scheduleUpdate = (key: ccb.AppletKey, datasets: Datasets) => {
 let store = await sync_struct.from<Datasets>({
     masterHostname: "localhost",
     notifierName: "datasets",
-    onReceive: (_, mod: sync_struct.Mod) => {
-        if (mod.action === "init") return;
-
-        applets.forEach((a: Applet, k: ccb.AppletKey) => {
-            if (!Object.values(a.subs).includes(keypath(mod))) return;
-            scheduleUpdate(k, store.struct);
-        });
-    },
+    onReceive: (_, mod: sync_struct.Mod) => applets.forEach((a: Applet, k: ccb.AppletKey) => {
+        if (mod.action !== "init" && !Object.values(a.subs).includes(keypath(mod))) return;
+        scheduleUpdate(k);
+    }),
 });
 
 export let setup = (k: ccb.AppletKey, applet: Applet, host: HTMLElement) => {

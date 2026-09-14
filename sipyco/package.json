@@ -22,6 +22,10 @@
     "./broadcast": {
       "types": "./dist/broadcast/broadcast.d.ts",
       "default": "./dist/broadcast/broadcast.js"
+    },
+    "./proxy": {
+      "types": "./dist/proxy.d.ts",
+      "default": "./dist/proxy.js"
     }
   },
   "dependencies": {

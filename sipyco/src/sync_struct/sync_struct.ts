@@ -10,10 +10,16 @@ export type Store = { struct: Struct | undefined }; // we need to operate on obj
 // FIXME: get rid of local store reference here!
 type UpdateHandler = (store: Store, mod: Mod) => void; // work on store directly, since onReceive's first run does not wait for init lock and local reference may be empty
 
-export type InitMod = { action: "init", struct: Record<string, never> | Struct };
+export type InitMod = { action: "init", struct: Struct };
 export type SetitemMod = { action: "setitem", path: any[], key: any, value: any };
 export type DelitemMod = { action: "delitem", path: any[], key: any };
 export type Mod = InitMod | SetitemMod | DelitemMod;
+
+type IncomingMod =
+    | { action: "init", struct: Record<string, never> | Struct }
+    | SetitemMod
+    | DelitemMod;
+
 type Action = (target: Store, mod: Mod, initDone: mutex.Lock) => void;
 
 let traverse = (tree: any, path: any[]): any => path.reduce((node, key) => {
@@ -23,16 +29,16 @@ let traverse = (tree: any, path: any[]): any => path.reduce((node, key) => {
 
 // empty dicts are sent as {}, so we auto-upgrade every Object (that is: string-keyed stores)
 // to Dict for now; may occur with setitem's value property as well, but was never observed yet
-let struct = (s: InitMod["struct"]): Struct => {
-    if (s.constructor.name === "Object")
-        return pyonutils.create("dict", [ Object.entries(s) ]) as any as Struct; // FIXME: bad typing
+let normalize = (mod: IncomingMod): Mod => {
+    if (mod.action !== "init") return mod;
+    if (mod.struct instanceof pyon.Dict) return { ...mod, struct: mod.struct };
 
-    return s as Struct;
+    return { ...mod, struct: pyonutils.create("dict", [ Object.entries(mod.struct) ]) as pyon.TaggedDict };
 };
 
 let init = (store: Store, mod: Mod, lock: mutex.Lock) => {
     mod = mod as InitMod;
-    store.struct = struct(mod.struct);
+    store.struct = mod.struct;
     lock.unlock();
 };
 
@@ -61,27 +67,20 @@ export let from = async <T extends Struct = Struct>(params: {
     masterHostname: string,
     notifierName: string,
     onReceive: UpdateHandler,
-    onError?: (err: string) => void,
 
 }): Promise<Store & { struct: T }> => {
     let store: Store = { struct: undefined };
     let initDone: mutex.Lock = mutex.lock();
 
-    let chan = proxy.chan(params.masterHostname, port, "sync_struct", params.notifierName);
-
-    chan.addEventListener("close", ev => {
-        // see: https://www.rfc-editor.org/rfc/rfc6455.html#section-7.4.1
-        let statusInternalError = 1011;
-        if (ev.code !== statusInternalError) return;
-        params.onError?.(ev.reason);
+    proxy.reconnect({
+        open: () => proxy.chan(params.masterHostname, port, "sync_struct", params.notifierName),
+        onReceive: msg => {
+            let mod = normalize(pyon.decode(msg) as IncomingMod);
+            actions[mod.action](store, mod, initDone);
+            params.onReceive(store, mod);
+        },
     });
 
-    chan.addEventListener("message", ev => {
-        let mod = pyon.decode(ev.data) as Mod;
-        actions[mod.action](store, mod, initDone);
-        params.onReceive(store, mod);
-    });
-
-    await initDone.locked; // FIXME store.struct = undefined sadly breaks TreeView.getChildren in obscure fashion
+    await initDone.locked; // FIXME store.struct = undefined breaks TreeView.getChildren
     return store as Store & { struct: T };
 };

@@ -4,5 +4,4 @@ let store = sync_struct.from({
     masterHostname: "localhost",
     notifierName: "schedule",
     onReceive: store => console.log(store.struct),
-    onError: err => console.error("Connection error. Is ARTIQ server running?", err),
 });
