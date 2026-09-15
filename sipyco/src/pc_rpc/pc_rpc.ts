@@ -1,5 +1,5 @@
 import * as pyon from "../pyon/pyon.js";
-import * as proxy from "../proxy.js";
+import * as proxy from "../net.js";
 
 type Error = string;
 

@@ -1,5 +1,5 @@
 import * as pyon from "../pyon/pyon.js";
-import * as proxy from "../proxy.js";
+import * as proxy from "../net.js";
 
 // see: https://git.m-labs.hk/M-Labs/artiq/src/branch/master/doc/manual/default_network_ports.rst
 const port = 1067;

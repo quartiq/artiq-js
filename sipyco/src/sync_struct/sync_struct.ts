@@ -3,7 +3,7 @@
 import * as pyon from "../pyon/pyon.js";
 import * as pyonutils from "../pyon/utils.js";
 import * as mutex from "./mutex.js";
-import * as proxy from "../proxy.js";
+import * as proxy from "../net.js";
 
 type Struct = pyon.Dict;
 export type Store = { struct: Struct | undefined }; // we need to operate on object property singleton to utilize the mutable object pattern

@@ -11,7 +11,7 @@
     "sipyco": "file:../sipyco"
   },
   "scripts": {
-    "build:sipyco": "npm --prefix ../sipyco install && npm --prefix ../sipyco audit fix && npm --prefix ../sipyco run build",
+    "build:sipyco": "npm --prefix ../sipyco install && npm --prefix ../sipyco run build",
     "build:web": "esbuild ./src/*.ts ./src/*.css --bundle --outdir=static --format=esm",
     "build": "npm run build:sipyco && npm run build:web",
     "watch:sipyco": "npm --prefix ../sipyco run watch",

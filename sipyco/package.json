@@ -23,9 +23,9 @@
       "types": "./dist/broadcast/broadcast.d.ts",
       "default": "./dist/broadcast/broadcast.js"
     },
-    "./proxy": {
-      "types": "./dist/proxy.d.ts",
-      "default": "./dist/proxy.js"
+    "./net": {
+      "types": "./dist/net.d.ts",
+      "default": "./dist/net.js"
     }
   },
   "dependencies": {

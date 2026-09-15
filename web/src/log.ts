@@ -1,5 +1,5 @@
 import * as broadcast from "sipyco/broadcast";
-import * as proxy from "sipyco/proxy";
+import * as net from "sipyco/net";
 
 type Record = [
     level: number,
@@ -38,4 +38,4 @@ status.classList.add("status", "hidden");
 status.textContent = "Connection error. Is ARTIQ server running?";
 document.body.append(status);
 
-proxy.events.addEventListener("change", ({ detail }) => status.classList.toggle("hidden", detail !== "failed"));
+net.events.addEventListener("change", ({ detail }) => status.classList.toggle("hidden", detail !== "failed"));
