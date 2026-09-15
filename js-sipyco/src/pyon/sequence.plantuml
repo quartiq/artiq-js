@@ -1,0 +1,54 @@
+@startuml
+
+== Example Scenario ==
+
+note over artiq_master : PYON v2 JSON
+/ note over "ARTIQ client" : JS Object
+/note over "UI preview"
+human-readable
+inline string
+(may be lossy)
+end note
+/ note over "UI input"
+human-readable
+inline string
+end note
+
+hnote over "artiq_master" : publish
+
+artiq_master -> "ARTIQ client" : PYON v2 JSON
+
+hnote over "ARTIQ client" : **decode** to JS Object
+... Extension processes JS Object ...
+hnote over "ARTIQ client"
+**preview** to human-readable
+inline string
+(may be lossy)
+end hnote
+
+"ARTIQ client" -> "UI preview" : human-readable\ninline string\n(may be lossy)
+
+hnote over "UI preview" : read
+... User absorbs all them lossy human-readable inline strings\nSince preview is lossy, nothing's gonna ever come back from here ...
+hnote over "ARTIQ client"
+**fmt** to human-readable
+inline string
+end hnote
+
+"ARTIQ client" -> "UI input" : human-readable\ninline string
+
+hnote over "UI input" : read
+... User edits human-readable inline string ...
+hnote over "UI input" : submit
+
+"UI input" -> "ARTIQ client" : human-readable\ninline string
+
+hnote over "ARTIQ client" : **parse** to JS Object
+... Extension processes JS Object ...
+hnote over "ARTIQ client" : **encode** to PYON v2 JSON
+
+"ARTIQ client" -> artiq_master : PYON v2 JSON
+
+hnote over "artiq_master" : receive
+
+@enduml

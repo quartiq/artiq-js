@@ -1,0 +1,13 @@
+node_modules/
+dist/
+package-lock.json
+.vscode-test/
+*.vsix
+
+# License copies generated for packaging
+/LICENSE
+/LICENSE.GPL-3
+
+# Override global .vscode ignore
+!.vscode/
+!.vscode/**

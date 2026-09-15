@@ -1,0 +1,30 @@
+{
+  "name": "web-artiq",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@tanstack/table-core": "^8.21.3",
+    "gridstack": "^12.6.0",
+    "minimist": "^1.2.8",
+    "plotly.js-dist-min": "^3.5.1",
+    "shell-quote": "^1.8.4",
+    "js-sipyco": "file:../js-sipyco"
+  },
+  "scripts": {
+    "build:js-sipyco": "npm --prefix ../js-sipyco install && npm --prefix ../js-sipyco run build",
+    "build:web-artiq": "esbuild ./src/*.ts ./src/*.css --bundle --outdir=static --format=esm",
+    "build": "npm run build:js-sipyco && npm run build:web-artiq",
+    "watch:js-sipyco": "npm --prefix ../js-sipyco run watch",
+    "watch:web-artiq": "esbuild ./src/*.ts ./src/*.css --bundle --outdir=static --format=esm --watch",
+    "watch": "npm-run-all -p watch:js-sipyco watch:web-artiq"
+  },
+  "devDependencies": {
+    "@types/minimist": "^1.2.5",
+    "@types/plotly.js-dist-min": "^2.3.4",
+    "@types/shell-quote": "^1.7.5",
+    "esbuild": "0.28.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}
