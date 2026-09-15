@@ -38,8 +38,8 @@
     "vitest": "^4.0.18"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm test -- --run",
     "watch": "tsc --watch",
-    "test": "vitest"
+    "test": "vitest --dir test"
   }
 }

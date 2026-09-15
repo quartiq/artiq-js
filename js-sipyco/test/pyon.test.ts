@@ -4,8 +4,8 @@ import { join } from "path";
 import { readFileSync } from "fs";
 import Fraction from "fraction.js";
 
-import * as dtype from "./dtype.js";
-import * as pyon from "./pyon.js";
+import * as dtype from "../src/pyon/dtype.js";
+import * as pyon from "../src/pyon/pyon.js";
 // TODO: test get and set
 // TODO: test toHuman and fromHuman
 
@@ -31,8 +31,9 @@ let testCopy = (orig: pyon.TypeTaggedObject) => {
 
 describe("set", () => {
     it("should match the structure of a JS pyon set", () => {
-        expect(tagged.get("set")).toStrictEqual(new Set(["testing", "sets"]));
-        expect(tagged.get("set").__jsonclass__).toBe("set");
+        expect(tagged.get("set")).toStrictEqual(
+            pyon.tag(new pyon.Set(["testing", "sets"]), "set")
+        );
         expect([
             `["set",["testing","sets"]]`,
             `["set",["sets","testing"]]`
@@ -46,10 +47,9 @@ tupleArrayKey.__jsonclass__ = "tuple";
 
 describe("dict", () => {
     it("should match the structure of a JS pyon dict", () => {
-        expect(tagged.get("od")).toStrictEqual(new Map([
-            [2, "a"], [1, "b"], [0, "c"]
-        ]));
-        expect(tagged.get("od").__jsonclass__).toBe("dict");
+        expect(tagged.get("od")).toStrictEqual(
+            pyon.tag(new pyon.Dict([ [2, "a"], [1, "b"], [0, "c"] ]), "dict")
+        );
         expect(pyon.preview(tagged.get("od"))).toBe(`["dict",[[2,"a"],[1,"b"],[0,"c"]]]`);
         testCopy(tagged.get("od"));
 
@@ -59,19 +59,20 @@ describe("dict", () => {
 
 describe("tuple", () => {
     it("should match the structure of a JS pyon tuple", () => {
-        expect(tagged.get(tupleArrayKey)).toStrictEqual([[3, 4.2], [2]]);
-        tagged.get(tupleArrayKey).forEach((tuple: any) => {
-            expect(tuple.__jsonclass__).toBe("tuple");
-            testCopy(tuple);
-        });
+        expect(tagged.get(tupleArrayKey)).toStrictEqual([
+            pyon.tag([3, 4.2], "tuple"),
+            pyon.tag([2], "tuple"),
+        ]);
+        tagged.get(tupleArrayKey).forEach(testCopy);
         expect(pyon.preview(tagged.get(tupleArrayKey))).toBe(`[["tuple",[3,4.2]],["tuple",[2]]]`);
     });
 });
 
 describe("bytes", () => {
     it("should match the structure of JS pyon bytes", () => {
-        expect(tagged.get(true)).toStrictEqual(new Uint8Array([98, 121, 116, 101, 115]));
-        expect(tagged.get(true).__jsonclass__).toBe("bytes");
+        expect(tagged.get(true)).toStrictEqual(
+            pyon.tag(new Uint8Array([98, 121, 116, 101, 115]), "bytes")
+        );
         expect(pyon.preview(tagged.get(true))).toBe(`["bytes",["62","79","74","65","73"]]`);
         testCopy(tagged.get(true));
     });
@@ -79,17 +80,18 @@ describe("bytes", () => {
 
 describe("slice", () => {
     it("should match the structure of a JS pyon slice", () => {
-        expect(tagged.get("slice")).toStrictEqual([ null, 3, null ]);
-        expect(tagged.get("slice").__jsonclass__).toBe("slice");
+        expect(tagged.get("slice")).toStrictEqual(
+            pyon.tag([ null, 3, null ], "slice")
+        );
         expect(pyon.preview(tagged.get("slice"))).toBe(`["slice",[null,3,null]]`);
         testCopy(tagged.get("slice"));
     });
 });
 
 let testNpScalar = (key: string, dtype: string, value: dtype.TypedArray, preview: string) => {
-    expect(tagged.get(key).__dtype__).toStrictEqual(dtype);
-    expect(tagged.get(key)).toStrictEqual(value);
-    expect(tagged.get(key).__jsonclass__).toBe("npscalar");
+    expect(tagged.get(key)).toStrictEqual(
+        pyon.tag(Object.assign(value, { __dtype__: dtype }), "npscalar")
+    );
     expect(pyon.preview(tagged.get(key))).toBe(`["npscalar",${preview}]`);
     testCopy(tagged.get(key));
 };
