@@ -10,23 +10,25 @@ export let view: webview.Provider;
 
 export type Runs = pyon.TaggedDict<run.Id, run.SyncInfo>;
 
-export let init = async (context: vscode.ExtensionContext) => {
-    view = new webview.Provider("schedule", context, {
-        rpc: (data: {method: string, rid: number}) => {
-            pc_rpc.from({
-                masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
-                targetName: "schedule",
-                methodName: data.method,
-                kwargs: { rid: data.rid },
-                onError: err => vscode.window.showErrorMessage(`schedule ${data.method}: ${err}`),
-            });
-        },
-    });
-    view.init();
-
-    sync_struct.from({
+export const init = async (context: vscode.ExtensionContext) => {
+  view = new webview.Provider("schedule", context, {
+    rpc: (data: { method: string; rid: number }) => {
+      pc_rpc.from({
         masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
-        notifierName: "schedule",
-        onReceive: (store: sync_struct.Store) => view.post(pyon.encode(store.struct as Runs)),
-    });
+        targetName: "schedule",
+        methodName: data.method,
+        kwargs: { rid: data.rid },
+        onError: (err) =>
+          vscode.window.showErrorMessage(`schedule ${data.method}: ${err}`),
+      });
+    },
+  });
+  view.init();
+
+  sync_struct.from({
+    masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
+    notifierName: "schedule",
+    onReceive: (store: sync_struct.Store) =>
+      view.post(pyon.encode(store.struct as Runs)),
+  });
 };

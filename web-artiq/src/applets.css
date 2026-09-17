@@ -1,133 +1,133 @@
 @import "../node_modules/gridstack/dist/gridstack.min.css";
 
 :root {
-    --sidebar-handle-width: 20px;
+  --sidebar-handle-width: 20px;
 }
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
+  margin: 0;
 }
 
 .hidden {
-    display: none !important;
+  display: none !important;
 }
 
 /* GridStack */
 
 .grid-stack {
-    margin-left: var(--sidebar-handle-width);
+  margin-left: var(--sidebar-handle-width);
 }
 
 .grid-stack-item {
-    border: 1px solid blue;
+  border: 1px solid blue;
 }
 
 .grid-stack-item > .ui-resizable-se {
-    bottom: 0;
-    right: 0;
+  bottom: 0;
+  right: 0;
 }
 
 .grid-stack > .grid-stack-item > .grid-stack-item-content {
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .widget-header {
-    flex: 0 0 auto;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    cursor: move;
+  flex: 0 0 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: move;
 }
 
 .widget-body {
-    flex: 1 1 auto;
-    overflow: auto;
-    min-height: 0;
+  flex: 1 1 auto;
+  overflow: auto;
+  min-height: 0;
 }
 
 .applet .widget-header {
-    background: blue;
-    color: white;
+  background: blue;
+  color: white;
 }
 
 .applet .widget-body {
-    position: relative;
-    display: flex;
-    min-width: 0;
+  position: relative;
+  display: flex;
+  min-width: 0;
 }
 
 .applet .widget-body > * {
-    flex: 1 1 0;
-    min-width: 0;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .applet .widget-body > .js-plotly-plot {
-    height: 100%;
+  height: 100%;
 }
 
 /* Manager */
 
 .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    max-width: 100%;
-    height: 100%;
-    z-index: 1000;
-    display: flex;
-    background: rgba(255, 255, 255, .7);
-    backdrop-filter: blur(10px);
-    transition: transform 150ms;
+  position: fixed;
+  left: 0;
+  top: 0;
+  max-width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: flex;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  transition: transform 150ms;
 }
 
 .sidebar.collapsed {
-    transform: translateX(calc(-100% + var(--sidebar-handle-width)));
+  transform: translateX(calc(-100% + var(--sidebar-handle-width)));
 }
 
 .sidebar .handle {
-    position: relative;
-    width: var(--sidebar-handle-width);
-    background: red;
-    cursor: pointer;
+  position: relative;
+  width: var(--sidebar-handle-width);
+  background: red;
+  cursor: pointer;
 }
 
 .sidebar .handle::after {
-    content: "⬅️";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
+  content: "⬅️";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
 }
 
 .sidebar.collapsed .handle::after {
-    content: "➡️";
+  content: "➡️";
 }
 
 .sidebar .manager {
-    overflow-y: auto;
+  overflow-y: auto;
 }
 
 .sidebar .manager .button {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 /* Modal */
 
 dialog label {
-    display: block;
+  display: block;
 }
 
 dialog input {
-    width: 100%;
+  width: 100%;
 }

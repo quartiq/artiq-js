@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  javascript:
+    name: JS/TS build, test and lint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: |
+            js-sipyco/package-lock.json
+            web-artiq/package-lock.json
+            vscode-artiq/package-lock.json
+
+      - name: Install shared library dependencies
+        run: npm ci --prefix js-sipyco
+
+      - name: Build shared library
+        run: npm run build --prefix js-sipyco
+
+      - name: Test shared library
+        run: npm test --prefix js-sipyco -- --run
+
+      - name: Install frontend dependencies
+        run: |
+          npm ci --prefix web-artiq
+          npm ci --prefix vscode-artiq
+
+      - name: Check formatting
+        run: |
+          npm run format:check --prefix js-sipyco
+          npm run format:check --prefix web-artiq
+          npm run format:check --prefix vscode-artiq
+
+      - name: Build web frontend and check types
+        run: npm run build --prefix web-artiq
+
+      - name: Build extension and check types
+        run: npm run package --prefix vscode-artiq
+
+      - name: Test extension
+        run: |
+          npm run build:tests --prefix vscode-artiq
+          xvfb-run -a npm test --prefix vscode-artiq
+
+      - name: Lint
+        run: |
+          npm run lint --prefix js-sipyco
+          npm run lint --prefix web-artiq
+          npm run lint --prefix vscode-artiq
+
+  go:
+    name: Go format, lint, test, build and install
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        working-directory: web-artiq
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: web-artiq/go.mod
+          cache-dependency-path: web-artiq/go.sum
+
+      - name: Check formatting
+        run: |
+          unformatted="$(gofmt -l .)"
+          if [ -n "$unformatted" ]; then
+            printf 'Run gofmt on:\n%s\n' "$unformatted"
+            exit 1
+          fi
+
+      - name: Lint
+        run: go vet ./...
+
+      - name: Test
+        run: go test -race -count=1 -timeout=2m ./...
+
+      - name: Build
+        run: go build ./...
+
+  smoke:
+    name: ARTIQ integration smoke test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            extra-substituters = https://nixbld.m-labs.hk
+            extra-trusted-public-keys = nixbld.m-labs.hk-1:5aSRVA5b320xbNvu30tqxVPXpld73bhtOeH6uAjRyHc=
+
+      - name: Test dataset create, update and delete
+        run: bash vscode-artiq/test/smoke.sh

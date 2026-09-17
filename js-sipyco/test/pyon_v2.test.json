@@ -1,299 +1,141 @@
 {
-    "__jsonclass__": [
-        "dict",
+  "__jsonclass__": [
+    "dict",
+    [
+      [
+        [null, false],
         [
-            [
+          true,
+          {
+            "__jsonclass__": ["bytes", ["Ynl0ZXM="]]
+          }
+        ],
+        [
+          {
+            "__jsonclass__": ["tuple", [[1, 2]]]
+          },
+          [
+            {
+              "__jsonclass__": ["tuple", [[3, 4.2]]]
+            },
+            {
+              "__jsonclass__": ["tuple", [[2]]]
+            }
+          ]
+        ],
+        [
+          "slice",
+          {
+            "__jsonclass__": ["slice", [null, 3, null]]
+          }
+        ],
+        [
+          {
+            "__jsonclass__": ["Fraction", [3, 4]]
+          },
+          {
+            "__jsonclass__": ["nparray", [[1], "<f8", "AAAAAAAAFEA="]]
+          }
+        ],
+        [
+          "set",
+          {
+            "__jsonclass__": ["set", [["sets", "testing"]]]
+          }
+        ],
+        [
+          "a",
+          {
+            "__jsonclass__": ["npscalar", ["|i1", "CQ=="]]
+          }
+        ],
+        [
+          "b",
+          {
+            "__jsonclass__": ["npscalar", ["<i2", "nv8="]]
+          }
+        ],
+        [
+          "c",
+          {
+            "__jsonclass__": ["npscalar", ["<i4", "KgAAAA=="]]
+          }
+        ],
+        [
+          "d",
+          {
+            "__jsonclass__": ["npscalar", ["<i8", "+/////////8="]]
+          }
+        ],
+        [
+          "e",
+          {
+            "__jsonclass__": ["npscalar", ["|u1", "CA=="]]
+          }
+        ],
+        [
+          "f",
+          {
+            "__jsonclass__": ["npscalar", ["<u2", "BQA="]]
+          }
+        ],
+        [
+          "g",
+          {
+            "__jsonclass__": ["npscalar", ["<u4", "BAAAAA=="]]
+          }
+        ],
+        [
+          "h",
+          {
+            "__jsonclass__": ["npscalar", ["<u8", "CQAAAAAAAAA="]]
+          }
+        ],
+        [
+          "y",
+          {
+            "__jsonclass__": ["npscalar", ["<f4", "AAAQQQ=="]]
+          }
+        ],
+        ["z", 9.0],
+        [
+          {
+            "__jsonclass__": ["complex", [0.0, 1.0]]
+          },
+          {
+            "__jsonclass__": ["complex", [1.0, -9.0]]
+          }
+        ],
+        [
+          "q",
+          {
+            "__jsonclass__": ["npscalar", ["<c16", "AAAAAAAAAAAAAAAAAADwPw=="]]
+          }
+        ],
+        [
+          "zerodim",
+          {
+            "__jsonclass__": ["nparray", [[], "<i8", "AAAAAAAAAAA="]]
+          }
+        ],
+        [
+          "od",
+          {
+            "__jsonclass__": [
+              "dict",
+              [
                 [
-                    null,
-                    false
-                ],
-                [
-                    true,
-                    {
-                        "__jsonclass__": [
-                            "bytes",
-                            [
-                                "Ynl0ZXM="
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    {
-                        "__jsonclass__": [
-                            "tuple",
-                            [
-                                [
-                                    1,
-                                    2
-                                ]
-                            ]
-                        ]
-                    },
-                    [
-                        {
-                            "__jsonclass__": [
-                                "tuple",
-                                [
-                                    [
-                                        3,
-                                        4.2
-                                    ]
-                                ]
-                            ]
-                        },
-                        {
-                            "__jsonclass__": [
-                                "tuple",
-                                [
-                                    [
-                                        2
-                                    ]
-                                ]
-                            ]
-                        }
-                    ]
-                ],
-                [
-                    "slice",
-                    {
-                        "__jsonclass__": [
-                            "slice",
-                            [
-                                null,
-                                3,
-                                null
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    {
-                        "__jsonclass__": [
-                            "Fraction",
-                            [
-                                3,
-                                4
-                            ]
-                        ]
-                    },
-                    {
-                        "__jsonclass__": [
-                            "nparray",
-                            [
-                                [
-                                    1
-                                ],
-                                "<f8",
-                                "AAAAAAAAFEA="
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "set",
-                    {
-                        "__jsonclass__": [
-                            "set",
-                            [
-                                [
-                                    "sets",
-                                    "testing"
-                                ]
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "a",
-                    {
-                        "__jsonclass__": [
-                            "npscalar",
-                            [
-                                "|i1",
-                                "CQ=="
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "b",
-                    {
-                        "__jsonclass__": [
-                            "npscalar",
-                            [
-                                "<i2",
-                                "nv8="
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "c",
-                    {
-                        "__jsonclass__": [
-                            "npscalar",
-                            [
-                                "<i4",
-                                "KgAAAA=="
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "d",
-                    {
-                        "__jsonclass__": [
-                            "npscalar",
-                            [
-                                "<i8",
-                                "+/////////8="
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "e",
-                    {
-                        "__jsonclass__": [
-                            "npscalar",
-                            [
-                                "|u1",
-                                "CA=="
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "f",
-                    {
-                        "__jsonclass__": [
-                            "npscalar",
-                            [
-                                "<u2",
-                                "BQA="
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "g",
-                    {
-                        "__jsonclass__": [
-                            "npscalar",
-                            [
-                                "<u4",
-                                "BAAAAA=="
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "h",
-                    {
-                        "__jsonclass__": [
-                            "npscalar",
-                            [
-                                "<u8",
-                                "CQAAAAAAAAA="
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "y",
-                    {
-                        "__jsonclass__": [
-                            "npscalar",
-                            [
-                                "<f4",
-                                "AAAQQQ=="
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "z",
-                    9.0
-                ],
-                [
-                    {
-                        "__jsonclass__": [
-                            "complex",
-                            [
-                                0.0,
-                                1.0
-                            ]
-                        ]
-                    },
-                    {
-                        "__jsonclass__": [
-                            "complex",
-                            [
-                                1.0,
-                                -9.0
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "q",
-                    {
-                        "__jsonclass__": [
-                            "npscalar",
-                            [
-                                "<c16",
-                                "AAAAAAAAAAAAAAAAAADwPw=="
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "zerodim",
-                    {
-                        "__jsonclass__": [
-                            "nparray",
-                            [
-                                [],
-                                "<i8",
-                                "AAAAAAAAAAA="
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "od",
-                    {
-                        "__jsonclass__": [
-                            "dict",
-                            [
-                                [
-                                    [
-                                        2,
-                                        "a"
-                                    ],
-                                    [
-                                        1,
-                                        "b"
-                                    ],
-                                    [
-                                        0,
-                                        "c"
-                                    ]
-                                ]
-                            ]
-                        ]
-                    }
-                ],
-                [
-                    "unicode",
-                    "\u269b"
-                ],
-                [
-                    "newline",
-                    "\n\n"
+                  [2, "a"],
+                  [1, "b"],
+                  [0, "c"]
                 ]
+              ]
             ]
-        ]
+          }
+        ],
+        ["unicode", "\u269b"],
+        ["newline", "\n\n"]
+      ]
     ]
+  ]
 }

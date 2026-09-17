@@ -1,14 +1,14 @@
 .hidden {
-    display: none !important;
+  display: none !important;
 }
 
 body {
-    margin: 0;
+  margin: 0;
 }
 
 .status {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: mistyrose;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: mistyrose;
 }

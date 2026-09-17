@@ -1,275 +1,292 @@
-
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    padding: 0;
+  padding: 0;
 }
 
 .hidden {
-    display: none !important;
+  display: none !important;
 }
 
 .noscroll {
-    overflow: hidden !important;
+  overflow: hidden !important;
 }
 
 .tabulator {
-    background-color: var(--vscode-editor-background);
-    border-color: var(--vscode-editorWidget-border);
+  background-color: var(--vscode-editor-background);
+  border-color: var(--vscode-editorWidget-border);
 }
 
 /* Table header */
 
 .tabulator .tabulator-header {
-    background-color: var(--vscode-sideBar-background);
-    color: var(--vscode-sideBar-foreground);
-    border-color: var(--vscode-editorWidget-border);
+  background-color: var(--vscode-sideBar-background);
+  color: var(--vscode-sideBar-foreground);
+  border-color: var(--vscode-editorWidget-border);
 }
 .tabulator .tabulator-header .tabulator-col {
-    background-color: var(--vscode-sideBar-background);
-    border-color: var(--vscode-editorWidget-border);
+  background-color: var(--vscode-sideBar-background);
+  border-color: var(--vscode-editorWidget-border);
 }
 
 @media (hover: hover) and (pointer: fine) {
-    .tabulator .tabulator-header .tabulator-col.tabulator-sortable.tabulator-col-sorter-element:hover {
-        background-color: var(--vscode-list-activeSelectionBackground);
-        color: var(--vscode-list-activeSelectionForeground);
-    }
+  .tabulator
+    .tabulator-header
+    .tabulator-col.tabulator-sortable.tabulator-col-sorter-element:hover {
+    background-color: var(--vscode-list-activeSelectionBackground);
+    color: var(--vscode-list-activeSelectionForeground);
+  }
 }
 
-.tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort=none] .tabulator-col-content .tabulator-col-sorter .tabulator-arrow {
-    border-bottom-color: var(--vscode-list-foreground);
-    border-top-color: var(--vscode-list-foreground);
+.tabulator
+  .tabulator-header
+  .tabulator-col.tabulator-sortable[aria-sort="none"]
+  .tabulator-col-content
+  .tabulator-col-sorter
+  .tabulator-arrow {
+  border-bottom-color: var(--vscode-list-foreground);
+  border-top-color: var(--vscode-list-foreground);
 }
 
-.tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort=ascending] .tabulator-col-content .tabulator-col-sorter .tabulator-arrow,
-.tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort=descending] .tabulator-col-content .tabulator-col-sorter .tabulator-arrow {
-    border-bottom-color: var(--vscode-list-activeSelectionForeground);
-    border-top-color: var(--vscode-list-activeSelectionForeground);
+.tabulator
+  .tabulator-header
+  .tabulator-col.tabulator-sortable[aria-sort="ascending"]
+  .tabulator-col-content
+  .tabulator-col-sorter
+  .tabulator-arrow,
+.tabulator
+  .tabulator-header
+  .tabulator-col.tabulator-sortable[aria-sort="descending"]
+  .tabulator-col-content
+  .tabulator-col-sorter
+  .tabulator-arrow {
+  border-bottom-color: var(--vscode-list-activeSelectionForeground);
+  border-top-color: var(--vscode-list-activeSelectionForeground);
 }
 
 /* Table body */
 
 .tabulator-row .tabulator-cell {
-    border-color: var(--vscode-editorWidget-border);
+  border-color: var(--vscode-editorWidget-border);
 }
 
 .tabulator .tabulator-tableholder .tabulator-table,
 .tabulator .tabulator-tableholder .tabulator-table input,
 .tabulator .tabulator-tableholder .tabulator-table select {
-    color: var(--vscode-editor-foreground);
+  color: var(--vscode-editor-foreground);
 }
 
 .tabulator-row,
 .tabulator .tabulator-tableholder .tabulator-table select {
-    background-color: var(--vscode-editor-background);
+  background-color: var(--vscode-editor-background);
 }
 
 .tabulator-row.tabulator-row-even {
-    background-color: var(--vscode-list-inactiveSelectionBackground);
+  background-color: var(--vscode-list-inactiveSelectionBackground);
 }
 
 @media (hover: hover) and (pointer: fine) {
-    .tabulator-row.tabulator-selectable:hover {
-        background-color: var(--vscode-list-activeSelectionBackground);
-        color: var(--vscode-list-activeSelectionForeground);
-    }
+  .tabulator-row.tabulator-selectable:hover {
+    background-color: var(--vscode-list-activeSelectionBackground);
+    color: var(--vscode-list-activeSelectionForeground);
+  }
 }
 
 /* Editors */
 
 .tabulator .tabulator-tableholder .tabulator-table input,
 .tabulator .tabulator-tableholder .tabulator-table select {
-    width: 100%;
-    height: 100%;
-    font-family: var(--vscode-font-family);
+  width: 100%;
+  height: 100%;
+  font-family: var(--vscode-font-family);
 }
 
 /* Group header */
 
 .tabulator-row.tabulator-group {
-    background-color: var(--vscode-sideBar-background);
-    border-color: var(--vscode-editorWidget-border);
+  background-color: var(--vscode-sideBar-background);
+  border-color: var(--vscode-editorWidget-border);
 }
 
 .tabulator-row.tabulator-group:hover {
-    background-color: var(--vscode-list-activeSelectionBackground);
+  background-color: var(--vscode-list-activeSelectionBackground);
 }
 
 .tabulator-row.tabulator-group.tabulator-group-visible .tabulator-arrow {
-    border-top-color: var(--vscode-list-foreground);
+  border-top-color: var(--vscode-list-foreground);
 }
 
 .tabulator-row.tabulator-group .tabulator-arrow {
-    border-left-color: var(--vscode-list-foreground);
+  border-left-color: var(--vscode-list-foreground);
 }
 
 /* Context menu */
 
 .tabulator-popup-container {
-    background-color: var(--vscode-editor-background);
-    height: auto !important;
+  background-color: var(--vscode-editor-background);
+  height: auto !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
-    .tabulator-menu .tabulator-menu-item:not(.tabulator-menu-item-disabled):hover {
-        background-color: var(--vscode-list-activeSelectionBackground);
-    }
+  .tabulator-menu
+    .tabulator-menu-item:not(.tabulator-menu-item-disabled):hover {
+    background-color: var(--vscode-list-activeSelectionBackground);
+  }
 }
 
 /* Scan */
 
 .scan {
-    position: fixed;
-    display: flex;
-    flex-flow: column;
-    top: 0;
-    padding: 32px 24px;
-    width: 100%;
-    height: 100%;
-    background-color: var(--vscode-editor-background);
+  position: fixed;
+  display: flex;
+  flex-flow: column;
+  top: 0;
+  padding: 32px 24px;
+  width: 100%;
+  height: 100%;
+  background-color: var(--vscode-editor-background);
 }
 
 .scan > * {
-    max-width: 500px;
+  max-width: 500px;
 }
 
 .scan header {
-    margin-bottom: 24px;
+  margin-bottom: 24px;
 }
 
 .scan footer {
-    margin-top: 24px;
-    display: flex;
+  margin-top: 24px;
+  display: flex;
 }
 
 .scan .button {
-    color: var(--vscode-button-foreground);
-    background-color: var(--vscode-button-background);
-    cursor: pointer;
-    width: 100%;
-    padding: 4px;
-    border-radius: 2px;
-    text-align: center;
-    line-height: 18px;
-    border: 1px solid var(--vscode-button-border, transparent);
+  color: var(--vscode-button-foreground);
+  background-color: var(--vscode-button-background);
+  cursor: pointer;
+  width: 100%;
+  padding: 4px;
+  border-radius: 2px;
+  text-align: center;
+  line-height: 18px;
+  border: 1px solid var(--vscode-button-border, transparent);
 }
 
 .scan .button + .button {
-    margin-left: 16px;
+  margin-left: 16px;
 }
 
 .scan section {
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    gap: 12px 16px;
-    align-items: center;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 12px 16px;
+  align-items: center;
 }
 
 .scan section label {
-    text-align: right;
-    transition: color 0.15s ease;
+  text-align: right;
+  transition: color 0.15s ease;
 }
 
 .scan section label:hover {
-    color: var(--vscode-list-activeSelectionForeground);
+  color: var(--vscode-list-activeSelectionForeground);
 }
 
 .scan section input,
 .scan section .unit-prefix {
-    background-color: var(--vscode-input-background);
-    border: 1px solid var(--vscode-input-border);
-    color: var(--vscode-input-foreground);
-    padding: 6px 10px;
-    border-radius: 2px;
-    font-size: 13px;
-    outline: none;
-    transition: all 0.15s ease;
-    width: 100%;
+  background-color: var(--vscode-input-background);
+  border: 1px solid var(--vscode-input-border);
+  color: var(--vscode-input-foreground);
+  padding: 6px 10px;
+  border-radius: 2px;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.15s ease;
+  width: 100%;
 }
 
 .scan section input[type="checkbox"] {
-    appearance: none;
-    padding: 0;
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    position: relative;
+  appearance: none;
+  padding: 0;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  position: relative;
 }
 
 .scan section input[type="checkbox"]:checked::before {
-    content: "✓";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-weight: bold;
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
 }
 
 .scan section input:hover {
-    background-color: var(--vscode-inputOption-hoverBackground);
+  background-color: var(--vscode-inputOption-hoverBackground);
 }
 
 .scan section input:focus {
-    background-color: var(--vscode-inputOption-activeBackground);
-    border-color: var(--vscode-inputOption-activeBorder);
-    color: var(--vscode-inputOption-activeForeground);
-    box-shadow: 0 0 0 1px var(--vscode-inputOption-activeBorder);
+  background-color: var(--vscode-inputOption-activeBackground);
+  border-color: var(--vscode-inputOption-activeBorder);
+  color: var(--vscode-inputOption-activeForeground);
+  box-shadow: 0 0 0 1px var(--vscode-inputOption-activeBorder);
 }
 
 .scan section input:invalid {
-    background-color: var(--vscode-inputValidation-errorBackground);
-    border-color: var(--vscode-inputValidation-errorBorder);
-    color: var(--vscode-inputValidation-errorForeground);
+  background-color: var(--vscode-inputValidation-errorBackground);
+  border-color: var(--vscode-inputValidation-errorBorder);
+  color: var(--vscode-inputValidation-errorForeground);
 }
 
 .scan select {
-    background-color: var(--vscode-input-background);
-    color: var(--vscode-input-foreground);
-    border: 1px solid var(--vscode-input-border);
-    padding: 6px 10px;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cccccc' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    padding-right: 28px;
-    border-radius: 2px;
-    cursor: pointer;
+  background-color: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border);
+  padding: 6px 10px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cccccc' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 28px;
+  border-radius: 2px;
+  cursor: pointer;
 }
 
 .scan select:hover {
-    background-color: var(--vscode-inputOption-hoverBackground);
+  background-color: var(--vscode-inputOption-hoverBackground);
 }
 
 .scan select:focus {
-    outline: 1px solid var(--vscode-focusBorder);
-    outline-offset: -1px;
-    background-color: var(--vscode-dropdown-background);
-    border-color: var(--vscode-inputOption-activeBorder);
-    color: var(--vscode-inputOption-activeForeground);
-    box-shadow: 0 0 0 1px var(--vscode-inputOption-activeBorder);
+  outline: 1px solid var(--vscode-focusBorder);
+  outline-offset: -1px;
+  background-color: var(--vscode-dropdown-background);
+  border-color: var(--vscode-inputOption-activeBorder);
+  color: var(--vscode-inputOption-activeForeground);
+  box-shadow: 0 0 0 1px var(--vscode-inputOption-activeBorder);
 }
 
 .scan .input {
-    display: flex;
+  display: flex;
 }
 
 .scan .input .unit-prefix {
-    background: var(--vscode-editorGroupHeader-tabsBackground);
-    color: var(--vscode-descriptionForeground);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-right: none;
-    border-radius: 2px 0 0 2px;
-    width: auto;
-    min-width: 40px;
+  background: var(--vscode-editorGroupHeader-tabsBackground);
+  color: var(--vscode-descriptionForeground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: none;
+  border-radius: 2px 0 0 2px;
+  width: auto;
+  min-width: 40px;
 }
 
 .scan section .input .unit-prefix:not(.hidden) + input {
-    border-radius: 0 2px 2px 0;
+  border-radius: 0 2px 2px 0;
 }
 
 /* Scan Widget */
@@ -279,20 +296,20 @@ body {
 }
 
 .scan section .scan-widget {
-    grid-column: 1 / -1;
+  grid-column: 1 / -1;
 }
 
 .scan section label[for="RangeScan__start"] + .input .unit-prefix.hidden,
 .scan section label[for="RangeScan__stop"] + .input .unit-prefix.hidden {
-    min-width: 0;
+  min-width: 0;
 }
 
 .scan section label[for="RangeScan__start"] + .input .unit-prefix {
-    background: color-mix(in srgb, var(--scanwidget-start-color), black 50%);
-    display: block !important;
+  background: color-mix(in srgb, var(--scanwidget-start-color), black 50%);
+  display: block !important;
 }
 
 .scan section label[for="RangeScan__stop"] + .input .unit-prefix {
-    background: color-mix(in srgb, var(--scanwidget-stop-color), black 50%);
-    display: block !important;
+  background: color-mix(in srgb, var(--scanwidget-stop-color), black 50%);
+  display: block !important;
 }

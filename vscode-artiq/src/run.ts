@@ -8,60 +8,67 @@ import * as experiment from "./experiment.js";
 export type Id = number;
 
 export type Expid = {
-    log_level: number,
-    file: string,
-    class_name: string,
-    arguments: argument.SubmitInfo<argument.Procdesc>,
+  log_level: number;
+  file: string;
+  class_name: string;
+  arguments: argument.SubmitInfo<argument.Procdesc>;
 
-    devarg_override?: string,
-    repo_rev?: string,
-}
+  devarg_override?: string;
+  repo_rev?: string;
+};
 
 interface SubmitInfo extends experiment.SchedulerInfo {
-    expid: Expid,
+  expid: Expid;
 }
 
 // FIXME: "pipeline_name" and "pipeline" should be the same thing
 // see "notification" dict in artiq/master/scheduler.py:Run
 export interface SyncInfo extends Omit<SubmitInfo, "pipeline_name"> {
-    pipeline: string,
-    expid: Expid,
-    priority: number,
-    due_date: number,
-    flush: boolean,
-    status: string,
-    repo_msg: string,
+  pipeline: string;
+  expid: Expid;
+  priority: number;
+  due_date: number;
+  flush: boolean;
+  status: string;
+  repo_msg: string;
 }
 
-let submit: (exp: experiment.DbInfo) => void = async exp => {
-    let file = vscode.window.activeTextEditor?.document.uri.fsPath;
-    if (!file) { return; }
+const submit: (exp: experiment.DbInfo) => void = async (exp) => {
+  const file = vscode.window.activeTextEditor?.document.uri.fsPath;
+  if (!file) {
+    return;
+  }
 
-    let kwargs: SubmitInfo = {
-        pipeline_name: exp.pipeline_name,
-        expid: {
-            file,
-            log_level: utils.logging[exp.log_level],
-            class_name: exp.class_name,
-            arguments: argument.toSubmitInfo(exp.arginfo),
-        },
-        priority: exp.priority,
-        due_date: exp.due_date,
-        flush: exp.flush,
-    };
+  const kwargs: SubmitInfo = {
+    pipeline_name: exp.pipeline_name,
+    expid: {
+      file,
+      log_level: utils.logging[exp.log_level],
+      class_name: exp.class_name,
+      arguments: argument.toSubmitInfo(exp.arginfo),
+    },
+    priority: exp.priority,
+    due_date: exp.due_date,
+    flush: exp.flush,
+  };
 
-    await pc_rpc.from({
-        masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
-        targetName: "schedule",
-        methodName: "submit",
-        kwargs,
-        onError: err => vscode.window.showErrorMessage(`schedule submit: ${err}`),
-    });
+  await pc_rpc.from({
+    masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
+    targetName: "schedule",
+    methodName: "submit",
+    kwargs,
+    onError: (err) => vscode.window.showErrorMessage(`schedule submit: ${err}`),
+  });
 
-    vscode.window.showInformationMessage(`Submitted experiment: ${exp.name}`);
+  vscode.window.showInformationMessage(`Submitted experiment: ${exp.name}`);
 };
 
-export let submitCurr = async () => {
-    let curr = await experiment.curr();
-    curr ? submit(curr) : vscode.window.showErrorMessage("Submit failed: No experiment selected.");
+export const submitCurr = async () => {
+  const curr = await experiment.curr();
+  if (!curr) {
+    vscode.window.showErrorMessage("Submit failed: No experiment selected.");
+    return;
+  }
+
+  submit(curr);
 };

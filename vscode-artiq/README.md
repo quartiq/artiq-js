@@ -6,8 +6,8 @@ provides rich UI for the
 
 ## Requirements
 
-*   Visual Studio Code 1.98 or newer (or editors compatible with VS Code 1.98+ APIs).
-*   ARTIQ-9 or newer
+- Visual Studio Code 1.98 or newer (or editors compatible with VS Code 1.98+ APIs).
+- ARTIQ-9 or newer
 
 ## Quick Start
 
@@ -39,26 +39,29 @@ same filesystem tree.
 <!--TODO: advanced topics (customization) -> link to github wiki-->
 <!--TODO: troubleshooting -> link to github wiki-->
 <!--TODO: full list of commands and kb shortcuts -> link to github wiki-->
-*   [file an issue](https://github.com/quartiq/artiq-ui/issues/new) for
-  problems with the extension.
-*   Start a [GitHub discussion](https://github.com/quartiq/artiq-ui/discussions)
-  or get help in [chat](https://matrix.to/#/#quartiq:matrix.org).
-* Explore ARTIQ resources on [m-labs.hk/artiq/manual/](https://m-labs.hk/artiq/manual/) and
-  [forum.m-labs.hk](https://forum.m-labs.hk/).
 
+- [file an issue](https://github.com/quartiq/artiq-ui/issues/new) for
+  problems with the extension.
+- Start a [GitHub discussion](https://github.com/quartiq/artiq-ui/discussions)
+  or get help in [chat](https://matrix.to/#/#quartiq:matrix.org).
+- Explore ARTIQ resources on [m-labs.hk/artiq/manual/](https://m-labs.hk/artiq/manual/) and
+  [forum.m-labs.hk](https://forum.m-labs.hk/).
 
 If you are new to ARTIQ, [this article](https://m-labs.hk/artiq/manual/rtio.html) provides
 an overview on ARTIQ Real-Time I/O concepts and basic terminology.
 <!--TODO: screencast showing how to write and run your first experiment using VS Code ARTIQ-->
 
 ## Feature highlights
+
 <!--TODO: link feature names to places in the github wiki-->
-*   Explorer - Jump to or peek at an experiment's class definition
-*   Experiment - Submit an experiment with custom options
-*   Arguments - Tweak experiment arguments before submission
-*   Datasets - Tweak or monitor data to and from experiments
-*   Schedule - Follow what's about to happen next on hardware
-*   Log - Evaluate results and errors as they appear
+
+- Explorer - Jump to or peek at an experiment's class definition
+- Experiment - Submit an experiment with custom options
+- Arguments - Tweak experiment arguments before submission
+- Datasets - Tweak or monitor data to and from experiments
+- Schedule - Follow what's about to happen next on hardware
+- Log - Evaluate results and errors as they appear
+
 <!--TODO: link to full feature break down in github wiki-->
 
 <!--TODO: screencast demonstrating a key feature-->

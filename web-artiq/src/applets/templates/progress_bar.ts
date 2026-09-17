@@ -1,9 +1,9 @@
 import type { Interface } from "../template";
 
 type Subs = { counter: number };
-type Locals = { min: number, max: number };
+type Locals = { min: number; max: number };
 
-let style = document.createElement("style");
+const style = document.createElement("style");
 style.innerHTML = `
     .progress_bar .bar {
         background-color: lime;
@@ -19,48 +19,57 @@ style.innerHTML = `
 `;
 document.head.appendChild(style);
 
-export let preset = "${artiq_applet}progress_bar VALUE";
+export const preset = "${artiq_applet}progress_bar VALUE";
 
-export let argsShape = {
-    positionals: [ "counter" ],
-    localDefaults: { min: 0, max: 100 },
+export const argsShape = {
+  positionals: ["counter"],
+  localDefaults: { min: 0, max: 100 },
 };
 
-export let from: Interface["from"] = ([ subs, locals ]) => {
-    let bar: HTMLElement;
-    let label: HTMLElement;
+export const from: Interface["from"] = ([subs, locals]) => {
+  let bar: HTMLElement;
+  let label: HTMLElement;
 
-    let rel = (v: number, min: number, max: number): number => (v - min) / (max - min);
-    let fmt = (v: number): string => `${ (v * 100).toFixed() }%`;
+  const rel = (v: number, min: number, max: number): number =>
+    (v - min) / (max - min);
+  const fmt = (v: number): string => `${(v * 100).toFixed()}%`;
 
-    let setup = (el: HTMLElement, subs: Record<string, any>) => {
-        el.classList.add("progress_bar");
+  const setup = (el: HTMLElement, subs: Record<string, any>) => {
+    el.classList.add("progress_bar");
 
-        let container = document.createElement("div");
+    const container = document.createElement("div");
 
-        bar = document.createElement("div");
-        bar.classList.add("bar");
+    bar = document.createElement("div");
+    bar.classList.add("bar");
 
-        label = document.createElement("div");
-        label.classList.add("label");
+    label = document.createElement("div");
+    label.classList.add("label");
 
-        container.append(bar);
-        container.append(label);
-        el.append(container);
+    container.append(bar);
+    container.append(label);
+    el.append(container);
 
-        let v = rel((subs as Subs).counter, (locals as Locals).min, (locals as Locals).max);
-        bar.style.width = fmt(v);
-        label.innerText = fmt(v);
-    };
+    const v = rel(
+      (subs as Subs).counter,
+      (locals as Locals).min,
+      (locals as Locals).max,
+    );
+    bar.style.width = fmt(v);
+    label.innerText = fmt(v);
+  };
 
-    let update = (subs: Record<string, any>) => {
-        let v = rel((subs as Subs).counter, (locals as Locals).min, (locals as Locals).max);
-        bar.style.width = fmt(v);
-        label.innerText = fmt(v);
-    };
+  const update = (subs: Record<string, any>) => {
+    const v = rel(
+      (subs as Subs).counter,
+      (locals as Locals).min,
+      (locals as Locals).max,
+    );
+    bar.style.width = fmt(v);
+    label.innerText = fmt(v);
+  };
 
-    return [
-        { subs, setup, update },
-        { w: 7, h: 1 },
-    ];
+  return [
+    { subs, setup, update },
+    { w: 7, h: 1 },
+  ];
 };
