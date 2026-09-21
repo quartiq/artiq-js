@@ -1,6 +1,7 @@
 import type { Interface } from "../template";
+import type { UnitaryArgs } from "../schedule";
 
-type Subs = { counter: number };
+type Args = { counter: number };
 type Locals = { min: number; max: number };
 
 const style = document.createElement("style");
@@ -34,7 +35,7 @@ export const from: Interface["from"] = ([subs, locals]) => {
     (v - min) / (max - min);
   const fmt = (v: number): string => `${(v * 100).toFixed()}%`;
 
-  const setup = (el: HTMLElement, subs: Record<string, any>) => {
+  const setup = (el: HTMLElement, args: UnitaryArgs) => {
     el.classList.add("progress_bar");
 
     const container = document.createElement("div");
@@ -50,7 +51,7 @@ export const from: Interface["from"] = ([subs, locals]) => {
     el.append(container);
 
     const v = rel(
-      (subs as Subs).counter,
+      (args as Args).counter,
       (locals as Locals).min,
       (locals as Locals).max,
     );
@@ -58,9 +59,9 @@ export const from: Interface["from"] = ([subs, locals]) => {
     label.innerText = fmt(v);
   };
 
-  const update = (subs: Record<string, any>) => {
+  const update = (args: UnitaryArgs) => {
     const v = rel(
-      (subs as Subs).counter,
+      (args as Args).counter,
       (locals as Locals).min,
       (locals as Locals).max,
     );

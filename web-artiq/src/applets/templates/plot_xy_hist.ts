@@ -2,6 +2,8 @@ import Plotly from "plotly.js-dist-min";
 import * as pyon from "js-sipyco/pyon";
 
 import type { Interface } from "../template";
+import type { UnitaryArgs } from "../schedule";
+
 import {
   Plot,
   layout,
@@ -80,7 +82,9 @@ export const from: Interface["from"] = ([subs]) => {
 
   let plots: Plot<Trace>[];
 
-  const setup = (el: HTMLElement, args: Record<string, any>) => {
+  const setup = (el: HTMLElement, args: UnitaryArgs) => {
+    cached = args as Args;
+
     // create all widget partitions with plotel() before Plotly init, so width's are clear
     plots = traces.map((trace) => ({
       trace,
@@ -88,11 +92,10 @@ export const from: Interface["from"] = ([subs]) => {
       el: plotel(el),
     }));
     plots.forEach((p) => {
-      Plotly.newPlot(p.el, p.trace(args as Args, selected), p.layout, config);
+      Plotly.newPlot(p.el, p.trace(cached, selected), p.layout, config);
       resize(p.el, el);
     });
 
-    cached = args as Args;
     (plots[0].el as Plotly.PlotlyHTMLElement).on(
       "plotly_hover",
       (ev: Plotly.PlotMouseEvent) => {
@@ -107,12 +110,13 @@ export const from: Interface["from"] = ([subs]) => {
   const clamp = (v: number, min: number, max: number) =>
     Math.min(Math.max(v, min), max);
 
-  const update = (args: Record<string, any>) => {
+  const update = (args: UnitaryArgs) => {
     cached = args as Args;
-    selected = clamp(selected, -1, args.histogram_counts.length - 1);
+
+    selected = clamp(selected, -1, cached.histogram_counts.length - 1);
     if (Number.isNaN(selected)) selected = -1;
     plots.forEach((p) =>
-      Plotly.react(p.el, p.trace(args as Args, selected), p.layout),
+      Plotly.react(p.el, p.trace(cached, selected), p.layout),
     );
   };
 

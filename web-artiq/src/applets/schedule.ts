@@ -1,12 +1,12 @@
 import * as sync_struct from "js-sipyco/sync_struct";
 import * as pyon from "js-sipyco/pyon";
 
-import { Datasets, Keypath } from "../datasets/types";
+import { Datasets, Keypath, PYONValue } from "../datasets/types";
 import type * as ccb from "./ccb";
 
-type ArgName = string;
-export type UnitaryArgs = Record<ArgName, any>;
-type SubArgs = Record<ArgName, Keypath>;
+export type ArgName = string;
+export type UnitaryArgs = Record<ArgName, PYONValue>;
+export type SubArgs = Record<ArgName, Keypath>;
 
 export type Applet = {
   subs: SubArgs;

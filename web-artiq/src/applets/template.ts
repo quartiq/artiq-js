@@ -2,7 +2,8 @@ import shellQuote from "shell-quote";
 import minimist from "minimist";
 import { GridStackWidget } from "gridstack";
 
-import { UnitaryArgs, Applet } from "./schedule";
+import type { UnitaryArgs, SubArgs, Applet } from "./schedule";
+import { isKeypath } from "../datasets/types";
 import type * as ccb from "./ccb";
 
 import * as big_number from "./templates/big_number";
@@ -25,7 +26,7 @@ type ArgsShape = {
   localDefaults?: UnitaryArgs;
 };
 
-type ParsedArgs = [subs: UnitaryArgs, locals: UnitaryArgs];
+type ParsedArgs = [subs: SubArgs, locals: UnitaryArgs];
 
 export type Fetched = [Applet, GridStackWidget?];
 
@@ -60,15 +61,22 @@ const parsePositionals = (
 };
 
 const parseArgs = (args: minimist.ParsedArgs, shape: ArgsShape): ParsedArgs => {
-  const unit = Object.entries(parsePositionals(args, shape.positionals));
-  const filter = (fn: (v: [string, any]) => boolean) =>
-    Object.fromEntries(unit.filter(fn));
-
+  const all = Object.entries(parsePositionals(args, shape.positionals));
   const defaults = shape.localDefaults ?? {};
   const localnames = Object.keys(defaults);
 
-  const subs = filter(([k]) => !localnames.includes(k));
-  const locals = filter(([k]) => localnames.includes(k));
+  const subs: SubArgs = {};
+  const locals: UnitaryArgs = {};
+
+  all.forEach(([name, value]) => {
+    if (localnames.includes(name)) {
+      locals[name] = value;
+      return;
+    }
+
+    if (!isKeypath(value)) return;
+    subs[name] = value;
+  });
 
   return [subs, { ...defaults, ...locals }];
 };

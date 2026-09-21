@@ -78,7 +78,7 @@ export const listen = () =>
     onReceive: <S extends ServiceName>(msg: Message<S>) => {
       const handler = handlers[msg.service];
       if (!handler) {
-        console.error(`applets: unknown ccb service "${(msg as any).service}"`);
+        console.error(`applets: unknown ccb service "${msg.service}"`);
         return;
       }
 

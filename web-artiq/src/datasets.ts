@@ -23,7 +23,7 @@ const setup = (): HTMLElement => {
 };
 
 // TODO: apply metadata and pyon's toHuman()
-const toHuman = (dataset: Dataset): string => dataset[1];
+const toHuman = (dataset: Dataset): string => String(dataset[1]);
 // TODO: add fromHuman for pc_rpc update calls
 
 const create = (keypath: Keypath, dataset: Dataset): HTMLTableRowElement => {

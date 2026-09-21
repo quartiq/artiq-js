@@ -1,6 +1,7 @@
 import Plotly from "plotly.js-dist-min";
 import * as pyon from "js-sipyco/pyon";
-import { TypedArray } from "js-sipyco/pyonutils";
+import type { TypedArray } from "js-sipyco/pyonutils";
+import type { UnitaryArgs } from "./schedule";
 
 export type Trace<Args> = (args: Args) => Plotly.Data[];
 export type Plot<Trace> = {
@@ -52,13 +53,13 @@ export const resize = (plot: HTMLElement, observed: HTMLElement) => {
 export const single = <Args>(trace: Trace<Args>) => {
   let plot: Plot<Trace<Args>>;
 
-  const setup = (el: HTMLElement, args: Record<string, any>) => {
+  const setup = (el: HTMLElement, args: UnitaryArgs) => {
     plot = { trace, layout: layout(), el: plotel(el) };
     Plotly.newPlot(plot.el, plot.trace(args as Args), plot.layout, config);
     resize(plot.el, el);
   };
 
-  const update = (args: Record<string, any>) =>
+  const update = (args: UnitaryArgs) =>
     Plotly.react(plot.el, plot.trace(args as Args), plot.layout);
 
   return { setup, update };

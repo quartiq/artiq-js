@@ -1,6 +1,7 @@
 import type { Interface } from "../template";
+import type { UnitaryArgs } from "../schedule";
 
-type Subs = { scalar: number };
+type Args = { scalar: number };
 type Locals = { "digit-count": number };
 
 const style = document.createElement("style");
@@ -29,18 +30,18 @@ export const from: Interface["from"] = ([subs, locals]) => {
       maximumSignificantDigits: n,
     }).format(f);
 
-  const setup = (el: HTMLElement, subs: Record<string, any>) => {
+  const setup = (el: HTMLElement, args: UnitaryArgs) => {
     parent = el;
     parent.classList.add("big_number");
     parent.innerText = fmt(
-      (subs as Subs).scalar,
+      (args as Args).scalar,
       (locals as Locals)["digit-count"],
     );
   };
 
-  const update = (subs: Record<string, any>) =>
+  const update = (args: UnitaryArgs) =>
     (parent.innerText = fmt(
-      (subs as Subs).scalar,
+      (args as Args).scalar,
       (locals as Locals)["digit-count"],
     ));
 
