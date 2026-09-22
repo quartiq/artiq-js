@@ -45,7 +45,7 @@
     "vitest": "^4.0.18"
   },
   "scripts": {
-    "build": "tsc && npm test -- --run",
+    "build": "tsc && tsc -p test/tsconfig.json",
     "watch": "tsc --watch",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

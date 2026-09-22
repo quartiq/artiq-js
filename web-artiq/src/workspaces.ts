@@ -1,4 +1,4 @@
-import * as dbio from "./applets/dbio.ts";
+import * as dbio from "./applets/dbio";
 
 const target = "/applets";
 

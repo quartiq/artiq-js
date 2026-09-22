@@ -11,9 +11,9 @@
     "shell-quote": "^1.8.4"
   },
   "scripts": {
-    "build:js-sipyco": "npm --prefix ../js-sipyco install && npm --prefix ../js-sipyco run build",
+    "check-types": "tsc --noEmit",
     "build:web-artiq": "esbuild ./src/*.ts ./src/*.css --bundle --outdir=static --format=esm",
-    "build": "npm run build:js-sipyco && npm run build:web-artiq",
+    "build": "npm run check-types && npm run build:web-artiq",
     "watch:js-sipyco": "npm --prefix ../js-sipyco run watch",
     "watch:web-artiq": "esbuild ./src/*.ts ./src/*.css --bundle --outdir=static --format=esm --watch",
     "watch": "npm-run-all -p watch:js-sipyco watch:web-artiq",
