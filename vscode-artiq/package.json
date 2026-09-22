@@ -257,6 +257,6 @@
     "ms-python.python"
   ],
   "vsce": {
-      "dependencies": false
+    "dependencies": false
   }
 }

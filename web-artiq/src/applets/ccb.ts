@@ -7,17 +7,18 @@ export type Code = string;
 export type GroupEl = string;
 export type Group = GroupEl[];
 
-export let isGroup = (g: unknown): g is Group => Array.isArray(g) && g.every(v => typeof v === "string");
+export const isGroup = (g: unknown): g is Group =>
+  Array.isArray(g) && g.every((v) => typeof v === "string");
 
 export type GroupKey = { group: Group };
 export type AppletKey = GroupKey & { name: Name };
-export type TargetKey = AppletKey | GroupKey & { name: null };
-export type CreateArgs = AppletKey & { command: Command, code: Code };
+export type TargetKey = AppletKey | (GroupKey & { name: null });
+export type CreateArgs = AppletKey & { command: Command; code: Code };
 
-export let sameKey = (a: AppletKey, b: AppletKey): boolean => {
-    let keys = new Dict<Partial<AppletKey>, true>();
-    keys.set({ group: a.group, name: a.name }, true);
-    return keys.has({ group: b.group, name: b.name });
+export const sameKey = (a: AppletKey, b: AppletKey): boolean => {
+  const keys = new Dict<Partial<AppletKey>, true>();
+  keys.set({ group: a.group, name: a.name }, true);
+  return keys.has({ group: b.group, name: b.name });
 };
 
 // what "args" may consist of:
@@ -25,61 +26,62 @@ export let sameKey = (a: AppletKey, b: AppletKey): boolean => {
 // { name: "flopping_f", command: "${artiq_applet}plot_xy flopping_f_brightness --x flopping_f_frequency --fit flopping_f_fit" }
 
 type ArgTypes = {
-    create_applet: [ Name, Command, Group, string ],
-    restart_applet: [ Name | null, Group ],
-    disable_applet: [ Name | null, Group ],
-    disable_applet_group: [ Group ],
+  create_applet: [Name, Command, Group, string];
+  restart_applet: [Name | null, Group];
+  disable_applet: [Name | null, Group];
+  disable_applet_group: [Group];
 };
 
 type KwargTypes = {
-    create_applet: CreateArgs,
-    restart_applet: TargetKey,
-    disable_applet: TargetKey,
-    disable_applet_group: GroupKey,
+  create_applet: CreateArgs;
+  restart_applet: TargetKey;
+  disable_applet: TargetKey;
+  disable_applet_group: GroupKey;
 };
 
 type ServiceName = keyof KwargTypes;
 
 type Message<S extends ServiceName> = {
-    service: S,
-    args: ArgTypes[S],
-    kwargs: KwargTypes[S],
+  service: S;
+  args: ArgTypes[S];
+  kwargs: KwargTypes[S];
 };
 
-let keyLists: { [K in ServiceName]: Array<keyof KwargTypes[K]> } = {
-    create_applet: [ "name", "command", "group", "code" ],
-    restart_applet: [ "name", "group" ],
-    disable_applet: [ "name", "group" ],
-    disable_applet_group: [ "group" ],
+const keyLists: { [K in ServiceName]: Array<keyof KwargTypes[K]> } = {
+  create_applet: ["name", "command", "group", "code"],
+  restart_applet: ["name", "group"],
+  disable_applet: ["name", "group"],
+  disable_applet_group: ["group"],
 };
 
-let normalize = <S extends ServiceName>(msg: Message<S>): KwargTypes[S] => {
-    let keys = keyLists[msg.service] as (keyof KwargTypes[S])[];
-    let args = msg.args.reduce((a, v, i) => ({ ...a, [keys[i]]: v}), {});
+const normalize = <S extends ServiceName>(msg: Message<S>): KwargTypes[S] => {
+  const keys = keyLists[msg.service] as (keyof KwargTypes[S])[];
+  const args = msg.args.reduce((a, v, i) => ({ ...a, [keys[i]]: v }), {});
 
-    let union: KwargTypes[S] = { ...args, ...msg.kwargs };
-    if (!Object.hasOwn(union, "group")) union.group = [];
-    if (union.group === null) union.group = [];
-    if (typeof union.group === "string") union.group = [ union.group ];
-    return union;
+  const union: KwargTypes[S] = { ...args, ...msg.kwargs };
+  if (!Object.hasOwn(union, "group")) union.group = [];
+  if (union.group === null) union.group = [];
+  if (typeof union.group === "string") union.group = [union.group];
+  return union;
 };
 
 type HandleFuncs = {
-    [S in ServiceName]: (args: KwargTypes[S]) => void;
+  [S in ServiceName]: (args: KwargTypes[S]) => void;
 };
 let handlers: HandleFuncs;
-export let handleFuncs = (funcs: HandleFuncs) => handlers = funcs;
+export const handleFuncs = (funcs: HandleFuncs) => (handlers = funcs);
 
-export let listen = () => broadcast.subscribe({
+export const listen = () =>
+  broadcast.subscribe({
     masterHostname: "localhost",
     targetName: "ccb",
     onReceive: <S extends ServiceName>(msg: Message<S>) => {
-        let handler = handlers[msg.service];
-        if (!handler) {
-            console.error(`applets: unknown ccb service "${(msg as any).service}"`);
-            return;
-        }
+      const handler = handlers[msg.service];
+      if (!handler) {
+        console.error(`applets: unknown ccb service "${(msg as any).service}"`);
+        return;
+      }
 
-        handler(normalize(msg));
+      handler(normalize(msg));
     },
-});
+  });

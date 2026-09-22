@@ -9,8 +9,8 @@ const production = process.argv.includes("--production");
 const watch = process.argv.includes("--watch");
 
 const cssFiles = [
-  [ "node_modules/tabulator-tables/dist/css", "tabulator.min.css" ],
-  [ "src/webviews", "main.css" ],
+  ["node_modules/tabulator-tables/dist/css", "tabulator.min.css"],
+  ["src/webviews", "main.css"],
 ];
 
 const copyCSS = (subpath, filename) => {
@@ -33,9 +33,9 @@ async function main() {
     sourcesContent: false,
     platform: "node",
     outfile: "dist/extension.js",
-    external: [ "vscode" ],
+    external: ["vscode"],
     logLevel: "warning",
-    plugins: [ esbuildProblemMatcherPlugin ],
+    plugins: [esbuildProblemMatcherPlugin],
   });
 
   const webviewCtx = await esbuild.context({
@@ -46,26 +46,28 @@ async function main() {
     sourcemap: !production,
     platform: "browser",
     outdir: "dist/webviews",
-    external: [ "vscode" ],
+    external: ["vscode"],
     logLevel: "warning",
-    plugins: [ esbuildProblemMatcherPlugin ],
+    plugins: [esbuildProblemMatcherPlugin],
   });
 
   cssFiles.forEach(([subpath, filename]) => copyCSS(subpath, filename));
 
   if (watch) {
-    await Promise.all([ coreCtx.watch(), webviewCtx.watch() ]);
+    await Promise.all([coreCtx.watch(), webviewCtx.watch()]);
     cssFiles.forEach(([subpath, filename]) => {
       const src = path.join(__dirname, subpath, filename);
-      fs.watch(src, ev => {
-        if (ev !== "change") { return; }
+      fs.watch(src, (ev) => {
+        if (ev !== "change") {
+          return;
+        }
         console.log(`CSS changed: ${src}`);
         copyCSS(subpath, filename);
       });
     });
   } else {
-    await Promise.all([ coreCtx.rebuild(), webviewCtx.rebuild() ]);
-    await Promise.all([ coreCtx.dispose(), webviewCtx.dispose() ]);
+    await Promise.all([coreCtx.rebuild(), webviewCtx.rebuild()]);
+    await Promise.all([coreCtx.dispose(), webviewCtx.dispose()]);
   }
 }
 
@@ -79,18 +81,22 @@ const esbuildProblemMatcherPlugin = {
     build.onStart(() => {
       console.log("[watch] build started");
     });
-    build.onEnd(result => {
+    build.onEnd((result) => {
       result.errors.forEach(({ text, location }) => {
         console.error(`✘ [ERROR] ${text}`);
-        if (location === null) { return; }
-        console.error(`    ${location.file}:${location.line}:${location.column}:`);
+        if (location === null) {
+          return;
+        }
+        console.error(
+          `    ${location.file}:${location.line}:${location.column}:`,
+        );
       });
       console.log("[watch] build finished");
     });
-  }
+  },
 };
 
-main().catch(e => {
+main().catch((e) => {
   console.error(e);
   process.exit(1);
 });

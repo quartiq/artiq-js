@@ -1,101 +1,108 @@
-let proxyPort = 1071; // FIXME: standardize this port via ARTIQ repo
+const proxyPort = 1071; // FIXME: standardize this port via ARTIQ repo
 
-export let chan = (host: string, port: number, banner: string, target: string) => {
-    let ws = new WebSocket(`ws://${host}:${proxyPort}/proxy/${host}:${port}`);
+export const chan = (
+  host: string,
+  port: number,
+  banner: string,
+  target: string,
+) => {
+  const ws = new WebSocket(`ws://${host}:${proxyPort}/proxy/${host}:${port}`);
 
-    ws.addEventListener("open", () => {
-        // see: https://git.m-labs.hk/M-Labs/sipyco/src/branch/master/sipyco/sync_struct.py
-        // and: https://git.m-labs.hk/M-Labs/sipyco/src/branch/master/sipyco/pc_rpc.py
-        ws.send(`ARTIQ ${banner}\n`);
-        ws.send(`${target}\n`);
-    });
+  ws.addEventListener("open", () => {
+    // see: https://git.m-labs.hk/M-Labs/sipyco/src/branch/master/sipyco/sync_struct.py
+    // and: https://git.m-labs.hk/M-Labs/sipyco/src/branch/master/sipyco/pc_rpc.py
+    ws.send(`ARTIQ ${banner}\n`);
+    ws.send(`${target}\n`);
+  });
 
-    return ws;
+  return ws;
 };
 
 type Stop = () => void;
 type ConnectionState = "connecting" | "connected" | "failed";
 
 interface Events extends EventTarget {
-    addEventListener(
-        type: "change",
-        listener: (ev: CustomEvent<ConnectionState>) => void,
-        options?: boolean | AddEventListenerOptions,
-    ): void;
+  addEventListener(
+    type: "change",
+    listener: (ev: CustomEvent<ConnectionState>) => void,
+    options?: boolean | AddEventListenerOptions,
+  ): void;
 
-    addEventListener(
-        type: string,
-        listener: EventListenerOrEventListenerObject | null,
-        options?: boolean | AddEventListenerOptions,
-    ): void;
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject | null,
+    options?: boolean | AddEventListenerOptions,
+  ): void;
 }
 
-let delayMin = 1000;
-let delayMax = 30_000;
-let connections = new Map<symbol, ConnectionState>();
+const delayMin = 1000;
+const delayMax = 30_000;
+const connections = new Map<symbol, ConnectionState>();
 
-export let events = new EventTarget() as Events;
+export const events = new EventTarget() as Events;
 
-let writeSingleState = (id: symbol, state?: ConnectionState) =>
-    state === undefined ? connections.delete(id) : connections.set(id, state);
+const writeSingleState = (id: symbol, state?: ConnectionState) =>
+  state === undefined ? connections.delete(id) : connections.set(id, state);
 
-let readGlobalState = (): ConnectionState => {
-    let states = [ ...connections.values() ];
-    if (states.some(s => s === "failed")) return "failed";
-    if (states.length > 0 && states.every(s => s === "connected")) return "connected";
-    return "connecting";
+const readGlobalState = (): ConnectionState => {
+  const states = [...connections.values()];
+  if (states.some((s) => s === "failed")) return "failed";
+  if (states.length > 0 && states.every((s) => s === "connected"))
+    return "connected";
+  return "connecting";
 };
 
 let previous: ConnectionState | undefined;
 
-let status = (id: symbol, state?: ConnectionState): void => {
-    writeSingleState(id, state);
-    let current = readGlobalState();
-    if (current === previous) return;
+const status = (id: symbol, state?: ConnectionState): void => {
+  writeSingleState(id, state);
+  const current = readGlobalState();
+  if (current === previous) return;
 
-    previous = current;
-    events.dispatchEvent(new CustomEvent<ConnectionState>("change", { detail: current }));
+  previous = current;
+  events.dispatchEvent(
+    new CustomEvent<ConnectionState>("change", { detail: current }),
+  );
 };
 
-export let reconnect = (params: {
-    open: () => WebSocket;
-    onReceive: (msg: any) => void,
-    onClose?: (err: string) => void,
-
+export const reconnect = (params: {
+  open: () => WebSocket;
+  onReceive: (msg: any) => void;
+  onClose?: (err: string) => void;
 }): Stop => {
-    let id = Symbol();
-    let active = true;
-    let delay = delayMin;
-    let timeoutID: ReturnType<typeof setTimeout> | undefined;
-    let ch: WebSocket;
+  const id = Symbol();
+  let active = true;
+  let delay = delayMin;
+  let timeoutID: ReturnType<typeof setTimeout> | undefined;
+  let ch: WebSocket;
 
-    let connect = (): void => {
-        ch = params.open();
+  const connect = (): void => {
+    ch = params.open();
 
-        ch.addEventListener("open", () => active && status(id, "connected"));
+    ch.addEventListener("open", () => active && status(id, "connected"));
 
-        ch.addEventListener("message", ev => {
-            params.onReceive(ev.data);
-            delay = delayMin;
-        });
+    ch.addEventListener("message", (ev) => {
+      params.onReceive(ev.data);
+      delay = delayMin;
+    });
 
-        ch.addEventListener("close", ev => {
-            if (!active) return;
+    ch.addEventListener("close", (ev) => {
+      if (!active) return;
 
-            status(id, "failed");
-            params.onClose?.(ev.reason);
-            timeoutID = globalThis.setTimeout(connect, delay);
-            delay = Math.min(delay * 2, delayMax);
-        });
-    };
+      status(id, "failed");
+      params.onClose?.(ev.reason);
+      timeoutID = globalThis.setTimeout(connect, delay);
+      delay = Math.min(delay * 2, delayMax);
+    });
+  };
 
-    status(id, "connecting");
-    connect();
+  status(id, "connecting");
+  connect();
 
-    return () => {
-        active = false;
-        if (timeoutID !== undefined) globalThis.clearTimeout(timeoutID);
-        status(id);
-        ch.close();
-    };
+  return () => {
+    active = false;
+    if (timeoutID !== undefined) globalThis.clearTimeout(timeoutID);
+    status(id);
+    ch.close();
+  };
 };

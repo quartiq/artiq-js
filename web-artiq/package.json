@@ -5,10 +5,10 @@
   "dependencies": {
     "@tanstack/table-core": "^8.21.3",
     "gridstack": "^12.6.0",
+    "js-sipyco": "file:../js-sipyco",
     "minimist": "^1.2.8",
     "plotly.js-dist-min": "^3.5.1",
-    "shell-quote": "^1.8.4",
-    "js-sipyco": "file:../js-sipyco"
+    "shell-quote": "^1.8.4"
   },
   "scripts": {
     "build:js-sipyco": "npm --prefix ../js-sipyco install && npm --prefix ../js-sipyco run build",
@@ -26,9 +26,9 @@
     "@types/minimist": "^1.2.5",
     "@types/plotly.js-dist-min": "^2.3.4",
     "@types/shell-quote": "^1.7.5",
-    "esbuild": "0.28.2",
     "@typescript-eslint/eslint-plugin": "^8.70.0",
     "@typescript-eslint/parser": "^8.70.0",
+    "esbuild": "0.28.2",
     "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.12.0",
