@@ -227,6 +227,12 @@
     "lint": "eslint src test \"*.{js,mjs,cjs}\" --max-warnings=0",
     "test": "vscode-test"
   },
+  "overrides": {
+    "mocha": {
+      "diff": "^8.0.3",
+      "serialize-javascript": "^7.0.5"
+    }
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/mocha": "^10.0.10",
