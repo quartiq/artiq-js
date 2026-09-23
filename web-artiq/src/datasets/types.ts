@@ -1,8 +1,5 @@
-import { TaggedDict } from "js-sipyco/pyon";
+import { TaggedDict, PYONValue } from "js-sipyco/pyon";
 import { Store as SyncStructStore } from "js-sipyco/sync_struct";
-
-// TODO: define a comprehensive PyonValue union to replace "unknown"
-export type PYONValue = unknown;
 
 export type Keypath = string;
 export const isKeypath = (v: unknown): v is Keypath => typeof v === "string";

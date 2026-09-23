@@ -25,6 +25,9 @@ export const types: Record<string, TypeInterface> = {
 
 export type TypeName = keyof typeof types;
 
+// TODO: define a comprehensive PYONValue union to replace "unknown"
+export type PYONValue = unknown;
+
 // TODO: export all types?
 export { Dict } from "./dict.js";
 export { Set } from "./set.js";
