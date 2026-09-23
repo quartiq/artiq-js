@@ -1,5 +1,5 @@
 import * as pyon from "../pyon/pyon.js";
-import * as proxy from "../net.js";
+import * as net from "../net.js";
 
 type BannerMessage = {
   targets: string[];
@@ -114,7 +114,7 @@ export const from = <Return>(
       params,
       resolve,
       curr: "banner",
-      chan: proxy.chan(
+      chan: net.chan(
         params.masterHostname,
         port,
         "pc_rpc",

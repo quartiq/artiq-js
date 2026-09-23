@@ -3,7 +3,7 @@
 import * as pyon from "../pyon/pyon.js";
 import * as pyonutils from "../pyon/utils.js";
 import * as mutex from "./mutex.js";
-import * as proxy from "../net.js";
+import * as net from "../net.js";
 
 type Struct = pyon.Dict;
 export type Store = { struct: Struct | undefined }; // we need to operate on object property singleton to utilize the mutable object pattern
@@ -88,9 +88,9 @@ export const from = async <T extends Struct = Struct>(params: {
   const store: Store = { struct: undefined };
   const initDone: mutex.Lock = mutex.lock();
 
-  proxy.reconnect({
+  net.reconnect({
     open: () =>
-      proxy.chan(
+      net.chan(
         params.masterHostname,
         port,
         "sync_struct",
