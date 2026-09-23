@@ -72,7 +72,7 @@ let handlers: HandleFuncs;
 export const handleFuncs = (funcs: HandleFuncs) => (handlers = funcs);
 
 export const listen = () =>
-  broadcast.subscribe({
+  broadcast.subscribe<Message<ServiceName>>({
     masterHostname: "localhost",
     targetName: "ccb",
     onReceive: <S extends ServiceName>(msg: Message<S>) => {

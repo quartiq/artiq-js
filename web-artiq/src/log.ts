@@ -20,10 +20,10 @@ const append = (celltype: "th" | "td", entries: Header | Record) => {
 const header: Header = ["level", "source", "time", "message"];
 append("th", header);
 
-broadcast.subscribe({
+broadcast.subscribe<Record>({
   masterHostname: "localhost",
   targetName: "log",
-  onReceive: (record: Record) => {
+  onReceive: (record) => {
     const atBottom =
       window.scrollY + window.innerHeight >= document.body.scrollHeight;
     append("td", record);

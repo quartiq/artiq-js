@@ -9,10 +9,10 @@ export const init = async (context: vscode.ExtensionContext) => {
   view = new webview.Provider("log", context);
   view.init();
 
-  broadcast.subscribe({
+  broadcast.subscribe<Message>({
     masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
     targetName: "log",
-    onReceive: (msg: Message) => view.post(msg),
+    onReceive: (msg) => view.post(msg),
   });
 };
 
