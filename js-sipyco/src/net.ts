@@ -67,7 +67,8 @@ const status = (id: symbol, state?: ConnectionState): void => {
 
 export const reconnect = (params: {
   open: () => WebSocket;
-  onReceive: (msg: any) => void;
+  // proxy protocol must use WebSocket text frames
+  onReceive: (msg: string) => void;
   onClose?: (err: string) => void;
 }): Stop => {
   const id = Symbol();
