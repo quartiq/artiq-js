@@ -106,7 +106,7 @@ const closestParent = (keypath: string | undefined): string | undefined => {
 };
 
 const submit = async (setpath: string, set?: Dataset) =>
-  await pc_rpc.from({
+  await pc_rpc.from<null>({
     masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
     targetName: "dataset_db",
     methodName: "set",
@@ -277,7 +277,7 @@ export const move = async (keypath: string) => {
   });
   if (newPath && newPath !== keypath) {
     const set = store.struct.get(keypath);
-    pc_rpc.from({
+    pc_rpc.from<null>({
       masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
       targetName: "dataset_db",
       methodName: "delete",
@@ -297,7 +297,7 @@ export const del = async (keypath: string) => {
     "Delete",
   );
   if (result === "Delete") {
-    pc_rpc.from({
+    pc_rpc.from<null>({
       masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
       targetName: "dataset_db",
       methodName: "delete",

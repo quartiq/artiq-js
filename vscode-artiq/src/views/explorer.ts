@@ -9,7 +9,10 @@ let provider: ExplorerProvider;
 export let view: vscode.TreeView<ExperimentTreeItem>;
 
 export const open = async (filename: string, classname: string) => {
-  const p = path.posix.join(await experiment.repoRoot, filename);
+  const basepath = await experiment.repoRoot;
+  if (basepath === undefined) return;
+
+  const p = path.posix.join(basepath, filename);
   const uri = vscode.Uri.parse(p);
   try {
     await vscode.workspace.fs.stat(uri);
@@ -112,7 +115,7 @@ export const init = async () => {
 
 export const scan = async () => {
   vscode.window.showInformationMessage("Scanning repository directory ...");
-  await pc_rpc.from({
+  await pc_rpc.from<null>({
     masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
     targetName: "experiment_db",
     methodName: "scan_repository",

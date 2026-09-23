@@ -1,15 +1,13 @@
 import * as pyon from "../pyon/pyon.js";
 import * as proxy from "../net.js";
 
-type Error = string;
-
 type BannerMessage = {
   targets: string[];
   description: null;
   features: string[];
 };
 
-type TargetMessage = Set<string>; // FIXME: refer to pyon.Set<string> instead
+type TargetMessage = pyon.Set<string>;
 
 type RpcExceptionClass = "GenericRemoteException";
 
@@ -20,124 +18,111 @@ type RpcException = {
 };
 
 type RpcStatus = "ok" | "failed";
-export interface MethodMessage {
+
+export interface MethodMessage<Return> {
   status: RpcStatus;
-  ret: any;
+  ret: Return;
   exception?: RpcException;
 }
 
+type Params = {
+  masterHostname: string;
+  targetName: string;
+  methodName: string;
+  args?: unknown[];
+  kwargs?: Record<string, unknown>;
+  onError?: (err: string) => void;
+};
+
 type Phase = "banner" | "target" | "method";
+
+type Context<Return> = {
+  params: Params;
+  chan: WebSocket;
+  curr: Phase;
+  resolve: (v: MethodMessage<Return> | undefined) => void;
+};
+
+type PhaseHandler = <Return>(data: string, context: Context<Return>) => void;
 
 // see: https://git.m-labs.hk/M-Labs/artiq/src/branch/master/doc/manual/default_network_ports.rst
 const port = 3251;
 
-const handleBanner = (msg: BannerMessage, targetName: string): Error => {
-  if (!msg.targets.includes(targetName)) {
-    return `pc_rpc target not found: "${targetName}". Custom port in use?`;
+const banner = <Return>(data: string, ctx: Context<Return>) => {
+  const msg = pyon.decode(data) as BannerMessage;
+
+  if (!msg.targets.includes(ctx.params.targetName)) {
+    ctx.params.onError?.(
+      `pc_rpc target not found: "${ctx.params.targetName}". Custom port in use?`,
+    );
+    ctx.resolve(undefined);
+    return;
   }
 
   if (!msg.features.includes("pyon_v2")) {
-    return "pc_rpc: Missing PYON v2 support. Upgrade to ARTIQ-9 or newer.";
+    ctx.params.onError?.(
+      "pc_rpc: Missing PYON v2 support. Upgrade to ARTIQ-9 or newer.",
+    );
+    ctx.resolve(undefined);
+    return;
   }
 
-  return "";
+  ctx.curr = "target";
 };
 
-const handleTarget = (
-  msg: TargetMessage,
-  methodName: string,
-  targetName: string,
-): Error => {
-  if (!msg.has(methodName)) {
-    return `pc_rpc method not found: "${methodName}". Wrong target "${targetName}"?`;
+const target = <Return>(data: string, ctx: Context<Return>) => {
+  const msg = pyon.decode(data) as TargetMessage;
+  if (!msg.has(ctx.params.methodName)) {
+    ctx.params.onError?.(
+      `pc_rpc method not found: "${ctx.params.methodName}". Wrong target "${ctx.params.targetName}"?`,
+    );
+    ctx.resolve(undefined);
+    return;
   }
 
-  return "";
+  ctx.curr = "method";
+
+  ctx.chan.send(
+    pyon.encode({
+      action: "call",
+      name: ctx.params.methodName,
+      args: ctx.params.args ?? [],
+      kwargs: ctx.params.kwargs ?? {},
+    }) + "\n",
+  );
 };
 
-const handleMethod = (msg: MethodMessage): Error => {
+const method = <Return>(data: string, ctx: Context<Return>) => {
+  const msg = pyon.decode(data) as MethodMessage<Return>;
   if (msg.status === "failed") {
-    return `pc_rpc failed: ${JSON.stringify(msg.exception)}`;
+    ctx.params.onError?.(`pc_rpc failed: ${JSON.stringify(msg.exception)}`);
+    ctx.resolve(undefined);
+    return;
   }
 
-  return "";
+  ctx.resolve(msg);
+  ctx.chan.close();
 };
 
-export const from = async (params: {
-  masterHostname: string;
-  targetName: string;
-  methodName: string;
-  args?: any[];
-  kwargs?: Record<string, any>;
-  onError?: (err: string) => void;
-}): Promise<MethodMessage | undefined> => {
-  let resolve: (v: MethodMessage | undefined) => void;
-  const result: Promise<MethodMessage | undefined> = new Promise(
-    (r) => (resolve = r),
-  );
-  const chan = proxy.chan(
-    params.masterHostname,
-    port,
-    "pc_rpc",
-    `${params.targetName} pyon_v2`,
-  );
-  let phase: Phase = "banner";
+const phases: Record<Phase, PhaseHandler> = { banner, target, method };
 
-  chan.addEventListener("message", (ev) => {
-    let err: Error;
+export const from = <Return>(
+  params: Params,
+): Promise<MethodMessage<Return> | undefined> =>
+  new Promise((resolve) => {
+    const ctx: Context<Return> = {
+      params,
+      resolve,
+      curr: "banner",
+      chan: proxy.chan(
+        params.masterHostname,
+        port,
+        "pc_rpc",
+        `${params.targetName} pyon_v2`,
+      ),
+    };
 
-    switch (phase) {
-      case "banner":
-        err = handleBanner(
-          pyon.decode(ev.data) as BannerMessage,
-          params.targetName,
-        );
-        if (err) {
-          params.onError?.(err);
-          resolve(undefined);
-          return;
-        }
-
-        phase = "target";
-        break;
-
-      case "target":
-        err = handleTarget(
-          pyon.decode(ev.data) as TargetMessage,
-          params.methodName,
-          params.targetName,
-        );
-        if (err) {
-          params.onError?.(err);
-          resolve(undefined);
-          return;
-        }
-
-        phase = "method";
-        chan.send(
-          pyon.encode({
-            action: "call",
-            name: params.methodName,
-            args: params.args ?? [],
-            kwargs: params.kwargs ?? {},
-          }) + "\n",
-        );
-        break;
-
-      case "method":
-        const msg = pyon.decode(ev.data) as MethodMessage;
-        err = handleMethod(msg);
-        if (err) {
-          params.onError?.(err);
-          resolve(undefined);
-          return;
-        }
-
-        resolve(msg);
-        chan.close();
-        break;
-    }
+    ctx.chan.addEventListener("message", (ev) =>
+      phases[ctx.curr](ev.data, ctx),
+    );
   });
-
-  return result;
-};

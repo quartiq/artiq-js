@@ -60,6 +60,8 @@ export const store: Promise<Store> = new Promise((resolve) => {
       notifierName: "explist",
       onReceive: async () => {
         const basepath = await repoRoot;
+        if (basepath === undefined) return;
+
         // update "softly" to provide what is new
         // yet to sustain what was known and customized
         const repo = (await store).struct as Repo;
@@ -84,17 +86,15 @@ export const store: Promise<Store> = new Promise((resolve) => {
     .then((data: Store) => resolve(data));
 });
 
-export const repoRoot: Promise<string> = new Promise((resolve) => {
-  pc_rpc
-    .from({
-      masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
-      targetName: "experiment_db",
-      methodName: "root",
-      onError: (err) =>
-        vscode.window.showErrorMessage(`experiment_db root: ${err}`),
-    })
-    .then((data: pc_rpc.MethodMessage | undefined) => resolve(data?.ret));
-});
+export const repoRoot: Promise<string | undefined> = pc_rpc
+  .from<string>({
+    masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
+    targetName: "experiment_db",
+    methodName: "root",
+    onError: (err) =>
+      vscode.window.showErrorMessage(`experiment_db root: ${err}`),
+  })
+  .then((data) => data?.ret);
 
 const key = (exp: DbInfo) => ["experiments", exp.path, exp.class_name].join();
 export const updateDb = (exp: DbInfo) => dbio.update(key(exp), exp);
@@ -126,13 +126,10 @@ type ExamineInfo = {
 };
 
 type ExamineDict = Record<ClassName, ExamineInfo>;
-interface RpcObject extends pc_rpc.MethodMessage {
-  ret: ExamineDict;
-}
 
 export const examineFile: () => Promise<void> = async () => {
   const path = vscode.window.activeTextEditor!.document.uri.fsPath;
-  const resp: RpcObject | undefined = await pc_rpc.from({
+  const resp = await pc_rpc.from<ExamineDict>({
     masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
     targetName: "experiment_db",
     methodName: "examine",
@@ -140,11 +137,9 @@ export const examineFile: () => Promise<void> = async () => {
     onError: (err) =>
       vscode.window.showErrorMessage(`experiment_db examine: ${err}`),
   });
-  if (resp === undefined) {
-    return;
-  }
+  if (resp === undefined) return;
 
-  vscode.window.showInformationMessage(`Examined file: ${resp?.status}`);
+  vscode.window.showInformationMessage(`Examined file: ${resp.status}`);
   const exps: DbInfo[] = Object.entries(resp.ret).map(
     ([class_name, examinfo]: [ClassName, ExamineInfo]) => ({
       ...scheduler_defaults,

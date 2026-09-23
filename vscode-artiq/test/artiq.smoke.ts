@@ -20,7 +20,7 @@ async function main() {
   const key = "ci.smoke";
 
   async function call(methodName: string, args: unknown[]) {
-    const reply = await rpc.from({
+    const reply = await rpc.from<null>({
       masterHostname: "127.0.0.1",
       targetName: "dataset_db",
       methodName,

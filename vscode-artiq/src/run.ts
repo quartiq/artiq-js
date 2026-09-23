@@ -39,7 +39,7 @@ const submit: (exp: experiment.DbInfo) => void = async (exp) => {
     return;
   }
 
-  const kwargs: SubmitInfo = {
+  const info: SubmitInfo = {
     pipeline_name: exp.pipeline_name,
     expid: {
       file,
@@ -52,15 +52,24 @@ const submit: (exp: experiment.DbInfo) => void = async (exp) => {
     flush: exp.flush,
   };
 
-  await pc_rpc.from({
+  const resp = await pc_rpc.from<Id | null>({
     masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
     targetName: "schedule",
     methodName: "submit",
-    kwargs,
+    kwargs: { ...info },
     onError: (err) => vscode.window.showErrorMessage(`schedule submit: ${err}`),
   });
 
-  vscode.window.showInformationMessage(`Submitted experiment: ${exp.name}`);
+  if (resp === undefined) return;
+
+  if (resp.ret === null) {
+    vscode.window.showErrorMessage("Submit failed: scheduler has stopped.");
+    return;
+  }
+
+  vscode.window.showInformationMessage(
+    `Submitted experiment: ${exp.name}, RID: ${resp.ret}`,
+  );
 };
 
 export const submitCurr = async () => {

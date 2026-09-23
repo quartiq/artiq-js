@@ -13,7 +13,7 @@ export type Runs = pyon.TaggedDict<run.Id, run.SyncInfo>;
 export const init = async (context: vscode.ExtensionContext) => {
   view = new webview.Provider("schedule", context, {
     rpc: (data: { method: string; rid: number }) => {
-      pc_rpc.from({
+      pc_rpc.from<null>({
         masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
         targetName: "schedule",
         methodName: data.method,
