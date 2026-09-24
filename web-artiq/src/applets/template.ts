@@ -3,7 +3,7 @@ import minimist from "minimist";
 import { GridStackWidget } from "gridstack";
 
 import type { UnitaryArgs, SubArgs, Applet } from "./schedule";
-import { isKeypath } from "../datasets/types";
+import { isKeypath } from "shared/datasets";
 import type * as ccb from "./ccb";
 
 import * as big_number from "./templates/big_number";
@@ -28,7 +28,7 @@ type ArgsShape = {
 
 type ParsedArgs = [subs: SubArgs, locals: UnitaryArgs];
 
-export type Fetched = [Applet, GridStackWidget?];
+type Fetched = [Applet, GridStackWidget?];
 
 export type Interface = {
   preset: string;

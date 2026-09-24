@@ -2,8 +2,8 @@ import * as assert from "node:assert/strict";
 import { setTimeout as sleep } from "node:timers/promises";
 
 import "../src/proxy.js";
-import * as rpc from "js-sipyco/pc_rpc";
-import * as sync from "js-sipyco/sync_struct";
+import * as pc_rpc from "js-sipyco/pc_rpc";
+import * as datasets from "shared/datasets";
 
 const timeout = setTimeout(() => {
   console.error("ARTIQ smoke test timed out");
@@ -11,23 +11,22 @@ const timeout = setTimeout(() => {
 }, 15000);
 
 async function main() {
-  const store = await sync.from({
+  const store = await datasets.from({
     masterHostname: "127.0.0.1",
-    notifierName: "datasets",
     onReceive: () => {},
   });
 
   const key = "ci.smoke";
 
   async function call(methodName: string, args: unknown[]) {
-    const reply = await rpc.from<null>({
+    const resp = await pc_rpc.from<null>({
       masterHostname: "127.0.0.1",
       targetName: "dataset_db",
       methodName,
       args,
       onError: (message) => console.error(message),
     });
-    assert.equal(reply?.status, "ok");
+    assert.equal(resp?.status, "ok");
   }
   async function waitFor(condition: () => boolean) {
     const deadline = Date.now() + 3000;

@@ -1,5 +1,12 @@
-import * as sync_struct from "js-sipyco/sync_struct";
-import { Keypath, Dataset } from "./datasets/types";
+import type {
+  Keypath,
+  Dataset,
+  Mod,
+  InitMod,
+  SetitemMod,
+  DelitemMod,
+} from "shared/datasets";
+import * as datasets from "shared/datasets";
 
 const setup = (): HTMLElement => {
   const table = document.createElement("table");
@@ -64,30 +71,53 @@ const update = (row: HTMLElement, dataset: Dataset) => {
   (inputValue as HTMLInputElement).value = toHuman(dataset);
 };
 
-const keypath = (
-  mod: sync_struct.SetitemMod | sync_struct.DelitemMod,
-): Keypath => [...mod.path, mod.key].join(".");
+const init = (mod: Mod) => {
+  mod = mod as InitMod;
+  const rows = Array.from(mod.struct.entries()).map(([keypath, dataset]) =>
+    create(keypath, dataset),
+  );
+  body.replaceChildren(...rows);
+};
+
+const row = (key: Keypath) =>
+  Array.from(body.querySelectorAll<HTMLTableRowElement>("tr")).find(
+    (row) => row.dataset.keypath === key,
+  );
+
+const upsert = (key: Keypath) => {
+  const dataset = store.struct.get(key)!;
+  const r = row(key);
+
+  if (r) {
+    update(r, dataset);
+    return;
+  }
+
+  body.append(create(key, dataset));
+};
+
+const setitem = (mod: Mod) => {
+  mod = mod as SetitemMod;
+  upsert(datasets.keypath(mod));
+};
+
+const delitem = (mod: Mod) => {
+  mod = mod as DelitemMod;
+  const key = datasets.keypath(mod);
+
+  if (mod.path.length !== 0) {
+    upsert(key);
+    return;
+  }
+
+  row(key)?.remove();
+};
+
+const actions = { init, setitem, delitem };
 
 const body = setup();
 
-sync_struct.from({
+const store = await datasets.from({
   masterHostname: "localhost",
-  notifierName: "datasets",
-  onReceive: (_, mod: sync_struct.Mod) => {
-    if (mod.action === "init") {
-      const rows = Array.from(mod.struct.entries()).map(([keypath, dataset]) =>
-        create(keypath, dataset),
-      );
-      body.replaceChildren(...rows);
-    }
-
-    if (mod.action === "setitem") {
-      const row = body.querySelector(`tr[data-keypath="${keypath(mod)}"]`);
-      if (row) return update(row as HTMLElement, mod.value);
-      body.append(create(keypath(mod), mod.value));
-    }
-
-    if (mod.action === "delitem")
-      body.querySelector(`tr[data-keypath="${keypath(mod)}"]`)!.remove();
-  },
+  onReceive: (mod) => actions[mod.action](mod),
 });

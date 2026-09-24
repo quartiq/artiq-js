@@ -15,6 +15,11 @@ npm --prefix ../js-sipyco run lint
 npm --prefix ../js-sipyco run build
 npm --prefix ../js-sipyco test -- --run
 
+npm --prefix ../shared install
+npm --prefix ../shared run format
+npm --prefix ../shared run lint
+npm --prefix ../shared run build
+
 npm install
 npm run format
 npm run lint

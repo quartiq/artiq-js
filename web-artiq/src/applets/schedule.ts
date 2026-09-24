@@ -1,10 +1,10 @@
-import * as sync_struct from "js-sipyco/sync_struct";
 import * as pyon from "js-sipyco/pyon";
 
-import { Datasets, Keypath } from "../datasets/types";
 import type * as ccb from "./ccb";
+import type { Datasets, Keypath } from "shared/datasets";
+import * as datasets from "shared/datasets";
 
-export type ArgName = string;
+type ArgName = string;
 export type UnitaryArgs = Record<ArgName, pyon.PYONValue>;
 export type SubArgs = Record<ArgName, Keypath>;
 
@@ -17,11 +17,6 @@ export type Applet = {
 const applets = new pyon.Dict<ccb.AppletKey, Applet>();
 let dirtyApplets = new pyon.Set<ccb.AppletKey>();
 let flushScheduled = false;
-
-const keypath = (mod: sync_struct.SetitemMod | sync_struct.DelitemMod) => {
-  if (mod.path.length !== 0) return mod.path[0];
-  return mod.key;
-};
 
 const deriveArgs = (argsMap: SubArgs, sets: Datasets) =>
   Object.fromEntries(
@@ -56,14 +51,13 @@ const scheduleUpdate = (key: ccb.AppletKey) => {
   });
 };
 
-const store = await sync_struct.from<Datasets>({
+const store = await datasets.from({
   masterHostname: "localhost",
-  notifierName: "datasets",
-  onReceive: (_, mod: sync_struct.Mod) =>
+  onReceive: (mod) =>
     applets.forEach((a: Applet, k: ccb.AppletKey) => {
       if (
         mod.action !== "init" &&
-        !Object.values(a.subs).includes(keypath(mod))
+        !Object.values(a.subs).includes(datasets.keypath(mod))
       )
         return;
       scheduleUpdate(k);

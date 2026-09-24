@@ -4,8 +4,10 @@
 import * as vscode from "vscode";
 import * as pyon from "js-sipyco/pyon";
 import * as pyonutils from "js-sipyco/pyonutils";
-import * as sync_struct from "js-sipyco/sync_struct";
 import * as pc_rpc from "js-sipyco/pc_rpc";
+
+import type { Dataset, Metadata, Store } from "shared/datasets";
+import * as datasets from "shared/datasets";
 
 import {
   getByPath,
@@ -19,15 +21,9 @@ import * as units from "../units.js";
 let provider: DatasetsProvider;
 export let view: vscode.TreeView<string>;
 
-type Keypath = string;
-type Metadata = { unit: string; scale: number; precision: number };
-type Dataset = [persist: boolean, value: any, metadata: Metadata];
-type Datasets = pyon.TaggedDict<Keypath, Dataset>;
-
-type Store = sync_struct.Store & { struct: Datasets };
-export let store: Store = {
-  struct: pyonutils.create("dict", [[]]) as any as Datasets,
-}; // FIXME: bad typing
+let store: Store = {
+  struct: pyon.tag(new pyon.Dict<datasets.Keypath, Dataset>(), "dict"),
+};
 
 type InputProperty = {
   path: any[];
@@ -176,7 +172,7 @@ class DatasetTreeItem extends vscode.TreeItem {
     let propname;
     [keypath, propname] = splitOnLast(keypath, ".");
     this.description = String(
-      getByPath(store.struct.get(keypath), inputProps[propname!].path),
+      getByPath(store.struct.get(keypath)!, inputProps[propname!].path),
     );
     const color = new vscode.ThemeColor("symbolIcon.variableForeground");
     this.iconPath = new vscode.ThemeIcon("edit", color);
@@ -240,23 +236,24 @@ export const init = async () => {
     ev.items.forEach((item) => {
       const [keypath, checked] = item;
       const set = store.struct.get(keypath);
+      if (set === undefined) return;
+
       set[0] = Boolean(checked);
       submit(keypath, set);
     }),
   );
 
-  store = await sync_struct.from({
+  store = await datasets.from({
     masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
-    notifierName: "datasets",
-    onReceive: (_: sync_struct.Store, mod: sync_struct.Mod) => {
+    onReceive: (mod) => {
       if (mod.action === "init") {
         provider.refresh(undefined);
         return;
       }
 
-      const keypath = mod.path[0] ?? mod.key;
+      const keypath = datasets.keypath(mod);
       provider.refresh(keypath);
-      if (mod.action === "setitem" && mod.path[0] === undefined) {
+      if (mod.action === "setitem" && mod.path.length === 0) {
         view.reveal(keypath, { focus: true, expand: true });
       }
     },
@@ -310,7 +307,10 @@ export const del = async (keypath: string) => {
 
 // see: m-labs/artiq/dashboard/datasets:CreateEditDialog.accept
 export const edit = async (keypath: string, propname: string) => {
-  const set = structuredClone(store.struct.get(keypath));
+  const curr = store.struct.get(keypath);
+  if (curr === undefined) return;
+
+  const set = structuredClone(curr);
   set[1] = applyScale(set[1], set[2], true);
 
   const prop = inputProps[propname];

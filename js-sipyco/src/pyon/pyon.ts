@@ -59,7 +59,7 @@ export type TypeTaggedObject<
   T extends object = object,
   Name extends TypeName = TypeName,
 > = T & { [marker]: Name };
-export const isTypeTaggedObject = (v: any): boolean =>
+export const isTypeTaggedObject = (v: any): v is TypeTaggedObject =>
   isMarked(v) && typeof v[marker] === "string";
 
 export const tag = <T extends object, Name extends TypeName>(

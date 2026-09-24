@@ -52,7 +52,10 @@ export type SyncInfo = {
 
 type Repo = TaggedDict<Name, SyncInfo>;
 
-export type Store = sync_struct.Store & { struct: Repo };
+type Store = Omit<sync_struct.Store, "struct"> & {
+  struct: Repo;
+};
+
 export const store: Promise<Store> = new Promise((resolve) => {
   sync_struct
     .from<Repo>({
@@ -64,7 +67,7 @@ export const store: Promise<Store> = new Promise((resolve) => {
 
         // update "softly" to provide what is new
         // yet to sustain what was known and customized
-        const repo = (await store).struct as Repo;
+        const repo = (await store).struct;
         createAllDb(
           arrayFrom(repo, "entries").map(
             ([name, syncinfo]: [string, SyncInfo]) => ({
@@ -98,9 +101,9 @@ export const repoRoot: Promise<string | undefined> = pc_rpc
 
 const key = (exp: DbInfo) => ["experiments", exp.path, exp.class_name].join();
 export const updateDb = (exp: DbInfo) => dbio.update(key(exp), exp);
-export const updateAllDb = async (exps: DbInfo[]) =>
+const updateAllDb = async (exps: DbInfo[]) =>
   dbio.updateAll(exps.map((e) => [key(e), e]));
-export const createAllDb = async (exps: DbInfo[]) =>
+const createAllDb = async (exps: DbInfo[]) =>
   dbio.createAll(exps.map((e) => [key(e), e]));
 
 const initArgstates: (
@@ -115,7 +118,7 @@ const initArgstates: (
   );
 
 export const inRepo: (exp: DbInfo) => Promise<boolean> = async (exp) =>
-  ((await store).struct as Repo).has(exp.name);
+  (await store).struct.has(exp.name);
 
 type ExamineInfo = {
   name: Name;

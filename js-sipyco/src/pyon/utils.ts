@@ -24,14 +24,31 @@ export const create = (
 };
 
 // FIXME: maybe implement generically and guard against non-indexable types
-export const get = (tagged: pyon.TypeTaggedObject, key: any): any =>
-  pyon.types[tagged.__jsonclass__].get?.(tagged, key);
+export const get = (target: any, key: any): any => {
+  if (pyon.isTypeTaggedObject(target)) {
+    return pyon.types[target.__jsonclass__].get?.(target, key);
+  }
 
-export const set = (tagged: pyon.TypeTaggedObject, key: any, value: any) =>
-  pyon.types[tagged.__jsonclass__].set?.(tagged, key, value);
+  return (target as Record<PropertyKey, pyon.PYONValue>)[key as PropertyKey];
+};
 
-export const del = (tagged: pyon.TypeTaggedObject, key: any) =>
-  pyon.types[tagged.__jsonclass__].del?.(tagged, key);
+export const set = (target: any, key: any, value: any): void => {
+  if (pyon.isTypeTaggedObject(target)) {
+    pyon.types[target.__jsonclass__].set?.(target, key, value);
+    return;
+  }
+
+  (target as Record<PropertyKey, pyon.PYONValue>)[key as PropertyKey] = value;
+};
+
+export const del = (target: any, key: any): void => {
+  if (pyon.isTypeTaggedObject(target)) {
+    pyon.types[target.__jsonclass__].del?.(target, key);
+    return;
+  }
+
+  delete (target as Record<PropertyKey, pyon.PYONValue>)[key as PropertyKey];
+};
 
 // FIXME: use Uint8Array.fromBase64() as soon it is available
 // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/fromBase64

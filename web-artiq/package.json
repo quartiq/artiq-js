@@ -6,6 +6,7 @@
     "@tanstack/table-core": "^8.21.3",
     "gridstack": "^12.6.0",
     "js-sipyco": "file:../js-sipyco",
+    "shared": "file:../shared",
     "minimist": "^1.2.8",
     "plotly.js-dist-min": "^3.5.1",
     "shell-quote": "^1.8.4"

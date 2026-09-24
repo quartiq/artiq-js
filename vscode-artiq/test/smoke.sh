@@ -12,6 +12,8 @@ fi
 
 npm --prefix ../js-sipyco ci
 npm --prefix ../js-sipyco run build
+npm --prefix ../shared ci
+npm --prefix ../shared run build
 npm ci
 npm run build:tests
 

@@ -93,7 +93,7 @@ class ExplorerProvider implements vscode.TreeDataProvider<ExperimentTreeItem> {
 
     view.message = "";
     const items = expNames.map((name) => {
-      const item = new ExperimentTreeItem(name, repo.get(name));
+      const item = new ExperimentTreeItem(name, repo.get(name)!);
       this.items.set(name, item);
       return item;
     });
