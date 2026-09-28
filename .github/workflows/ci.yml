@@ -23,55 +23,55 @@ jobs:
           node-version: "24"
           cache: npm
           cache-dependency-path: |
-            js-sipyco/package-lock.json
-            shared/package-lock.json
-            web-artiq/package-lock.json
-            vscode-artiq/package-lock.json
+            sipyco-js/package-lock.json
+            artiq-js/package-lock.json
+            artiq-web/package-lock.json
+            artiq-vscode/package-lock.json
 
-      - name: Install js-sipyco
-        run: npm ci --prefix js-sipyco
+      - name: Install sipyco-js
+        run: npm ci --prefix sipyco-js
 
-      - name: Build js-sipyco
-        run: npm run build --prefix js-sipyco
+      - name: Build sipyco-js
+        run: npm run build --prefix sipyco-js
 
-      - name: Test js-sipyco
-        run: npm test --prefix js-sipyco -- --run
+      - name: Test sipyco-js
+        run: npm test --prefix sipyco-js -- --run
 
-      - name: Install shared
-        run: npm ci --prefix shared
+      - name: Install artiq-js
+        run: npm ci --prefix artiq-js
 
-      - name: Build shared
-        run: npm run build --prefix shared
+      - name: Build artiq-js
+        run: npm run build --prefix artiq-js
 
-      - name: Install web-artiq and vscode-artiq
+      - name: Install artiq-web and artiq-vscode
         run: |
-          npm ci --prefix web-artiq
-          npm ci --prefix vscode-artiq
+          npm ci --prefix artiq-web
+          npm ci --prefix artiq-vscode
 
       - name: Check formatting
         run: |
-          npm run format:check --prefix js-sipyco
-          npm run format:check --prefix shared
-          npm run format:check --prefix web-artiq
-          npm run format:check --prefix vscode-artiq
+          npm run format:check --prefix sipyco-js
+          npm run format:check --prefix artiq-js
+          npm run format:check --prefix artiq-web
+          npm run format:check --prefix artiq-vscode
 
-      - name: Build web-artiq and check types
-        run: npm run build --prefix web-artiq
+      - name: Build artiq-web and check types
+        run: npm run build --prefix artiq-web
 
-      - name: Build vscode-artiq and check types
-        run: npm run package --prefix vscode-artiq
+      - name: Build artiq-vscode and check types
+        run: npm run package --prefix artiq-vscode
 
-      - name: Test vscode-artiq
+      - name: Test artiq-vscode
         run: |
-          npm run build:tests --prefix vscode-artiq
-          xvfb-run -a npm test --prefix vscode-artiq
+          npm run build:tests --prefix artiq-vscode
+          xvfb-run -a npm test --prefix artiq-vscode
 
       - name: Lint
         run: |
-          npm run lint --prefix js-sipyco
-          npm run lint --prefix shared
-          npm run lint --prefix web-artiq
-          npm run lint --prefix vscode-artiq
+          npm run lint --prefix sipyco-js
+          npm run lint --prefix artiq-js
+          npm run lint --prefix artiq-web
+          npm run lint --prefix artiq-vscode
 
   go:
     name: Go format, lint, test and build
@@ -80,15 +80,15 @@ jobs:
 
     defaults:
       run:
-        working-directory: web-artiq
+        working-directory: artiq-web
 
     steps:
       - uses: actions/checkout@v7
 
       - uses: actions/setup-go@v7
         with:
-          go-version-file: web-artiq/go.mod
-          cache-dependency-path: web-artiq/go.sum
+          go-version-file: artiq-web/go.mod
+          cache-dependency-path: artiq-web/go.sum
 
       - name: Check formatting
         run: |
@@ -121,4 +121,4 @@ jobs:
             extra-trusted-public-keys = nixbld.m-labs.hk-1:5aSRVA5b320xbNvu30tqxVPXpld73bhtOeH6uAjRyHc=
 
       - name: Test dataset create, update and delete
-        run: bash vscode-artiq/test/smoke.sh
+        run: bash artiq-vscode/test/smoke.sh

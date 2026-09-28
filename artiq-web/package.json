@@ -1,0 +1,43 @@
+{
+  "name": "artiq-web",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@tanstack/table-core": "^8.21.3",
+    "gridstack": "^12.6.0",
+    "sipyco-js": "file:../sipyco-js",
+    "artiq-js": "file:../artiq-js",
+    "minimist": "^1.2.8",
+    "plotly.js-dist-min": "^3.5.1",
+    "shell-quote": "^1.8.4"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "build:artiq-web": "esbuild ./src/*.ts ./src/*.css --bundle --outdir=static --format=esm",
+    "build": "npm run check-types && npm run build:artiq-web",
+    "watch:sipyco-js": "npm --prefix ../sipyco-js run watch",
+    "watch:artiq-web": "esbuild ./src/*.ts ./src/*.css --bundle --outdir=static --format=esm --watch",
+    "watch": "npm-run-all -p watch:sipyco-js watch:artiq-web",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint src \"*.{js,mjs,cjs}\" --max-warnings=0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/minimist": "^1.2.5",
+    "@types/plotly.js-dist-min": "^2.3.4",
+    "@types/shell-quote": "^1.7.5",
+    "@typescript-eslint/eslint-plugin": "^8.70.0",
+    "@typescript-eslint/parser": "^8.70.0",
+    "esbuild": "0.28.2",
+    "eslint": "^10.10.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.12.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "3.9.6",
+    "typescript": "^5.9.3"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}
