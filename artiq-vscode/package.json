@@ -218,6 +218,7 @@
     "build:tests": "tsc -p test/tsconfig.json",
     "watch": "npm-run-all -p watch:*",
     "watch:sipyco-js": "npm --prefix ../sipyco-js run watch",
+    "watch:artiq-js": "npm --prefix ../artiq-js run watch",
     "watch:esbuild": "node esbuild.cjs --watch",
     "watch:tsc": "tsc --watch",
     "vscode:prepublish": "npm run package",

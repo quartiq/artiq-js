@@ -9,16 +9,18 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc -p test/tsconfig.json",
+    "watch": "tsc --watch",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "eslint src --max-warnings=0"
+    "lint": "eslint src test \"*.{js,mjs,cjs}\" --max-warnings=0"
   },
   "dependencies": {
     "sipyco-js": "file:../sipyco-js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/node": "^24.19.0",
     "@typescript-eslint/eslint-plugin": "^8.70.0",
     "@typescript-eslint/parser": "^8.70.0",
     "eslint": "^10.10.0",

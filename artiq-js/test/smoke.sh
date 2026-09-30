@@ -13,10 +13,8 @@ fi
 
 npm --prefix ../sipyco-js ci
 npm --prefix ../sipyco-js run build
-npm --prefix ../artiq-js ci
-npm --prefix ../artiq-js run build
 npm ci
-npm run build:tests
+npm run build
 
 smoke_dir="$(mktemp -d)"
 master_pid=""
@@ -77,4 +75,4 @@ for ((i = 0; i < 100; i++)); do
 done
 (: > /dev/tcp/127.0.0.1/1071) 2>/dev/null
 
-node "$project_dir/out/test/artiq.smoke.js"
+node "$project_dir/test/artiq.smoke.ts"

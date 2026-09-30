@@ -121,4 +121,4 @@ jobs:
             extra-trusted-public-keys = nixbld.m-labs.hk-1:5aSRVA5b320xbNvu30tqxVPXpld73bhtOeH6uAjRyHc=
 
       - name: Test dataset create, update and delete
-        run: bash artiq-vscode/test/smoke.sh
+        run: bash artiq-js/test/smoke.sh
