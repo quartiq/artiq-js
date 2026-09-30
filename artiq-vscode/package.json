@@ -239,7 +239,6 @@
     "@types/node": "20.x",
     "@types/tabulator-tables": "^6.3.1",
     "@types/vscode": "^1.98.0",
-    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.70.0",
     "@typescript-eslint/parser": "^8.70.0",
     "@vscode/test-cli": "^0.0.15",
@@ -257,10 +256,9 @@
     "esbuild@0.28.2": true
   },
   "dependencies": {
-    "sipyco-js": "file:../sipyco-js",
     "artiq-js": "file:../artiq-js",
-    "tabulator-tables": "^6.3.1",
-    "ws": "^8.20.0"
+    "sipyco-js": "file:../sipyco-js",
+    "tabulator-tables": "^6.3.1"
   },
   "extensionDependencies": [
     "ms-python.python"

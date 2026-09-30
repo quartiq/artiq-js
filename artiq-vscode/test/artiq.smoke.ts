@@ -1,7 +1,6 @@
 import * as assert from "node:assert/strict";
 import { setTimeout as sleep } from "node:timers/promises";
 
-import "../src/proxy.js";
 import * as pc_rpc from "sipyco-js/pc_rpc";
 import * as datasets from "artiq-js/datasets";
 
