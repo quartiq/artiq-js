@@ -7,6 +7,29 @@ User interfaces and communication tools for the [ARTIQ experiment control system
 
 ## Development
 
+Start `artiq_master` with a device database containing the `wsproxy` controller.
+This repository provides a minimal example:
+
+```bash
+artiq_master --device-db /path/to/artiq-js/device_db.py
+```
+
+In another terminal, start the controller manager from this repository's root:
+
+```bash
+cd /path/to/artiq-js
+artiq_ctlmgr
+```
+
+For the web interface:
+
+```bash
+cd artiq-web
+./run.sh
+```
+
+Navigate browser to http://localhost:8080
+
 For the VS Code extension:
 
 ```bash
@@ -17,11 +40,4 @@ code .
 
 Press **F5** to launch an Extension Development Host with the ARTIQ extension loaded.
 
-For the web interface:
-
-```bash
-cd artiq-web
-./run.sh
-```
-
-Both build the shared sipyco-js and artiq-js libraries.
+Both frontends build the shared sipyco-js and artiq-js libraries.
