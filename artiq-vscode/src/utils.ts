@@ -1,5 +1,3 @@
-import { TaggedDict } from "sipyco-js/pyon";
-
 export const splitOnLast = (
   str: string,
   delimiter: string,
@@ -56,9 +54,3 @@ export const datetimelocal = (secs: number): string => {
 
   return `${a}-${mo}-${d}T${h}:${min}`;
 };
-
-// FIXME: wait for Iterator.prototype.map() to ship for MapIterator, e.g. entries(), keys(), ...
-export const arrayFrom = (
-  dict: TaggedDict,
-  method: "entries" | "keys",
-): any[] => [...dict[method]()];

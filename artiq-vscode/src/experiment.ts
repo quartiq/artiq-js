@@ -4,7 +4,6 @@ import * as sync_struct from "sipyco-js/sync_struct";
 import * as pc_rpc from "sipyco-js/pc_rpc";
 import { TaggedDict } from "sipyco-js/pyon";
 
-import { arrayFrom } from "./utils.js";
 import * as dbio from "./dbio.js";
 import * as argument from "./argument.js";
 import * as entries from "./entries.js";
@@ -69,8 +68,9 @@ export const store: Promise<Store> = new Promise((resolve) => {
         // yet to sustain what was known and customized
         const repo = (await store).struct;
         createAllDb(
-          arrayFrom(repo, "entries").map(
-            ([name, syncinfo]: [string, SyncInfo]) => ({
+          repo
+            .entries()
+            .map(([name, syncinfo]) => ({
               ...scheduler_defaults,
               ...syncinfo.scheduler_defaults,
 
@@ -81,8 +81,8 @@ export const store: Promise<Store> = new Promise((resolve) => {
               arginfo: initArgstates(syncinfo.arginfo),
 
               log_level: "WARNING", // see: artiq/dashboard/experiments.py:ExperimentManager.get_submission_options
-            }),
-          ),
+            }))
+            .toArray(),
         );
       },
     })
