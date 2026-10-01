@@ -92,6 +92,12 @@
           }
         ],
         [
+          "x",
+          {
+            "__jsonclass__": ["npscalar", ["<f2", "gEg="]]
+          }
+        ],
+        [
           "y",
           {
             "__jsonclass__": ["npscalar", ["<f4", "AAAQQQ=="]]

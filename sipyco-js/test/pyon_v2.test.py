@@ -23,12 +23,7 @@ print(pyon.encode({
     "set": {"testing", "sets"},
     "a": np.int8(9), "b": np.int16(-98), "c": np.int32(42), "d": np.int64(-5),
     "e": np.uint8(8), "f": np.uint16(5), "g": np.uint32(4), "h": np.uint64(9),
-
-    # FIXME: use Float16Array, as soon it is natively available
-    # see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float16Array
-    #
-    #"x": np.float16(9.0),
-
+    "x": np.float16(9.0),
     "y": np.float32(9.0), "z": np.float64(9.0),
     1j: 1-9j,
     "q": np.complex128(1j),

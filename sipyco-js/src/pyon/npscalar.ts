@@ -9,7 +9,7 @@ const from = (
   data: ArrayBuffer | ArrayLike<bigint>,
 ): NpScalar => {
   const TypedArray = dtype.from(dtypeName);
-  const typed = new TypedArray(data) as NpScalar;
+  const typed = new TypedArray(data as ArrayBuffer) as NpScalar;
   typed.__dtype__ = dtypeName;
   return typed;
 };

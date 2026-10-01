@@ -1,6 +1,6 @@
 // Mapping numpy-like dtypes to JS TypedArray subtypes
 // see: https://numpy.org/doc/stable/reference/arrays.interface.html#object.__array_interface__
-// TODO: implement float16, float128, bUcmOVS and big-endianness
+// TODO: implement float128, bUcmOVS and big-endianness
 // also check ndarrays internal mapping and package ndarray-complex
 
 type TypedArrayConstructor =
@@ -12,6 +12,7 @@ type TypedArrayConstructor =
   | Uint16ArrayConstructor
   | Uint32ArrayConstructor
   | BigUint64ArrayConstructor
+  | Float16ArrayConstructor
   | Float32ArrayConstructor
   | Float64ArrayConstructor;
 
@@ -24,6 +25,7 @@ export type TypedArray =
   | Uint16Array
   | Uint32Array
   | BigUint64Array
+  | Float16Array
   | Float32Array
   | Float64Array;
 
@@ -41,9 +43,7 @@ const dict: Entry[] = [
   { dtype: "<u4", ctor: Uint32Array },
   { dtype: "<u8", ctor: BigUint64Array },
 
-  // FIXME: use Float16Array, as soon it is natively available
-  // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float16Array
-  //    { dtype: "<f2", ctor: Float16Array },
+  { dtype: "<f2", ctor: Float16Array },
   { dtype: "<f4", ctor: Float32Array },
   { dtype: "<f8", ctor: Float64Array },
 
