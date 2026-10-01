@@ -124,8 +124,7 @@ describe("npscalar", () => {
     testNpScalar("g", "<u4", new Uint32Array([4]), `[4]`);
     testNpScalar("h", "<u8", new BigUint64Array([9n]), `["9"]`);
 
-    // FIXME: "x" waits for vanilla Float16Array feature to drop
-    //testNpScalar("x", "<f2", new Float16Array([ 9 ]), `[9]`);
+    testNpScalar("x", "<f2", new Float16Array([9]), `[9]`);
     testNpScalar("y", "<f4", new Float32Array([9]), `[9]`);
     // "z" is pyonized to regular js float
 
