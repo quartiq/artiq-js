@@ -12,17 +12,6 @@ export const validate = (hinted: string, decode: pyon.Decoder): boolean => {
   }
 };
 
-// FIXME: maybe include "create" in pyon.TypeInterface and implement per type
-// because "params" typing could be stronger
-export const create = (
-  name: pyon.TypeName,
-  params: any[],
-): pyon.TypeTaggedObject => {
-  const v = pyon.types[name].fromMachine(params);
-  v[pyon.marker] = name;
-  return v;
-};
-
 // FIXME: maybe implement generically and guard against non-indexable types
 export const get = (target: any, key: any): any => {
   if (pyon.isTypeTaggedObject(target)) {

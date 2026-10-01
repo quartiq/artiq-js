@@ -48,9 +48,7 @@ const normalize = (mod: IncomingMod): Mod => {
 
   return {
     ...mod,
-    struct: pyonutils.create("dict", [
-      Object.entries(mod.struct),
-    ]) as pyon.TaggedDict,
+    struct: pyon.tag(new pyon.Dict(Object.entries(mod.struct)), "dict"),
   };
 };
 
