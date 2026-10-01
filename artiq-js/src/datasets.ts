@@ -48,5 +48,5 @@ export const from = (params: {
   sync_struct.from<Datasets>({
     masterHostname: params.masterHostname,
     notifierName: "datasets",
-    onReceive: (_, mod) => params.onReceive(mod as Mod),
+    onReceive: (mod) => params.onReceive(mod as Mod),
   });

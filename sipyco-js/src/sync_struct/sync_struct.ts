@@ -8,8 +8,7 @@ import * as net from "../net.js";
 
 type Struct = pyon.Dict<pyon.PYONValue, pyon.PYONValue>;
 export type Store = { struct: Struct | undefined }; // we need to operate on object property singleton to utilize the mutable object pattern
-// FIXME: get rid of local store reference here!
-type UpdateHandler = (store: Store, mod: Mod) => void; // work on store directly, since onReceive's first run does not wait for init lock and local reference may be empty
+type UpdateHandler = (mod: Mod) => void;
 
 export type InitMod = { action: "init"; struct: Struct };
 
@@ -92,7 +91,7 @@ export const from = async <T extends Struct = Struct>(params: {
     onReceive: (msg) => {
       const mod = normalize(pyon.decode(msg) as IncomingMod);
       actions[mod.action](store, mod, initDone);
-      params.onReceive(store, mod);
+      params.onReceive(mod);
     },
   });
 
