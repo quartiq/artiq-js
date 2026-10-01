@@ -84,9 +84,7 @@ describe("bytes", () => {
     expect(tagged.get(true)).toStrictEqual(
       pyon.tag(new Uint8Array([98, 121, 116, 101, 115]), "bytes"),
     );
-    expect(pyon.preview(tagged.get(true))).toBe(
-      `["bytes",["62","79","74","65","73"]]`,
-    );
+    expect(pyon.preview(tagged.get(true))).toBe(`["bytes","6279746573"]`);
     testCopy(tagged.get(true));
   });
 });

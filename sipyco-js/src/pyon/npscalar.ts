@@ -1,5 +1,4 @@
 import * as dtype from "./dtype.js";
-import * as utils from "./utils.js";
 
 export type NpScalar = dtype.TypedArray & { __dtype__: string };
 export type Params = [dtype: string, base64: string];
@@ -15,13 +14,11 @@ const from = (
   return typed;
 };
 
-export const fromMachine = ([dtypeName, base64]: any[]): NpScalar => {
-  const buffer = utils.bytesFrom(base64).buffer as ArrayBuffer;
-  return from(dtypeName, buffer);
-};
+export const fromMachine = ([dtypeName, base64]: any[]): NpScalar =>
+  from(dtypeName, Uint8Array.fromBase64(base64).buffer);
 
 export const toMachine = (data: any): Params => {
-  const base64 = utils.base64From(new Uint8Array((data as NpScalar).buffer));
+  const base64 = new Uint8Array((data as NpScalar).buffer).toBase64();
   return [(data as NpScalar).__dtype__, base64] as Params;
 };
 

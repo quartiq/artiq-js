@@ -57,16 +57,6 @@ export const datetimelocal = (secs: number): string => {
   return `${a}-${mo}-${d}T${h}:${min}`;
 };
 
-// FIXME: use Uint8Array.fromBase64() as soon it is available
-// see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/fromBase64
-export const bytesFrom = (base64: string): Uint8Array =>
-  Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
-
-// FIXME: use Uint8Array.prototype.toBase64() as soon it is available
-// see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/toBase64
-export const base64From = (bytes: Uint8Array): string =>
-  btoa(String.fromCharCode(...bytes));
-
 // FIXME: wait for Iterator.prototype.map() to ship for MapIterator, e.g. entries(), keys(), ...
 export const arrayFrom = (
   dict: TaggedDict,

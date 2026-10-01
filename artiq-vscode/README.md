@@ -6,7 +6,7 @@ provides rich UI for the
 
 ## Requirements
 
-- Visual Studio Code 1.98 or newer (or editors compatible with VS Code 1.98+ APIs).
+- Visual Studio Code 1.107 or newer (or editors compatible with VS Code 1.107+ APIs).
 - ARTIQ-9 or newer
 
 ## Quick Start
