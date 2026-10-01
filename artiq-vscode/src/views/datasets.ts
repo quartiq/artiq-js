@@ -111,7 +111,7 @@ const submit = async (setpath: string, set?: Dataset) =>
   });
 
 const applyScale = (value: any, meta: Metadata, inverse?: boolean): any => {
-  const scale = meta.scale ?? units.scale(meta.unit); // see: m-labs/artiq/tools:scale_from_metadata
+  const scale = meta.scale ?? units.scale(meta.unit ?? ""); // see: m-labs/artiq/tools:scale_from_metadata
   if (!Number.isFinite(scale)) {
     return value;
   }
@@ -122,8 +122,8 @@ const applyScale = (value: any, meta: Metadata, inverse?: boolean): any => {
   return value * scale;
 };
 
-const applyPrecision = (value: any, precision: number): any => {
-  if (!Number.isFinite(precision)) {
+const applyPrecision = (value: any, precision?: number): any => {
+  if (precision === undefined || !Number.isFinite(precision)) {
     return value;
   }
   // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision#exceptions
