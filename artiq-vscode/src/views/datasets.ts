@@ -9,13 +9,7 @@ import * as pc_rpc from "sipyco-js/pc_rpc";
 import type { Dataset, Metadata, Store } from "artiq-js/datasets";
 import * as datasets from "artiq-js/datasets";
 
-import {
-  getByPath,
-  setByPath,
-  splitOnLast,
-  clamp,
-  arrayFrom,
-} from "../utils.js";
+import { getByPath, setByPath, splitOnLast, clamp } from "../utils.js";
 import * as units from "../units.js";
 
 let provider: DatasetsProvider;
@@ -77,12 +71,12 @@ const findChildren = (
     .filter((keys) => keys.length >= prefix.length + (depth ?? 0));
 
 const isNode = (keypath: string): boolean => {
-  const keypaths = arrayFrom(store.struct, "keys");
+  const keypaths = store.struct.keys().toArray();
   return findChildren(keypaths, keypath.split(".")).length > 0;
 };
 
 const closestParent = (keypath: string | undefined): string | undefined => {
-  const keypaths = arrayFrom(store.struct, "keys");
+  const keypaths = store.struct.keys().toArray();
   if (!keypath || keypaths.length === 0) {
     return undefined;
   }
@@ -208,7 +202,7 @@ class DatasetsProvider implements vscode.TreeDataProvider<string> {
 
   getChildren(keypath?: string): string[] {
     const parentKeys = keypath ? keypath.split(".") : [];
-    const keypaths = arrayFrom(store.struct, "keys");
+    const keypaths = store.struct.keys().toArray();
     const dups = findChildren(keypaths, parentKeys, 1)
       .map((keys) => keys.slice(0, parentKeys.length + 1).join("."))
       .sort((a, b) => name(a).localeCompare(name(b)));

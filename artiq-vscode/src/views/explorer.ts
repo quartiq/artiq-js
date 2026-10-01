@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as pc_rpc from "sipyco-js/pc_rpc";
 
-import { arrayFrom } from "../utils.js";
 import * as experiment from "../experiment.js";
 
 let provider: ExplorerProvider;
@@ -84,7 +83,7 @@ class ExplorerProvider implements vscode.TreeDataProvider<ExperimentTreeItem> {
     }
 
     const repo = (await experiment.store).struct;
-    const expNames = arrayFrom(repo, "keys");
+    const expNames = repo.keys().toArray();
     if (expNames.length === 0) {
       view.message =
         "Populate the repository directory with experiment files ...";
