@@ -29,8 +29,4 @@ gofmt -w .
 go vet ./...
 go test ./...
 
-# whitelist standard sipyco ports for broadcast, sync_struct and pc_rpc
-# see: https://git.m-labs.hk/M-Labs/artiq/src/branch/master/doc/manual/default_network_ports.rst
-
-# FIXME: standardize wsproxy port via ARTIQ repo
-go run main.go --whitelist wsproxy.json localhost:1071
+go run main.go localhost:8080

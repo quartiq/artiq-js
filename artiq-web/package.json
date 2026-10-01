@@ -15,9 +15,10 @@
     "check-types": "tsc --noEmit",
     "build:artiq-web": "esbuild ./src/*.ts ./src/*.css --bundle --outdir=static --format=esm",
     "build": "npm run check-types && npm run build:artiq-web",
+    "watch": "npm-run-all -p watch:*",
     "watch:sipyco-js": "npm --prefix ../sipyco-js run watch",
+    "watch:artiq-js": "npm --prefix ../artiq-js run watch",
     "watch:artiq-web": "esbuild ./src/*.ts ./src/*.css --bundle --outdir=static --format=esm --watch",
-    "watch": "npm-run-all -p watch:sipyco-js watch:artiq-web",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint src \"*.{js,mjs,cjs}\" --max-warnings=0"

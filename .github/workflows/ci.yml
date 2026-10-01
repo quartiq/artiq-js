@@ -88,7 +88,7 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version-file: artiq-web/go.mod
-          cache-dependency-path: artiq-web/go.sum
+          cache-dependency-path: artiq-web/go.mod
 
       - name: Check formatting
         run: |
@@ -121,4 +121,4 @@ jobs:
             extra-trusted-public-keys = nixbld.m-labs.hk-1:5aSRVA5b320xbNvu30tqxVPXpld73bhtOeH6uAjRyHc=
 
       - name: Test dataset create, update and delete
-        run: bash artiq-vscode/test/smoke.sh
+        run: bash artiq-js/test/smoke.sh

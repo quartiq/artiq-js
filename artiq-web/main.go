@@ -1,18 +1,13 @@
 package main
 
 import (
-	"encoding/json"
-	"flag"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-	"slices"
 	"strings"
-
-	"artiq-web/proxy"
 )
 
 var tmpl = template.Must(template.New("view").Parse(`
@@ -77,45 +72,16 @@ func fileHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, r.URL.Path[1:])
 }
 
-func whitelist() []string {
-	wlPath := flag.String("whitelist", "", "")
-	flag.Parse()
-
-	list := []string{}
-
-	if *wlPath == "" {
-		return list
-	}
-
-	j, err := os.ReadFile(*wlPath)
-	if err != nil {
-		return list
-	}
-
-	json.Unmarshal([]byte(j), &list)
-	return list
-}
-
 func main() {
-	wl := whitelist()
-	args := flag.Args()
-
-	http.HandleFunc("/", viewHandler)
-	http.HandleFunc("/static/", fileHandler)
-	http.HandleFunc("/proxy/", func(w http.ResponseWriter, r *http.Request) {
-		if !slices.Contains(wl, r.URL.Path[len("/proxy/"):]) {
-			w.WriteHeader(403)
-			w.Write([]byte("403 - Forbidden\n"))
-			return
-		}
-
-		proxy.HandlerFunc(w, r)
-	})
+	args := os.Args[1:]
 
 	if len(args) < 1 {
 		fmt.Println("missing URI argument")
 		return
 	}
+
+	http.HandleFunc("/", viewHandler)
+	http.HandleFunc("/static/", fileHandler)
 
 	log.Printf("Listening at http://%s", args[0])
 	log.Fatal(http.ListenAndServe(args[0], nil))
