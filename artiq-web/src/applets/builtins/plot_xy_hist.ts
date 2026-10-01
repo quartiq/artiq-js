@@ -1,7 +1,7 @@
 import Plotly from "plotly.js-dist-min";
 import * as pyon from "sipyco-js/pyon";
 
-import type { Interface } from "../template";
+import type { AppletDefinition } from "../registry";
 import type { UnitaryArgs } from "../schedule";
 
 import {
@@ -20,7 +20,7 @@ type Args = {
   histogram_counts: pyon.NpArray;
 };
 
-export const preset =
+export const template =
   "${artiq_applet}plot_xy_hist X_DATASET HIST_BIN_BOUNDARIES_DATASET HISTS_COUNTS_DATASET";
 
 type Trace = (args: Args, selected: number) => Plotly.Data[];
@@ -76,7 +76,7 @@ export const argsShape = {
   positionals: ["xs", "histogram_bins", "histogram_counts"],
 };
 
-export const from: Interface["from"] = ([subs]) => {
+export const from: AppletDefinition["from"] = ([subs]) => {
   let cached: Args;
   let selected: number = -1;
 

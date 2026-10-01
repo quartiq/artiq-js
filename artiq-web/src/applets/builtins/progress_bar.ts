@@ -1,4 +1,4 @@
-import type { Interface } from "../template";
+import type { AppletDefinition } from "../registry";
 import type { UnitaryArgs } from "../schedule";
 
 type Args = { counter: number };
@@ -20,14 +20,14 @@ style.innerHTML = `
 `;
 document.head.appendChild(style);
 
-export const preset = "${artiq_applet}progress_bar VALUE";
+export const template = "${artiq_applet}progress_bar VALUE";
 
 export const argsShape = {
   positionals: ["counter"],
   localDefaults: { min: 0, max: 100 },
 };
 
-export const from: Interface["from"] = ([subs, locals]) => {
+export const from: AppletDefinition["from"] = ([subs, locals]) => {
   let bar: HTMLElement;
   let label: HTMLElement;
 

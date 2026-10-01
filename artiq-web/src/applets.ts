@@ -4,12 +4,12 @@ import * as ccb from "./applets/ccb";
 import * as layout from "./applets/layout";
 import * as manager from "./applets/manager";
 import * as editor from "./applets/editor";
-import * as template from "./applets/template";
+import * as registry from "./applets/registry";
 import type { LeafNode } from "./applets/tree";
 
 const activate = (leaf: LeafNode): void => {
-  const [applet, gridDefaults] = template.fetch(leaf.command);
-  const host = layout.newTemplateItem(leaf, gridDefaults);
+  const [applet, gridDefaults] = registry.from(leaf.command);
+  const host = layout.appletItem(leaf, gridDefaults);
   schedule.setup(leaf, applet, host);
 };
 

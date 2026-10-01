@@ -1,5 +1,5 @@
 import { LeafNode, leafFrom } from "./tree";
-import * as template from "./template";
+import * as registry from "./registry";
 import * as ccb from "./ccb";
 
 type Input = {
@@ -52,18 +52,21 @@ const inputs: Input[] = [
   },
 ];
 
-const presets = (input: HTMLInputElement): HTMLElement => {
+const templates = (input: HTMLInputElement): HTMLElement => {
   const fieldset = document.createElement("fieldset");
   const legend = document.createElement("legend");
 
-  legend.textContent = "command presets";
+  legend.textContent = "command templates";
   fieldset.append(legend);
 
-  template.names.forEach((name) => {
+  registry.names.forEach((name) => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.textContent = name;
-    btn.addEventListener("click", () => (input.value = template.preset(name)));
+    btn.addEventListener(
+      "click",
+      () => (input.value = registry.template(name)),
+    );
     fieldset.append(btn);
   });
 
@@ -76,7 +79,7 @@ const dom = (): void => {
   dialog.append(form);
 
   inputs.forEach((input) => {
-    if (input.name === "command") form.append(presets(input.el));
+    if (input.name === "command") form.append(templates(input.el));
 
     const label = document.createElement("label");
     label.append(input.name, input.el);

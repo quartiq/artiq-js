@@ -134,7 +134,7 @@ export const remove = (k: ccb.AppletKey) => {
   grid.removeWidget(item);
 };
 
-export const newTemplateItem = (
+export const appletItem = (
   leaf: LeafNode,
   defaults: GridStackWidget | undefined,
 ): HTMLElement => {

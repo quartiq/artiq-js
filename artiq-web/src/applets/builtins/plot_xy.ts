@@ -1,7 +1,7 @@
 import Plotly from "plotly.js-dist-min";
 import * as pyon from "sipyco-js/pyon";
 
-import type { Interface } from "../template";
+import type { AppletDefinition } from "../registry";
 import { single, gridDefaults, normalize } from "../plotlyutils";
 
 type Args = {
@@ -11,7 +11,7 @@ type Args = {
   error: pyon.NpArray;
 };
 
-export const preset =
+export const template =
   "${artiq_applet}plot_xy Y_DATASET --x X_DATASET --error ERROR_DATASET --fit FIT_DATASET";
 
 const trace = (args: Args): Plotly.Data[] => {
@@ -36,7 +36,7 @@ const trace = (args: Args): Plotly.Data[] => {
 };
 
 export const argsShape = { positionals: ["y"] };
-export const from: Interface["from"] = ([subs]) => [
+export const from: AppletDefinition["from"] = ([subs]) => [
   { subs, ...single(trace) },
   gridDefaults,
 ];

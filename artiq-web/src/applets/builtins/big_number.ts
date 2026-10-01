@@ -1,4 +1,4 @@
-import type { Interface } from "../template";
+import type { AppletDefinition } from "../registry";
 import type { UnitaryArgs } from "../schedule";
 
 type Args = { scalar: number };
@@ -13,14 +13,14 @@ style.innerHTML = `
 `;
 document.head.appendChild(style);
 
-export const preset = "${artiq_applet}big_number NUMBER_DATASET";
+export const template = "${artiq_applet}big_number NUMBER_DATASET";
 
 export const argsShape = {
   positionals: ["scalar"],
   localDefaults: { "digit-count": 10 },
 };
 
-export const from: Interface["from"] = ([subs, locals]) => {
+export const from: AppletDefinition["from"] = ([subs, locals]) => {
   let parent: HTMLElement;
 
   // TODO: Add unit symbol

@@ -6,12 +6,12 @@ import type { UnitaryArgs, SubArgs, Applet } from "./schedule";
 import { isKeypath } from "artiq-js/datasets";
 import type * as ccb from "./ccb";
 
-import * as big_number from "./templates/big_number";
-import * as progress_bar from "./templates/progress_bar";
-import * as plot_xy from "./templates/plot_xy";
-import * as plot_hist from "./templates/plot_hist";
-import * as plot_xy_hist from "./templates/plot_xy_hist";
-import * as image from "./templates/image";
+import * as big_number from "./builtins/big_number";
+import * as progress_bar from "./builtins/progress_bar";
+import * as plot_xy from "./builtins/plot_xy";
+import * as plot_hist from "./builtins/plot_hist";
+import * as plot_xy_hist from "./builtins/plot_xy_hist";
+import * as image from "./builtins/image";
 
 type Name =
   | "big_number"
@@ -28,15 +28,15 @@ type ArgsShape = {
 
 type ParsedArgs = [subs: SubArgs, locals: UnitaryArgs];
 
-type Fetched = [Applet, GridStackWidget?];
+type AppletWithGridDefaults = [Applet, GridStackWidget?];
 
-export type Interface = {
-  preset: string;
+export type AppletDefinition = {
+  template: string;
   argsShape: ArgsShape;
-  from: (args: ParsedArgs) => Fetched;
+  from: (args: ParsedArgs) => AppletWithGridDefaults;
 };
 
-const templates: Record<Name, Interface> = {
+const builtins: Record<Name, AppletDefinition> = {
   big_number,
   progress_bar,
   plot_xy,
@@ -45,10 +45,10 @@ const templates: Record<Name, Interface> = {
   image,
 };
 
-const isName = (s: string): s is Name => s in templates;
+const isName = (s: string): s is Name => s in builtins;
 
-export const names = Object.keys(templates) as Name[];
-export const preset = (name: Name): string => templates[name].preset;
+export const names = Object.keys(builtins) as Name[];
+export const template = (name: Name): string => builtins[name].template;
 
 const parsePositionals = (
   args: minimist.ParsedArgs,
@@ -81,20 +81,20 @@ const parseArgs = (args: minimist.ParsedArgs, shape: ArgsShape): ParsedArgs => {
   return [subs, { ...defaults, ...locals }];
 };
 
-export const fetch = (cmd: ccb.Command): Fetched => {
+export const from = (cmd: ccb.Command): AppletWithGridDefaults => {
   const [name, ...argv] = shellQuote.parse(cmd) as string[];
   if (!isName(name)) {
     return [
       {
         subs: {},
-        setup: (el) => (el.innerText = `Applet template not found: ${name}`),
+        setup: (el) => (el.innerText = `Unsupported applet: ${name}`),
         update: () => {},
       },
       { w: 2, h: 1 },
     ];
   }
 
-  const t = templates[name];
+  const t = builtins[name];
   const parsed = parseArgs(minimist(argv), t.argsShape);
   return t.from(parsed);
 };

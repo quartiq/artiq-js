@@ -1,14 +1,14 @@
 import Plotly from "plotly.js-dist-min";
 import * as pyon from "sipyco-js/pyon";
 
-import type { Interface } from "../template";
+import type { AppletDefinition } from "../registry";
 import { single, gridDefaults, reshape2d } from "../plotlyutils";
 
 export type Args = {
   image2d: pyon.NpArray;
 };
 
-export const preset = "${artiq_applet}image IMG_DATASET";
+export const template = "${artiq_applet}image IMG_DATASET";
 
 const trace = (args: Args): Plotly.Data[] => [
   {
@@ -21,7 +21,7 @@ const trace = (args: Args): Plotly.Data[] => [
 ];
 
 export const argsShape = { positionals: ["image2d"] };
-export const from: Interface["from"] = ([subs]) => [
+export const from: AppletDefinition["from"] = ([subs]) => [
   { subs, ...single(trace) },
   gridDefaults,
 ];
