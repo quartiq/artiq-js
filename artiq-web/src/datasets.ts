@@ -73,16 +73,18 @@ const update = (row: HTMLElement, dataset: Dataset) => {
 
 const init = (mod: Mod) => {
   mod = mod as InitMod;
-  const rows = Array.from(mod.struct.entries()).map(([keypath, dataset]) =>
-    create(keypath, dataset),
-  );
+  const rows = mod.struct
+    .entries()
+    .map(([keypath, dataset]) => create(keypath, dataset))
+    .toArray();
   body.replaceChildren(...rows);
 };
 
 const row = (key: Keypath) =>
-  Array.from(body.querySelectorAll<HTMLTableRowElement>("tr")).find(
-    (row) => row.dataset.keypath === key,
-  );
+  body
+    .querySelectorAll<HTMLTableRowElement>("tr")
+    .values()
+    .find((row) => row.dataset.keypath === key);
 
 const upsert = (key: Keypath) => {
   const dataset = store.struct.get(key)!;
