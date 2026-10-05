@@ -26,6 +26,10 @@
     "./net": {
       "types": "./dist/net.d.ts",
       "default": "./dist/net.js"
+    },
+    "./sync": {
+      "types": "./dist/sync.d.ts",
+      "default": "./dist/sync.js"
     }
   },
   "dependencies": {
