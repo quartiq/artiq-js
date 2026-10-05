@@ -1,11 +1,12 @@
 import * as vscode from "vscode";
 import * as path from "path";
 
-import * as mutex from "./mutex.js";
+import * as sync from "sipyco-js/sync";
 
 export class Provider implements vscode.WebviewViewProvider {
   private view?: vscode.WebviewView;
-  private ready: mutex.Lock;
+  private wait: Promise<void>;
+  private done: sync.Done;
   private html: string;
 
   constructor(
@@ -13,13 +14,15 @@ export class Provider implements vscode.WebviewViewProvider {
     private readonly context: vscode.ExtensionContext,
     private readonly actions?: Record<string, (data: any) => void>,
   ) {
-    this.ready = mutex.lock();
     this.html = "";
+    const { wait, done } = sync.wait();
+    this.wait = wait;
+    this.done = done;
   }
 
   public resolveWebviewView(webviewView: vscode.WebviewView) {
     this.view = webviewView;
-    this.ready.unlock();
+    this.done();
 
     webviewView.webview.options = {
       enableScripts: true, // allow scripts in webviews
@@ -39,14 +42,14 @@ export class Provider implements vscode.WebviewViewProvider {
   }
 
   public async set(text: string) {
-    await this.ready.locked;
+    await this.wait;
 
     this.html = text;
     this.view!.webview.html = this.html;
   }
 
   public async init() {
-    await this.ready.locked;
+    await this.wait;
 
     const uris = ["tabulator.min.css", "main.css", `${this.viewType}.js`].map(
       (filename) => {
@@ -86,7 +89,7 @@ export class Provider implements vscode.WebviewViewProvider {
   }
 
   public async post(msg: any) {
-    await this.ready.locked;
+    await this.wait;
 
     this.view!.webview.postMessage(msg);
   }

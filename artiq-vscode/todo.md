@@ -14,5 +14,3 @@
   - get rid of icon files!
 
 - use official ARTIQ "no hardware" example experiment files
-
-- rename mutex "locked" to "ready"? see: golang mutex

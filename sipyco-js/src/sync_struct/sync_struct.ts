@@ -3,8 +3,8 @@
 
 import * as pyon from "../pyon/pyon.js";
 import * as pyonutils from "../pyon/utils.js";
-import * as mutex from "./mutex.js";
 import * as net from "../net.js";
+import * as sync from "../sync.js";
 
 type Struct = pyon.Dict<pyon.PYONValue, pyon.PYONValue>;
 export type Store = { struct: Struct | undefined }; // we need to operate on object property singleton to utilize the mutable object pattern
@@ -32,7 +32,7 @@ type IncomingMod =
   | SetitemMod
   | DelitemMod;
 
-type Action = (target: Store, mod: Mod, initDone: mutex.Lock) => void;
+type Action = (target: Store, mod: Mod, done: sync.Done) => void;
 
 const traverse = (
   tree: pyon.PYONValue,
@@ -52,10 +52,10 @@ const normalize = (mod: IncomingMod): Mod => {
   };
 };
 
-const init = (store: Store, mod: Mod, lock: mutex.Lock) => {
+const init = (store: Store, mod: Mod, done: sync.Done) => {
   mod = mod as InitMod;
   store.struct = mod.struct;
-  lock.unlock();
+  done();
 };
 
 const setitem = (store: Store, mod: Mod) => {
@@ -81,18 +81,18 @@ export const from = async <T extends Struct = Struct>(params: {
   onReceive: UpdateHandler;
 }): Promise<Store & { struct: T }> => {
   const store: Store = { struct: undefined };
-  const initDone: mutex.Lock = mutex.lock();
+  const { wait, done } = sync.wait();
 
   net.reconnect({
     open: () =>
       net.chan(params.masterHostname, port, "sync_struct", params.notifierName),
     onReceive: (msg) => {
       const mod = normalize(pyon.decode(msg) as IncomingMod);
-      actions[mod.action](store, mod, initDone);
+      actions[mod.action](store, mod, done);
       params.onReceive(mod);
     },
   });
 
-  await initDone.locked; // FIXME store.struct = undefined breaks TreeView.getChildren
+  await wait;
   return store as Store & { struct: T };
 };
