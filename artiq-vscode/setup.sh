@@ -2,13 +2,6 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-for cmd in npm; do
-    if ! command -v "$cmd" >/dev/null 2>&1; then
-        echo "Please install $cmd"
-        exit 1
-    fi
-done
-
 npm --prefix ../sipyco-js install
 npm --prefix ../sipyco-js run format
 npm --prefix ../sipyco-js run lint
