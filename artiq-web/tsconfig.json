@@ -4,8 +4,9 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "lib": ["esnext", "dom", "dom.iterable"],
+    "types": ["vite/client"],
     "noEmit": true,
     "strict": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*"]
 }
