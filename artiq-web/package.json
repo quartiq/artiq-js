@@ -14,12 +14,12 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "build:artiq-web": "esbuild ./src/*.ts ./src/*.css --bundle --outdir=static --format=esm",
+    "build:artiq-web": "vite build",
     "build": "npm run check-types && npm run build:artiq-web",
     "watch": "npm-run-all -p watch:*",
     "watch:sipyco-js": "npm --prefix ../sipyco-js run watch",
     "watch:artiq-js": "npm --prefix ../artiq-js run watch",
-    "watch:artiq-web": "esbuild ./src/*.ts ./src/*.css --bundle --outdir=static --format=esm --watch",
+    "watch:artiq-web": "vite",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint src \"*.{js,mjs,cjs}\" --max-warnings=0"
@@ -32,7 +32,6 @@
     "@types/shell-quote": "^1.7.5",
     "@typescript-eslint/eslint-plugin": "^8.70.0",
     "@typescript-eslint/parser": "^8.70.0",
-    "esbuild": "0.28.2",
     "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.12.0",
@@ -41,8 +40,5 @@
     "prettier-plugin-svelte": "^4.1.1",
     "typescript": "^5.9.3",
     "vite": "^8.3.2"
-  },
-  "allowScripts": {
-    "esbuild@0.28.2": true
   }
 }
