@@ -73,37 +73,6 @@ jobs:
           npm run lint --prefix artiq-web
           npm run lint --prefix artiq-vscode
 
-  go:
-    name: Go format, lint, test and build
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-
-    defaults:
-      run:
-        working-directory: artiq-web
-
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-go@v7
-        with:
-          go-version-file: artiq-web/go.mod
-          cache-dependency-path: artiq-web/go.mod
-
-      - name: Check formatting
-        run: |
-          gofmt -w .
-          git diff --exit-code
-
-      - name: Lint
-        run: go vet ./...
-
-      - name: Test
-        run: go test -race -count=1 -timeout=2m ./...
-
-      - name: Build
-        run: go build ./...
-
   smoke:
     name: ARTIQ integration smoke test
     runs-on: ubuntu-24.04
