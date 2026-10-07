@@ -1,15 +1,12 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import type { Component } from "svelte";
 
-  const views = import.meta.glob("./views/*.ts");
+  const views = import.meta.glob<{ default: Component }>("./views/*.svelte");
   const names = Object.keys(views).map((path) =>
-    path.slice("./views/".length, -".ts".length),
+    path.slice("./views/".length, -".svelte".length),
   );
 
-  onMount(() => {
-    const name = location.pathname.slice(1);
-    void views[`./views/${name}.ts`]?.();
-  });
+  const load = views[`./views/${location.pathname.slice(1)}.svelte`];
 </script>
 
 <nav>
@@ -18,3 +15,9 @@
     <a href={`/${n}`}>{n}</a>
   {/each}
 </nav>
+
+{#if load}
+  {#await load() then { default: View }}
+    <View />
+  {/await}
+{/if}
