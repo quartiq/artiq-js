@@ -1,0 +1,49 @@
+<script lang="ts">
+  import { onMount, tick } from "svelte";
+  import * as broadcast from "sipyco-js/broadcast";
+
+  type LogRecord = [
+    level: number,
+    source: string,
+    time: number,
+    message: string,
+  ];
+
+  let records: LogRecord[] = $state([]);
+
+  onMount(() =>
+    broadcast.subscribe<LogRecord>({
+      masterHostname: "localhost",
+      targetName: "log",
+      onReceive: (record) => {
+        const atBottom =
+          window.scrollY + window.innerHeight >= document.body.scrollHeight;
+        records.push(record);
+
+        if (atBottom) {
+          tick().then(() => window.scrollTo(0, document.body.scrollHeight));
+        }
+      },
+    }),
+  );
+</script>
+
+<table>
+  <thead>
+    <tr>
+      <th>level</th>
+      <th>source</th>
+      <th>time</th>
+      <th>message</th>
+    </tr>
+  </thead>
+  <tbody>
+    {#each records as r}
+      <tr>
+        {#each r as v}
+          <td>{v}</td>
+        {/each}
+      </tr>
+    {/each}
+  </tbody>
+</table>
