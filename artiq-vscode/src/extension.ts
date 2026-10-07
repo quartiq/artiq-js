@@ -20,14 +20,12 @@ import * as viewDatasets from "./views/datasets.js";
 export async function activate(context: vscode.ExtensionContext) {
   dbio.init(context);
 
-  net.events.addEventListener(
-    "change",
-    ({ detail }) =>
-      detail === "failed" &&
-      vscode.window.showErrorMessage(
-        "Connection error. Is ARTIQ server running?",
-      ),
-  );
+  const stopConnStatusListener = net.onChange((status) => {
+    if (status !== "failed") return;
+    vscode.window.showErrorMessage(
+      "Connection error. Is ARTIQ server running?",
+    );
+  });
 
   await viewLog.init(context);
   await viewSchedule.init(context);
@@ -37,6 +35,8 @@ export async function activate(context: vscode.ExtensionContext) {
   await viewDatasets.init();
 
   context.subscriptions.push(
+    { dispose: stopConnStatusListener },
+
     viewLog.view.register(),
     viewSchedule.view.register(),
     viewExperiment.view.register(),

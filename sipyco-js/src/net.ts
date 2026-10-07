@@ -18,7 +18,7 @@ export const chan = (
   return ws;
 };
 
-type Stop = () => void;
+export type Stop = () => void;
 type ConnectionState = "connecting" | "connected" | "failed";
 
 interface Events extends EventTarget {
@@ -39,7 +39,7 @@ const delayMin = 1000;
 const delayMax = 30_000;
 const connections = new Map<symbol, ConnectionState>();
 
-export const events = new EventTarget() as Events;
+const events = new EventTarget() as Events;
 
 const writeSingleState = (id: symbol, state?: ConnectionState) =>
   state === undefined ? connections.delete(id) : connections.set(id, state);
@@ -63,6 +63,14 @@ const status = (id: symbol, state?: ConnectionState): void => {
   events.dispatchEvent(
     new CustomEvent<ConnectionState>("change", { detail: current }),
   );
+};
+
+export const onChange = (handler: (state: ConnectionState) => void): Stop => {
+  const listener = (ev: Event) =>
+    handler((ev as CustomEvent<ConnectionState>).detail);
+
+  events.addEventListener("change", listener);
+  return () => events.removeEventListener("change", listener);
 };
 
 export const reconnect = (params: {

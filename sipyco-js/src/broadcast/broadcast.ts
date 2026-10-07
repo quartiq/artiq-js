@@ -8,8 +8,8 @@ export const subscribe = <Message>(params: {
   masterHostname: string;
   targetName: string;
   onReceive: (msg: Message) => void;
-}) => {
-  net.reconnect({
+}): net.Stop => {
+  return net.reconnect({
     open: () =>
       net.chan(params.masterHostname, port, "broadcast", params.targetName),
     onReceive: (msg) => params.onReceive(pyon.decode(msg)),
