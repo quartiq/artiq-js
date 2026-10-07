@@ -8,7 +8,8 @@
   "license": "SEE LICENSE IN LICENSE",
   "icon": "media/artiq.png",
   "engines": {
-    "vscode": "^1.107.0"
+    "vscode": "^1.107.0",
+    "node": ">=26"
   },
   "categories": [
     "Programming Languages",

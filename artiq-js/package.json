@@ -2,6 +2,9 @@
   "name": "artiq-js",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=26"
+  },
   "exports": {
     "./datasets": {
       "types": "./dist/datasets.d.ts",

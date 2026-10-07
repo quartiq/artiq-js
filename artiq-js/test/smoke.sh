@@ -7,7 +7,7 @@ if [[ "${1:-}" != "--in-nix" ]]; then
   exec nix shell \
     'git+https://git.m-labs.hk/M-Labs/artiq.git?ref=release-9' \
     'git+https://git.m-labs.hk/M-Labs/artiq-comtools.git#artiq-comtools' \
-    nixpkgs#nodejs_24 \
+    nixpkgs#nodejs_26 \
     --command bash "$project_dir/test/smoke.sh" --in-nix
 fi
 

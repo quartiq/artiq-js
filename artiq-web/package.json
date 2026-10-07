@@ -2,6 +2,9 @@
   "name": "artiq-web",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=26"
+  },
   "dependencies": {
     "@tanstack/table-core": "^8.21.3",
     "artiq-js": "file:../artiq-js",

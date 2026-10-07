@@ -2,6 +2,9 @@
   "name": "sipyco-js",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=26"
+  },
   "exports": {
     "./pyon": {
       "types": "./dist/pyon/pyon.d.ts",

@@ -2,6 +2,9 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+. "${NVM_DIR:-$HOME/.nvm}/nvm.sh" --no-use
+nvm install
+
 npm --prefix ../sipyco-js install
 npm --prefix ../sipyco-js run format
 npm --prefix ../sipyco-js run lint
