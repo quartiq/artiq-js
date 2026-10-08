@@ -1,4 +1,4 @@
-@import "../node_modules/gridstack/dist/gridstack.min.css";
+@import "gridstack/dist/gridstack.min.css";
 
 :root {
   --sidebar-handle-width: 20px;

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import * as dbio from "../applets/dbio";
+  import * as dbio from "./applets/dbio";
 
   const target = "/applets";
   let keys: dbio.Key[] = $state([]);
