@@ -1,16 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import * as permission from "../applets/permission";
-  import * as schedule from "../applets/schedule";
-  import * as ccb from "../applets/ccb";
-  import * as layout from "../applets/layout";
-  import * as manager from "../applets/manager";
-  import * as editor from "../applets/editor";
-  import * as registry from "../applets/registry";
-  import type { LeafNode } from "../applets/tree";
+  import * as permission from "./applets/permission";
+  import * as schedule from "./applets/schedule";
+  import * as ccb from "./applets/ccb";
+  import * as layout from "./applets/layout";
+  import * as manager from "./applets/manager";
+  import * as editor from "./applets/editor";
+  import * as registry from "./applets/registry";
+  import type { LeafNode } from "./applets/tree";
 
-  import "../applets.css";
+  import "./applets.css";
 
   const activate = (leaf: LeafNode): void => {
     const [applet, gridDefaults] = registry.from(leaf.command);
