@@ -251,7 +251,7 @@ export const init = async () => {
         view.reveal(keypath, { focus: true, expand: true });
       }
     },
-  });
+  }).store;
 };
 
 export const create = async () => {

@@ -55,39 +55,35 @@ type Store = Omit<sync_struct.Store, "struct"> & {
   struct: Repo;
 };
 
-export const store: Promise<Store> = new Promise((resolve) => {
-  sync_struct
-    .from<Repo>({
-      masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
-      notifierName: "explist",
-      onReceive: async () => {
-        const basepath = await repoRoot;
-        if (basepath === undefined) return;
+export const store: Promise<Store> = sync_struct.from<Repo>({
+  masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
+  notifierName: "explist",
+  onReceive: async () => {
+    const basepath = await repoRoot;
+    if (basepath === undefined) return;
 
-        // update "softly" to provide what is new
-        // yet to sustain what was known and customized
-        const repo = (await store).struct;
-        createAllDb(
-          repo
-            .entries()
-            .map(([name, syncinfo]) => ({
-              ...scheduler_defaults,
-              ...syncinfo.scheduler_defaults,
+    // update "softly" to provide what is new
+    // yet to sustain what was known and customized
+    const repo = (await store).struct;
+    createAllDb(
+      repo
+        .entries()
+        .map(([name, syncinfo]) => ({
+          ...scheduler_defaults,
+          ...syncinfo.scheduler_defaults,
 
-              path: path.posix.join(basepath, syncinfo.file),
-              class_name: syncinfo.class_name,
+          path: path.posix.join(basepath, syncinfo.file),
+          class_name: syncinfo.class_name,
 
-              name,
-              arginfo: initArgstates(syncinfo.arginfo),
+          name,
+          arginfo: initArgstates(syncinfo.arginfo),
 
-              log_level: "WARNING", // see: artiq/dashboard/experiments.py:ExperimentManager.get_submission_options
-            }))
-            .toArray(),
-        );
-      },
-    })
-    .then((data: Store) => resolve(data));
-});
+          log_level: "WARNING", // see: artiq/dashboard/experiments.py:ExperimentManager.get_submission_options
+        }))
+        .toArray(),
+    );
+  },
+}).store;
 
 export const repoRoot: Promise<string | undefined> = pc_rpc
   .from<string>({
