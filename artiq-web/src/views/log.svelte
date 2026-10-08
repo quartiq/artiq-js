@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
   import * as broadcast from "sipyco-js/broadcast";
+  import "../table.css";
 
   type LogRecord = [
     level: number,
@@ -31,10 +32,10 @@
 <table>
   <thead>
     <tr>
-      <th>level</th>
-      <th>source</th>
-      <th>time</th>
-      <th>message</th>
+      <th scope="col">Level</th>
+      <th scope="col">Source</th>
+      <th scope="col">Time</th>
+      <th scope="col">Message</th>
     </tr>
   </thead>
   <tbody>
