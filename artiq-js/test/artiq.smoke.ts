@@ -13,7 +13,7 @@ async function main() {
   const store = await datasets.from({
     masterHostname: "127.0.0.1",
     onReceive: () => {},
-  });
+  }).store;
 
   const key = "ci.smoke";
 

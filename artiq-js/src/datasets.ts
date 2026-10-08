@@ -1,5 +1,6 @@
 import { TaggedDict, PYONValue } from "sipyco-js/pyon";
 import * as sync_struct from "sipyco-js/sync_struct";
+import type { Stop } from "sipyco-js/net";
 
 export type Keypath = string;
 export const isKeypath = (v: unknown): v is Keypath => typeof v === "string";
@@ -44,7 +45,10 @@ export const keypath = (mod: SetitemMod | DelitemMod): Keypath =>
 export const from = (params: {
   masterHostname: string;
   onReceive: (mod: Mod) => void;
-}): Promise<Store> =>
+}): {
+  store: Promise<Store>;
+  stop: Stop;
+} =>
   sync_struct.from<Datasets>({
     masterHostname: params.masterHostname,
     notifierName: "datasets",

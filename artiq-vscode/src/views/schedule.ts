@@ -29,5 +29,5 @@ export const init = async (context: vscode.ExtensionContext) => {
     masterHostname: vscode.workspace.getConfiguration("artiq").get("host")!,
     notifierName: "schedule",
     onReceive: async () => view.post(pyon.encode((await store).struct as Runs)),
-  });
+  }).store;
 };

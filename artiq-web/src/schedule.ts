@@ -4,4 +4,4 @@ const store = sync_struct.from({
   masterHostname: "localhost",
   notifierName: "schedule",
   onReceive: async () => console.log((await store).struct),
-});
+}).store;

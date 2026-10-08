@@ -75,15 +75,18 @@ const actions: { [name: string]: Action } = { init, setitem, delitem };
 // see: https://git.m-labs.hk/M-Labs/artiq/src/branch/master/doc/manual/default_network_ports.rst
 const port = 3250;
 
-export const from = async <T extends Struct = Struct>(params: {
+export const from = <T extends Struct = Struct>(params: {
   masterHostname: string;
   notifierName: string;
   onReceive: UpdateHandler;
-}): Promise<Store & { struct: T }> => {
+}): {
+  store: Promise<Store & { struct: T }>;
+  stop: net.Stop;
+} => {
   const store: Store = { struct: undefined };
   const { wait, done } = sync.wait();
 
-  net.reconnect({
+  const stop = net.reconnect({
     open: () =>
       net.chan(params.masterHostname, port, "sync_struct", params.notifierName),
     onReceive: (msg) => {
@@ -93,6 +96,8 @@ export const from = async <T extends Struct = Struct>(params: {
     },
   });
 
-  await wait;
-  return store as Store & { struct: T };
+  return {
+    store: wait.then(() => store as Store & { struct: T }),
+    stop,
+  };
 };

@@ -62,7 +62,7 @@ const store = await datasets.from({
         return;
       scheduleUpdate(k);
     }),
-});
+}).store;
 
 export const setup = (k: ccb.AppletKey, applet: Applet, host: HTMLElement) => {
   remove(k);
