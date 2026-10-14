@@ -53,7 +53,6 @@
   const activateItem = (
     id: string,
     item: GridItemHTMLElement,
-    grid: GridStack,
     defaults: GridStackWidget,
   ) => {
     grid.el.append(item);
@@ -63,10 +62,7 @@
     grid.makeWidget(item, { ...defaults, id });
   };
 
-  const findItem = (
-    keystring: KeyString,
-    grid: GridStack,
-  ): GridItemHTMLElement | undefined => {
+  const findItem = (keystring: KeyString): GridItemHTMLElement | undefined => {
     // can not make use of Utils.find() since it holds stale DOM references during drag
     const el = grid.el.querySelector(`[gs-id="${CSS.escape(keystring)}"]`);
     return (el ?? undefined) as GridItemHTMLElement | undefined;
@@ -78,32 +74,24 @@
     leaf.geometry = { x, y, w, h };
   };
 
-  const revealItem = (
-    item: GridItemHTMLElement,
-    leaf: LeafNode,
-    grid: GridStack,
-  ) => {
+  const revealItem = (item: GridItemHTMLElement, leaf: LeafNode) => {
     grid.makeWidget(item, { ...leaf.geometry, id: keystr(leaf) });
     item.classList.remove("hidden");
   };
 
-  const hideItem = (item: GridItemHTMLElement, grid: GridStack) => {
+  const hideItem = (item: GridItemHTMLElement) => {
     grid.removeWidget(item, false);
     item.classList.add("hidden");
   };
 
-  const syncVis = (
-    item: GridItemHTMLElement,
-    leaf: LeafNode,
-    grid: GridStack,
-  ) => {
+  const syncVis = (item: GridItemHTMLElement, leaf: LeafNode) => {
     if (leaf.visible && item.classList.contains("hidden")) {
-      revealItem(item, leaf, grid);
+      revealItem(item, leaf);
       return;
     }
 
     if (!leaf.visible && !item.classList.contains("hidden")) {
-      hideItem(item, grid);
+      hideItem(item);
     }
   };
 
@@ -117,7 +105,7 @@
           (b.geometry?.x ?? 0) - (a.geometry?.x ?? 0),
       )
       .map((leaf): [GridItemHTMLElement | undefined, LeafNode] => [
-        findItem(keystr(leaf), grid),
+        findItem(keystr(leaf)),
         leaf,
       ])
       .filter(
@@ -126,11 +114,11 @@
       );
 
     tuples.forEach(([item, leaf]) => cacheGeometry(item, leaf));
-    tuples.forEach(([item, leaf]) => syncVis(item, leaf, grid));
+    tuples.forEach(([item, leaf]) => syncVis(item, leaf));
   };
 
   export const remove = (k: ccb.AppletKey) => {
-    const item = findItem(keystr(k), grid);
+    const item = findItem(keystr(k));
     if (!item) return;
     grid.removeWidget(item);
   };
@@ -140,11 +128,11 @@
     defaults: GridStackWidget | undefined,
   ): HTMLElement => {
     const keystring = keystr(leaf);
-    let item = findItem(keystring, grid);
+    let item = findItem(keystring);
     if (!item) {
       const breadcrumb = [...leaf.group, leaf.name].reverse().join(" — ");
       item = newItem(breadcrumb, "applet");
-      activateItem(keystring, item, grid, {
+      activateItem(keystring, item, {
         ...(defaults ?? { w: 5, h: 4 }),
         ...leaf.geometry,
       });
@@ -155,7 +143,7 @@
     host.replaceChildren();
 
     cacheGeometry(item, leaf);
-    syncVis(item, leaf, grid);
+    syncVis(item, leaf);
 
     return host;
   };
