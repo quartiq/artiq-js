@@ -4,7 +4,7 @@
   import * as permission from "./applets/permission";
   import * as schedule from "./applets/schedule";
   import * as ccb from "./applets/ccb";
-  import * as layout from "./applets/layout";
+  import Stage from "./applets/stage.svelte";
   import * as manager from "./applets/manager";
   import * as editor from "./applets/editor";
   import * as registry from "./applets/registry";
@@ -12,9 +12,11 @@
 
   import "./applets.css";
 
+  let stage: Stage;
+
   const activate = (leaf: LeafNode): void => {
     const [applet, gridDefaults] = registry.from(leaf.command);
-    const host = layout.appletItem(leaf, gridDefaults);
+    const host = stage.appletItem(leaf, gridDefaults);
     schedule.setup(leaf, applet, host);
   };
 
@@ -38,7 +40,7 @@
   const move = (args: ccb.CreateArgs, old: LeafNode): void => {
     const leaf = manager.move(args, old);
 
-    layout.remove(old);
+    stage.remove(old);
     schedule.remove(old);
 
     activate(leaf);
@@ -48,12 +50,12 @@
   const setVisible = (k: ccb.TargetKey, visible: boolean) => {
     const leafs = permission.leafsByPolicy("visible", k);
     manager.setVisibleAll(leafs, visible);
-    layout.updateVisibility(leafs);
+    stage.updateVisibility(leafs);
     manager.refresh();
   };
 
   onMount(() => {
-    layout.init();
+    stage.init();
 
     editor.handleFuncs({
       upsert: (args) => upsert(args, true),
@@ -62,10 +64,10 @@
     });
 
     manager.handleFuncs({
-      updateVisibility: layout.updateVisibility,
+      updateVisibility: stage.updateVisibility,
       remove: (leafs) =>
         leafs.forEach((l) => {
-          layout.remove(l);
+          stage.remove(l);
           schedule.remove(l);
         }),
     });
@@ -80,7 +82,7 @@
     });
 
     manager.init().forEach((leaf) => activate(leaf));
-    layout.listen();
+    stage.listen();
 
     // changing workspace requires a clean restart
     const reload = () => window.location.reload();
@@ -96,3 +98,5 @@
     };
   });
 </script>
+
+<Stage bind:this={stage} />
