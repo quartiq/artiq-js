@@ -55,8 +55,6 @@
   };
 
   onMount(() => {
-    stage.init();
-
     editor.handleFuncs({
       upsert: (args) => upsert(args, true),
       update,

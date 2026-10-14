@@ -1,4 +1,6 @@
 <script lang="ts">
+  import type { Attachment } from "svelte/attachments";
+
   import { GridStack } from "gridstack";
   import type { GridStackWidget, GridItemHTMLElement } from "gridstack";
   import { write, leafFrom } from "./tree";
@@ -11,10 +13,8 @@
     JSON.stringify({ group, name });
   const key = (str: KeyString): ccb.AppletKey => JSON.parse(str);
 
-  let stage: HTMLDivElement;
   let grid: GridStack;
-
-  export const init = () => {
+  const init: Attachment<HTMLDivElement> = (stage) => {
     grid = GridStack.init({ handle: ".widget-header" }, stage);
   };
 
@@ -161,7 +161,7 @@
   };
 </script>
 
-<div class="stage" bind:this={stage}></div>
+<div class="stage" {@attach init}></div>
 
 <style>
   @import "gridstack/dist/gridstack.min.css";
