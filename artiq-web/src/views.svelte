@@ -34,8 +34,16 @@
 {/if}
 
 <style>
+  :global(*) {
+    box-sizing: border-box;
+  }
+
   :global(body) {
     margin: 0;
+  }
+
+  :global(.hidden) {
+    display: none !important;
   }
 
   .status {
