@@ -1,19 +1,25 @@
 <script lang="ts">
+  import { flushSync } from "svelte";
   import type { Attachment } from "svelte/attachments";
 
   import { GridStack } from "gridstack";
   import type { GridStackWidget, GridItemHTMLElement } from "gridstack";
+  import StageItem from "./StageItem.svelte";
+
   import { write, leafFrom } from "./tree";
   import type { LeafNode } from "./tree";
   import * as ccb from "./ccb";
 
   type KeyString = string;
+  type Item = { id: KeyString; breadcrumb: string };
+  let items = $state<Item[]>([]);
 
   const keystr = ({ group, name }: ccb.AppletKey): KeyString =>
     JSON.stringify({ group, name });
   const key = (str: KeyString): ccb.AppletKey => JSON.parse(str);
 
   let grid: GridStack;
+
   const init: Attachment<HTMLDivElement> = (stage) => {
     grid = GridStack.init({ handle: ".widget-header" }, stage);
   };
@@ -30,43 +36,24 @@
     });
   };
 
-  const newItem = (title: string, className?: string): GridItemHTMLElement => {
-    const item = document.createElement("div");
-    item.classList.add("grid-stack-item");
-    if (className) item.classList.add(className);
-
-    const content = document.createElement("div");
-    content.classList.add("grid-stack-item-content");
-
-    const header = document.createElement("div");
-    header.classList.add("widget-header");
-    header.innerText = title;
-
-    const body = document.createElement("div");
-    body.classList.add("widget-body");
-
-    content.append(header, body);
-    item.append(content);
-    return item;
-  };
-
-  const activateItem = (
-    id: string,
-    item: GridItemHTMLElement,
+  const newItem = (
+    id: KeyString,
+    breadcrumb: string,
     defaults: GridStackWidget,
-  ) => {
-    grid.el.append(item);
+  ): GridItemHTMLElement => {
+    items.push({ id, breadcrumb });
+    flushSync();
 
     // need to do it this way opposed to .addWidget()
     // to register drag area via "handle" option during init, further down
-    grid.makeWidget(item, { ...defaults, id });
+    return grid.makeWidget(findItem(id)!, { ...defaults, id });
   };
 
-  const findItem = (keystring: KeyString): GridItemHTMLElement | undefined => {
-    // can not make use of Utils.find() since it holds stale DOM references during drag
-    const el = grid.el.querySelector(`[gs-id="${CSS.escape(keystring)}"]`);
-    return (el ?? undefined) as GridItemHTMLElement | undefined;
-  };
+  // can not make use of Utils.find() since it holds stale DOM references during drag
+  const findItem = (id: KeyString): GridItemHTMLElement | undefined =>
+    grid.el.querySelector<GridItemHTMLElement>(
+      `[data-stage-id="${CSS.escape(id)}"]`,
+    ) ?? undefined;
 
   const cacheGeometry = (item: GridItemHTMLElement, leaf: LeafNode) => {
     if (item.gridstackNode === undefined) return;
@@ -118,9 +105,13 @@
   };
 
   export const remove = (k: ccb.AppletKey) => {
-    const item = findItem(keystr(k));
+    const id = keystr(k);
+    const item = findItem(id);
     if (!item) return;
-    grid.removeWidget(item);
+
+    grid.removeWidget(item, false);
+    items = items.filter((i) => i.id !== id);
+    flushSync();
   };
 
   export const appletItem = (
@@ -131,15 +122,13 @@
     let item = findItem(keystring);
     if (!item) {
       const breadcrumb = [...leaf.group, leaf.name].reverse().join(" — ");
-      item = newItem(breadcrumb, "applet");
-      activateItem(keystring, item, {
+      item = newItem(keystring, breadcrumb, {
         ...(defaults ?? { w: 5, h: 4 }),
         ...leaf.geometry,
       });
     }
 
     const host = item.querySelector(".widget-body") as HTMLElement;
-    host.className = "widget-body";
     host.replaceChildren();
 
     cacheGeometry(item, leaf);
@@ -149,7 +138,11 @@
   };
 </script>
 
-<div class="stage" {@attach init}></div>
+<div class="stage" {@attach init}>
+  {#each items as i (i.id)}
+    <StageItem id={i.id} breadcrumb={i.breadcrumb} />
+  {/each}
+</div>
 
 <style>
   @import "gridstack/dist/gridstack.min.css";
