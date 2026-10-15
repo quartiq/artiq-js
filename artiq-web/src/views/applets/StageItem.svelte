@@ -1,5 +1,9 @@
 <script lang="ts">
-  let { id, breadcrumb }: { id: string, breadcrumb: string } = $props();
+  import type { AppletKey } from "./ccb";
+
+  let { id, group, name }: AppletKey & { id: string } = $props();
+
+  const breadcrumb = $derived([...group, name].reverse().join(" — "));
 </script>
 
 <div class="grid-stack-item" data-stage-id={id}>
