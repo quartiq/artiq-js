@@ -16,8 +16,9 @@
 
   const activate = (leaf: LeafNode): void => {
     const [applet, gridDefaults] = registry.from(leaf.command);
-    const host = stage.appletItem(leaf, gridDefaults);
-    schedule.setup(leaf, applet, host);
+    stage.appletItem(leaf, gridDefaults, (host) => {
+      schedule.setup(leaf, applet, host);
+    });
   };
 
   const upsert = (args: ccb.CreateArgs, manually: boolean): void => {
@@ -76,7 +77,8 @@
       disable_applet: (args) => setVisible(args, false),
 
       // legacy alias for calling disable_applet with name === null
-      disable_applet_group: (args) => setVisible({ ...args, name: null }, false),
+      disable_applet_group: (args) =>
+        setVisible({ ...args, name: null }, false),
     });
 
     manager.init().forEach((leaf) => activate(leaf));
