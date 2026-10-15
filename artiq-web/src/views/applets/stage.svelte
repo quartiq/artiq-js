@@ -11,8 +11,7 @@
   import * as ccb from "./ccb";
 
   type KeyString = string;
-  type Item = { id: KeyString; breadcrumb: string };
-  let items = $state<Item[]>([]);
+  let leafs = $state<LeafNode[]>([]);
 
   const keystr = ({ group, name }: ccb.AppletKey): KeyString =>
     JSON.stringify({ group, name });
@@ -37,11 +36,11 @@
   };
 
   const newItem = (
-    id: KeyString,
-    breadcrumb: string,
+    leaf: LeafNode,
     defaults: GridStackWidget,
   ): GridItemHTMLElement => {
-    items.push({ id, breadcrumb });
+    const id = keystr(leaf);
+    leafs.push(leaf);
     flushSync();
 
     // need to do it this way opposed to .addWidget()
@@ -110,7 +109,7 @@
     if (!item) return;
 
     grid.removeWidget(item, false);
-    items = items.filter((i) => i.id !== id);
+    leafs = leafs.filter((leaf) => keystr(leaf) !== id);
     flushSync();
   };
 
@@ -121,8 +120,7 @@
     const keystring = keystr(leaf);
     let item = findItem(keystring);
     if (!item) {
-      const breadcrumb = [...leaf.group, leaf.name].reverse().join(" — ");
-      item = newItem(keystring, breadcrumb, {
+      item = newItem(leaf, {
         ...(defaults ?? { w: 5, h: 4 }),
         ...leaf.geometry,
       });
@@ -139,8 +137,8 @@
 </script>
 
 <div class="stage" {@attach init}>
-  {#each items as i (i.id)}
-    <StageItem id={i.id} breadcrumb={i.breadcrumb} />
+  {#each leafs as leaf (keystr(leaf))}
+    <StageItem id={keystr(leaf)} group={leaf.group} name={leaf.name} />
   {/each}
 </div>
 
