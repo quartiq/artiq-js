@@ -1,5 +1,6 @@
 <script lang="ts">
   import { flushSync } from "svelte";
+  import { SvelteMap } from "svelte/reactivity";
   import type { Attachment } from "svelte/attachments";
 
   import { GridStack } from "gridstack";
@@ -10,8 +11,14 @@
   import type { LeafNode } from "./tree";
   import * as ccb from "./ccb";
 
+  type Item = {
+    leaf: LeafNode;
+    defaults: GridStackWidget | undefined;
+    setup: (host: HTMLElement) => void;
+  };
+
   type KeyString = string;
-  let leafs = $state<LeafNode[]>([]);
+  const items = new SvelteMap<KeyString, Item>();
 
   const keystr = ({ group, name }: ccb.AppletKey): KeyString =>
     JSON.stringify({ group, name });
@@ -33,19 +40,6 @@
 
       write();
     });
-  };
-
-  const newItem = (
-    leaf: LeafNode,
-    defaults: GridStackWidget,
-  ): GridItemHTMLElement => {
-    const id = keystr(leaf);
-    leafs.push(leaf);
-    flushSync();
-
-    // need to do it this way opposed to .addWidget()
-    // to register drag area via "handle" option during init, further down
-    return grid.makeWidget(findItem(id)!, { ...defaults, id });
   };
 
   // can not make use of Utils.find() since it holds stale DOM references during drag
@@ -81,6 +75,27 @@
     }
   };
 
+  const attachItem = (
+    item: GridItemHTMLElement,
+    leaf: LeafNode,
+    defaults: GridStackWidget | undefined,
+  ): (() => void) => {
+    // need to do it this way opposed to .addWidget()
+    // to register drag area via "handle" option during init, further down
+    grid.makeWidget(item, {
+      ...(defaults ?? { w: 5, h: 4 }),
+      ...leaf.geometry,
+      id: keystr(leaf),
+    });
+
+    cacheGeometry(item, leaf);
+    syncVis(item, leaf);
+
+    return () => {
+      grid.removeWidget(item, false);
+    };
+  };
+
   export const updateVisibility = (leafs: LeafNode[]) => {
     const tuples = leafs
       // insert new widgets bottom-right first, top-left last
@@ -104,41 +119,37 @@
   };
 
   export const remove = (k: ccb.AppletKey) => {
-    const id = keystr(k);
-    const item = findItem(id);
-    if (!item) return;
-
-    grid.removeWidget(item, false);
-    leafs = leafs.filter((leaf) => keystr(leaf) !== id);
+    items.delete(keystr(k));
     flushSync();
   };
 
   export const appletItem = (
     leaf: LeafNode,
     defaults: GridStackWidget | undefined,
-  ): HTMLElement => {
-    const keystring = keystr(leaf);
-    let item = findItem(keystring);
-    if (!item) {
-      item = newItem(leaf, {
-        ...(defaults ?? { w: 5, h: 4 }),
-        ...leaf.geometry,
-      });
+    setup: (host: HTMLElement) => void,
+  ): void => {
+    const id = keystr(leaf);
+    let el = findItem(id);
+
+    if (el) {
+      cacheGeometry(el, leaf);
+      syncVis(el, leaf);
     }
 
-    const host = item.querySelector(".widget-body") as HTMLElement;
-    host.replaceChildren();
-
-    cacheGeometry(item, leaf);
-    syncVis(item, leaf);
-
-    return host;
+    items.set(id, { leaf, defaults, setup });
+    flushSync();
   };
 </script>
 
 <div class="stage" {@attach init}>
-  {#each leafs as leaf (keystr(leaf))}
-    <StageItem id={keystr(leaf)} group={leaf.group} name={leaf.name} />
+  {#each items as [id, { leaf, defaults, setup }] (id)}
+    <StageItem
+      {id}
+      group={leaf.group}
+      name={leaf.name}
+      attach={(item) => attachItem(item, leaf, defaults)}
+      {setup}
+    />
   {/each}
 </div>
 
