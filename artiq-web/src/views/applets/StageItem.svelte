@@ -1,15 +1,46 @@
 <script lang="ts">
+  import { onMount, untrack } from "svelte";
   import type { AppletKey } from "./ccb";
 
-  let { id, group, name }: AppletKey & { id: string } = $props();
+  type Setup = (host: HTMLElement) => void;
+
+  let {
+    id,
+    group,
+    name,
+    attach,
+    setup,
+  }: AppletKey & {
+    id: string;
+    attach: (el: HTMLDivElement) => () => void;
+    setup: Setup;
+  } = $props();
+
+  let item: HTMLDivElement;
+  let body: HTMLDivElement;
 
   const breadcrumb = $derived([...group, name].reverse().join(" — "));
+
+  const init = (setup: Setup) => {
+    untrack(() => {
+      body.replaceChildren();
+      setup(body);
+    });
+  };
+
+  onMount(() => {
+    // need to do it this way opposed to .addWidget()
+    // to register drag area via "handle" option during init, further down
+    const detach = attach(item);
+    $effect(() => init(setup));
+    return detach;
+  });
 </script>
 
-<div class="grid-stack-item" data-stage-id={id}>
+<div class="grid-stack-item" data-stage-id={id} bind:this={item}>
   <div class="grid-stack-item-content">
     <div class="widget-header">{breadcrumb}</div>
-    <div class="widget-body"></div>
+    <div class="widget-body" bind:this={body}></div>
   </div>
 </div>
 
