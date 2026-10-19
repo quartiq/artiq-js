@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@appulsauce/svelte-grid": "^2.0.2",
     "@tanstack/table-core": "^8.21.3",
     "artiq-js": "file:../artiq-js",
-    "gridstack": "^12.6.0",
     "minimist": "^1.2.8",
     "plotly.js-dist-min": "^3.5.1",
     "shell-quote": "^1.8.4",
