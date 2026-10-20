@@ -14,7 +14,12 @@
   onMount(() => {
     ccb.handleFuncs({
       create_applet: (args) => {
-        Object.assign(leafFrom(args) ?? newLeaf(args), args);
+        const leaf = leafFrom(args);
+        leaf
+          ? Object.assign(leaf, args)
+          : Object.assign(newLeaf(args), {
+              visible: true,
+            });
       },
 
       restart_applet: () => {},
@@ -45,12 +50,15 @@
 <Grid cols={12} itemSize={{ height: 50 }}>
   {#each applets as applet, index (applet)}
     {@const dataset = shellQuote.parse(applet.command)[1]}
-    <GridItem x={0} y={index * 3} w={4} h={3}>
-      <h3>{applet.name}</h3>
-      <pre>{applet.command}</pre>
-      {#if typeof dataset === "string"}
-        <p>{dataset}: {values[dataset] ?? "-"}</p>
-      {/if}
-    </GridItem>
+
+    {#if applet.visible}
+      <GridItem x={0} y={index * 3} w={4} h={3}>
+        <h3>{applet.name}</h3>
+        <pre>{applet.command}</pre>
+        {#if typeof dataset === "string"}
+          <p>{dataset}: {values[dataset] ?? "-"}</p>
+        {/if}
+      </GridItem>
+    {/if}
   {/each}
 </Grid>
