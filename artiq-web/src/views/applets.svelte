@@ -17,6 +17,12 @@
     leaf.visible = true;
   };
 
+  const restart_applet = (key: ccb.TargetKey) => {
+    permission.leafsByPolicy("allowVisCtrl", key).forEach((applet) => {
+      applet.visible = true;
+    });
+  };
+
   const disable_applet = (key: ccb.TargetKey) => {
     permission.leafsByPolicy("allowVisCtrl", key).forEach((applet) => {
       applet.visible = false;
@@ -28,7 +34,7 @@
   onMount(() => {
     ccb.handleFuncs({
       create_applet,
-      restart_applet: () => {},
+      restart_applet,
       disable_applet,
 
       // TODO: remove legacy alias from ARTIQ, see: https://git.m-labs.hk/M-Labs/artiq/issues/1871
