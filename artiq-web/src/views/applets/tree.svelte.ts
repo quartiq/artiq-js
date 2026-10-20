@@ -54,15 +54,17 @@ export const walk = <T>(
   path.reduce(
     ([sibs, acc], name): [Node[], T] => {
       let group = sibs.find((n: Node) => isGroup(n) && n.name === name);
-      if (create && !group)
-        sibs.push(
-          (group = {
-            name,
-            policy: { create: undefined, visible: undefined },
-            expanded: false,
-            children: [],
-          }),
-        );
+      if (create && !group) {
+        const created = $state<GroupNode>({
+          name,
+          policy: { create: undefined, visible: undefined },
+          expanded: false,
+          children: [],
+        });
+
+        sibs.push(created);
+        group = created;
+      }
 
       return [group?.children ?? [], step(group, acc)];
     },
@@ -86,12 +88,12 @@ export const leafFrom = (k: ccb.AppletKey): LeafNode | undefined =>
 
 export const newLeaf = (args: ccb.CreateArgs): LeafNode => {
   const sibs = pave(args.group, (n) => n.children, root.children);
-  const leaf: LeafNode = {
+  const leaf = $state<LeafNode>({
     ...args,
     visible: false,
     policy: { create: undefined, visible: undefined },
     children: [],
-  };
+  });
   sibs.push(leaf);
   return leaf;
 };
@@ -138,10 +140,13 @@ export const detach = (node: Node): Node => {
   return node;
 };
 
-export const root: RootNode = dbio.read<RootNode>() ?? {
-  name: "root",
-  policy: { create: true, visible: false },
-  expanded: true,
-  children: [],
-};
+export const root = $state<RootNode>(
+  dbio.read<RootNode>() ?? {
+    name: "root",
+    policy: { create: true, visible: false },
+    expanded: true,
+    children: [],
+  },
+);
+
 export const write: () => void = () => dbio.write<RootNode>(root);
