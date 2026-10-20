@@ -1,4 +1,5 @@
 <script lang="ts">
+  import PolicyCheckbox from "./PolicyCheckbox.svelte";
   import { root, leafs, detach } from "./tree.svelte";
 
   const applets = $derived(leafs(root));
@@ -24,4 +25,12 @@
     Visible
   </label>
   <button type="button" onclick={() => detach(applet)}> Remove </button>
+  <PolicyCheckbox
+    bind:value={applet.policy.allowCreation}
+    label="Allow CCB creation and updates"
+  />
+  <PolicyCheckbox
+    bind:value={applet.policy.allowVisCtrl}
+    label="Allow CCB visibility control"
+  />
 {/each}

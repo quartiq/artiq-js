@@ -1,13 +1,9 @@
 import type * as ccb from "./ccb";
 import * as dbio from "./dbio";
 
-export type PolicyName = "allowCreation" | "allowVisCtrl";
-const policies = [undefined, true, false]; // undefined represents policy inheritance from parent
-export type Policy = (typeof policies)[number];
-export type DefinitePolicy = boolean;
-
-export const nextPolicy = (p: Policy): Policy =>
-  policies[(policies.indexOf(p) + 1) % policies.length];
+export type PolicyKey = "allowCreation" | "allowVisCtrl";
+export type DefinitePolicyValue = boolean;
+export type PolicyValue = DefinitePolicyValue | undefined; // undefined represents policy inheritance from parent
 
 type Coord = number | undefined;
 // FIXME: this is derived from GridStack
@@ -16,7 +12,7 @@ export type Visible = boolean;
 
 type BaseNode = {
   name: ccb.GroupEl | ccb.Name;
-  policy: Record<PolicyName, Policy>;
+  policy: Record<PolicyKey, PolicyValue>;
   children: Node[];
 };
 
@@ -27,7 +23,7 @@ type GroupNode = BaseNode & {
 
 type RootNode = GroupNode & {
   name: "root";
-  policy: Record<PolicyName, DefinitePolicy>;
+  policy: Record<PolicyKey, DefinitePolicyValue>;
 };
 
 export type LeafNode = BaseNode &
