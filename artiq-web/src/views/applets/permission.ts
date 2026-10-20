@@ -1,6 +1,6 @@
 import {
-  PolicyName,
-  DefinitePolicy,
+  PolicyKey,
+  DefinitePolicyValue,
   Node,
   LeafNode,
   isLeaf,
@@ -12,16 +12,16 @@ import {
 } from "./tree.svelte";
 import type * as ccb from "./ccb";
 
-const inherited = (name: PolicyName, path: ccb.Group): DefinitePolicy =>
+const inherited = (name: PolicyKey, path: ccb.Group): DefinitePolicyValue =>
   walk(path, (n, acc) => n?.policy[name] ?? acc, root.policy[name]);
 
-export const granted = (name: PolicyName, k: ccb.AppletKey): boolean => {
+export const granted = (name: PolicyKey, k: ccb.AppletKey): boolean => {
   const leaf = leafFrom(k);
   return leaf?.policy[name] ?? inherited(name, k.group);
 };
 
 export const leafsByPolicy = (
-  name: PolicyName,
+  name: PolicyKey,
   k: ccb.TargetKey,
 ): LeafNode[] => {
   const node: Node | undefined =
