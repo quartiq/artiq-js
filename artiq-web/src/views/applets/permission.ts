@@ -9,7 +9,7 @@ import {
   groupFrom,
   leafFrom,
   root,
-} from "./tree";
+} from "./tree.svelte";
 import type * as ccb from "./ccb";
 
 const inherited = (name: PolicyName, path: ccb.Group): DefinitePolicy =>
