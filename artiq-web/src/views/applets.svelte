@@ -11,12 +11,10 @@
   const create_applet = (args: ccb.CreateArgs) => {
     if (!permission.granted("allowCreation", args)) return;
 
-    const leaf = leafFrom(args);
-    leaf
-      ? Object.assign(leaf, args)
-      : Object.assign(newLeaf(args), {
-          visible: permission.granted("allowVisCtrl", args),
-        });
+    const leaf = Object.assign(leafFrom(args) ?? newLeaf(args), args);
+    if (!permission.granted("allowVisCtrl", args)) return;
+
+    leaf.visible = true;
   };
 
   const disable_applet = (key: ccb.TargetKey) => {
