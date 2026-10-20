@@ -4,23 +4,25 @@
   import Grid from "./applets/Grid.svelte";
   import Manager from "./applets/Manager.svelte";
 
-  import { groupFrom, leafFrom, leafs, newLeaf } from "./applets/tree.svelte";
+  import * as permission from "./applets/permission";
+  import { leafFrom, newLeaf } from "./applets/tree.svelte";
   import * as ccb from "./applets/ccb";
 
   const create_applet = (args: ccb.CreateArgs) => {
+    if (!permission.granted("allowCreation", args)) return;
+
     const leaf = leafFrom(args);
     leaf
       ? Object.assign(leaf, args)
       : Object.assign(newLeaf(args), {
-          visible: true,
+          visible: permission.granted("allowVisCtrl", args),
         });
   };
 
-  const disable_applet = ({ group, name }: ccb.TargetKey) => {
-    const node = name === null ? groupFrom(group) : leafFrom({ group, name });
-
-    if (!node) return;
-    leafs(node).forEach((applet) => (applet.visible = false));
+  const disable_applet = (key: ccb.TargetKey) => {
+    permission.leafsByPolicy("allowVisCtrl", key).forEach((applet) => {
+      applet.visible = false;
+    });
   };
 
   onMount(() => {

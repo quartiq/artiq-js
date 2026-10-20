@@ -1,7 +1,7 @@
 import type * as ccb from "./ccb";
 import * as dbio from "./dbio";
 
-export type PolicyName = "create" | "visible";
+export type PolicyName = "allowCreation" | "allowVisCtrl";
 const policies = [undefined, true, false]; // undefined represents policy inheritance from parent
 export type Policy = (typeof policies)[number];
 export type DefinitePolicy = boolean;
@@ -57,7 +57,7 @@ export const walk = <T>(
       if (create && !group) {
         const created = $state<GroupNode>({
           name,
-          policy: { create: undefined, visible: undefined },
+          policy: { allowCreation: undefined, allowVisCtrl: undefined },
           expanded: false,
           children: [],
         });
@@ -91,7 +91,7 @@ export const newLeaf = (args: ccb.CreateArgs): LeafNode => {
   const leaf = $state<LeafNode>({
     ...args,
     visible: false,
-    policy: { create: undefined, visible: undefined },
+    policy: { allowCreation: undefined, allowVisCtrl: undefined },
     children: [],
   });
   sibs.push(leaf);
@@ -143,7 +143,7 @@ export const detach = (node: Node): Node => {
 export const root = $state<RootNode>(
   dbio.read<RootNode>() ?? {
     name: "root",
-    policy: { create: true, visible: false },
+    policy: { allowCreation: true, allowVisCtrl: false },
     expanded: true,
     children: [],
   },
