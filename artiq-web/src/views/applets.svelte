@@ -5,7 +5,7 @@
   import Manager from "./applets/Manager.svelte";
 
   import * as permission from "./applets/permission";
-  import { leafFrom, newLeaf } from "./applets/tree.svelte";
+  import { leafFrom, newLeaf, write } from "./applets/tree.svelte";
   import * as ccb from "./applets/ccb";
 
   const create_applet = (args: ccb.CreateArgs) => {
@@ -24,6 +24,8 @@
       applet.visible = false;
     });
   };
+
+  $effect(() => write());
 
   onMount(() => {
     ccb.handleFuncs({
