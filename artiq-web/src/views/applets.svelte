@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
+  import * as ccb from "./applets/ccb";
+  import { leafFrom, newLeaf, write } from "./applets/tree.svelte";
+  import * as permission from "./applets/permission";
+
   import Grid from "./applets/Grid.svelte";
   import Manager from "./applets/Manager.svelte";
-
-  import * as permission from "./applets/permission";
-  import { leafFrom, newLeaf, write } from "./applets/tree.svelte";
-  import * as ccb from "./applets/ccb";
 
   const create_applet = (args: ccb.CreateArgs) => {
     if (!permission.granted("allowCreation", args)) return;
