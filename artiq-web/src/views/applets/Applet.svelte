@@ -1,21 +1,21 @@
 <script lang="ts">
   import shellQuote from "shell-quote";
 
+  import { map } from "./datasets.svelte";
   import type { LeafNode } from "./tree.svelte";
 
   let {
     applet,
-    values,
   }: {
     applet: LeafNode;
-    values: Record<string, string>;
   } = $props();
 
-  const dataset = $derived(shellQuote.parse(applet.command)[1]);
+  const keypath = $derived(shellQuote.parse(applet.command)[1]);
 </script>
 
 <h3>{applet.name}</h3>
 <pre>{applet.command}</pre>
-{#if typeof dataset === "string"}
-  <p>{dataset}: {values[dataset] ?? "-"}</p>
+{#if typeof keypath === "string"}
+  {@const dataset = map.get(keypath)}
+  <p>{keypath}: {dataset ? String(dataset[1]) : "-"}</p>
 {/if}
