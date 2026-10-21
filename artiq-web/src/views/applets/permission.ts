@@ -1,3 +1,4 @@
+import type * as ccb from "./ccb";
 import {
   PolicyKey,
   DefinitePolicyValue,
@@ -10,7 +11,6 @@ import {
   leafFrom,
   root,
 } from "./tree.svelte";
-import type * as ccb from "./ccb";
 
 const inherited = (name: PolicyKey, path: ccb.Group): DefinitePolicyValue =>
   walk(path, (n, acc) => n?.policy[name] ?? acc, root.policy[name]);

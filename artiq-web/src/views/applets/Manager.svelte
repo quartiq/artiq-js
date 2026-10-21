@@ -1,7 +1,7 @@
 <script lang="ts">
-  import PolicyCheckbox from "./PolicyCheckbox.svelte";
   import { root, detach, isLeaf } from "./tree.svelte";
   import type { Node } from "./tree.svelte";
+  import PolicyCheckbox from "./PolicyCheckbox.svelte";
 </script>
 
 <label>
