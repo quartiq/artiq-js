@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
+  import * as datasets from "./applets/datasets.svelte";
   import * as ccb from "./applets/ccb";
   import { leafFrom, newLeaf, write } from "./applets/tree.svelte";
   import * as permission from "./applets/permission";
@@ -30,6 +31,8 @@
   };
 
   $effect(() => write());
+
+  onMount(datasets.listen);
 
   onMount(() => {
     ccb.handleFuncs({
