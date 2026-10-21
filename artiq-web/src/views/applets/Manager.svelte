@@ -1,8 +1,7 @@
 <script lang="ts">
   import PolicyCheckbox from "./PolicyCheckbox.svelte";
-  import { root, leafs, detach } from "./tree.svelte";
-
-  const applets = $derived(leafs(root));
+  import { root, detach, isLeaf } from "./tree.svelte";
+  import type { Node } from "./tree.svelte";
 </script>
 
 <label>
@@ -15,22 +14,41 @@
   Allow CCB visibility control
 </label>
 
-{#each applets as applet (applet)}
-  <label>
-    {[...applet.group, applet.name].join(" / ")}
-    <input bind:value={applet.command} />
-  </label>
-  <label>
-    <input type="checkbox" bind:checked={applet.visible} />
-    Visible
-  </label>
-  <button type="button" onclick={() => detach(applet)}> Remove </button>
-  <PolicyCheckbox
-    bind:value={applet.policy.allowCreation}
-    label="Allow CCB creation and updates"
-  />
-  <PolicyCheckbox
-    bind:value={applet.policy.allowVisCtrl}
-    label="Allow CCB visibility control"
-  />
-{/each}
+{#snippet siblings(nodes: Node[])}
+  <ul>
+    {#each nodes as node (node)}
+      <li>
+        {#if isLeaf(node)}
+          <label>
+            {node.name}
+            <input bind:value={node.command} />
+          </label>
+
+          <label>
+            <input type="checkbox" bind:checked={node.visible} />
+            Visible
+          </label>
+        {:else}
+          <strong>{node.name}</strong>
+        {/if}
+
+        <button type="button" onclick={() => detach(node)}>Remove</button>
+
+        <PolicyCheckbox
+          bind:value={node.policy.allowCreation}
+          label="Allow CCB creation and update"
+        />
+        <PolicyCheckbox
+          bind:value={node.policy.allowVisCtrl}
+          label="Allow CCB visibility control"
+        />
+
+        {#if !isLeaf(node)}
+          {@render siblings(node.children)}
+        {/if}
+      </li>
+    {/each}
+  </ul>
+{/snippet}
+
+{@render siblings(root.children)}
