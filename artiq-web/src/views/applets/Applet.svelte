@@ -8,14 +8,14 @@
     applet: LeafNode;
   } = $props();
 
-  const [name, ...args] = $derived(shellQuote.parse(applet.command));
+  const [name, ...argv] = $derived(shellQuote.parse(applet.command));
   const module = $derived(import(`./modules/${name}.svelte`));
 </script>
 
 <h3>{applet.name}</h3>
 
 {#await module then { default: View }}
-  <View {args} />
+  <View {argv} />
 {:catch}
   <p>Could not load applet module: "{name}"</p>
 {/await}
