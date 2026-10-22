@@ -1,14 +1,35 @@
 <script lang="ts">
-  import { map } from "../datasets.svelte";
+  import type { Keypath } from "artiq-js/datasets";
+  import { resolve, parse } from "../argparse";
+  import type { Schema } from "../argparse";
 
-  let { args }: { args: any } = $props();
+  type Args = {
+    scalar: Keypath;
+    "digit-count": number;
+  };
 
-  const keypath = $derived(args[0]);
-  const dataset = $derived(map.get(keypath));
+  let { argv }: { argv: string[] } = $props();
+
+  const schema = {
+    positionals: ["scalar"],
+    options: {
+      default: { "digit-count": 10 },
+    },
+  } satisfies Schema<Args>;
+
+  const args = $derived(parse<Args>(argv, schema));
+  const data = $derived(resolve(args, ["scalar"]));
+
+  const formatter = $derived(
+    new Intl.NumberFormat("en-EN", {
+      useGrouping: false,
+      maximumSignificantDigits: args["digit-count"],
+    }),
+  );
 </script>
 
 <div class="number">
-  {dataset ? String(dataset[1]) : "-"}
+  {data.scalar ? formatter.format(data.scalar[1] as number) : "-"}
 </div>
 
 <style>
