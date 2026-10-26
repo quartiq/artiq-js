@@ -1,11 +1,15 @@
 <script lang="ts">
   import type { Keypath } from "artiq-js/datasets";
-  import { resolve, parse } from "../argparse";
+  import { parse, resolve } from "../argparse";
   import type { Schema } from "../argparse";
 
   type Args = {
     scalar: Keypath;
     "digit-count": number;
+  };
+
+  type Datasets = {
+    scalar: number;
   };
 
   let { argv }: { argv: string[] } = $props();
@@ -18,7 +22,7 @@
   } satisfies Schema<Args>;
 
   const args = $derived(parse<Args>(argv, schema));
-  const data = $derived(resolve(args, ["scalar"]));
+  const data = $derived(resolve<Datasets>(args, ["scalar"]));
 
   const formatter = $derived(
     new Intl.NumberFormat("en-EN", {
@@ -29,7 +33,7 @@
 </script>
 
 <div class="number">
-  {data.scalar ? formatter.format(data.scalar[1] as number) : "-"}
+  {data.scalar ? formatter.format(data.scalar[1]) : "-"}
 </div>
 
 <style>

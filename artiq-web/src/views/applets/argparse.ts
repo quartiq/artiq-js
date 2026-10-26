@@ -8,10 +8,9 @@ export type Schema<Args> = {
   options?: Opts;
 };
 
-type ResolvedDatasets<Key extends PropertyKey> = Record<
-  Key,
-  Dataset | undefined
->;
+type Resolved<Datasets> = {
+  [Key in keyof Datasets]: [Dataset[0], Datasets[Key], Dataset[2]] | undefined;
+};
 
 export const parse = <Args>(
   argv: string[],
@@ -25,10 +24,13 @@ export const parse = <Args>(
   } as Args;
 };
 
-export const resolve = <Args extends object, Key extends keyof Args>(
-  args: Args,
-  keys: Key[],
-): ResolvedDatasets<Key> =>
+export const resolve = <Datasets>(
+  args: Partial<Record<keyof Datasets, Keypath>>,
+  keys: readonly (keyof Datasets)[],
+): Resolved<Datasets> =>
   Object.fromEntries(
-    keys.map((k) => [k, datasets.map.get(args[k] as Keypath)]),
-  ) as ResolvedDatasets<Key>;
+    keys.map((k) => [
+      k,
+      args[k] === undefined ? undefined : datasets.map.get(args[k]),
+    ]),
+  ) as Resolved<Datasets>;
