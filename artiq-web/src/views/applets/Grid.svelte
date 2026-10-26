@@ -9,8 +9,29 @@
   {#each leafs(root) as applet, index (applet)}
     {#if applet.visible}
       <GridItem x={0} y={index * 3} w={4} h={3}>
-        <Applet {applet} />
+        {#snippet moveHandle({ moveStart })}
+          <h3 onpointerdown={moveStart}>{applet.name}</h3>
+        {/snippet}
+
+        <div class="body">
+          <Applet {applet} />
+        </div>
       </GridItem>
     {/if}
   {/each}
 </Grid>
+
+<style>
+  :global(.item-default) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  h3 {
+    cursor: move;
+  }
+
+  .body {
+    flex: 1;
+  }
+</style>

@@ -12,8 +12,6 @@
   const module = $derived(import(`./modules/${name}.svelte`));
 </script>
 
-<h3>{applet.name}</h3>
-
 {#await module then { default: View }}
   <View {argv} />
 {:catch}
