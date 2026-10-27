@@ -8,7 +8,16 @@
 <Grid cols={12} itemSize={{ height: 50 }}>
   {#each leafs(root) as applet, index (applet)}
     {#if applet.visible}
-      <GridItem x={0} y={index * 3} w={4} h={3}>
+      <GridItem
+        x={applet.geometry?.x ?? 0}
+        y={applet.geometry?.y ?? index * 3}
+        w={applet.geometry?.w ?? 4}
+        h={applet.geometry?.h ?? 3}
+        onchange={({ item }) => {
+          const { x, y, w, h } = item;
+          applet.geometry = { x, y, w, h };
+        }}
+      >
         {#snippet moveHandle({ moveStart })}
           <h3 onpointerdown={moveStart}>{applet.name}</h3>
         {/snippet}
