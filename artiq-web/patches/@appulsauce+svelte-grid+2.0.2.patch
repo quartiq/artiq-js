@@ -1,0 +1,98 @@
+diff --git a/node_modules/@appulsauce/svelte-grid/dist/Grid.svelte b/node_modules/@appulsauce/svelte-grid/dist/Grid.svelte
+index 89b75ed..c94a118 100644
+--- a/node_modules/@appulsauce/svelte-grid/dist/Grid.svelte
++++ b/node_modules/@appulsauce/svelte-grid/dist/Grid.svelte
+@@ -20,7 +20,7 @@
+ 
+ 	import { assertGridOptions } from './utils/assert';
+ 	import { findGridSize } from './utils/breakpoints';
+-	import { getGridDimensions } from './utils/grid';
++	import { getGridDimensions, hasCollisions, getAvailablePosition } from './utils/grid';
+ 	import { GridController } from './GridController';
+ 
+ 	import type {
+@@ -173,13 +173,39 @@
+ 		return () => sizeObserver.disconnect();
+ 	});
+ 
+-	function registerItem(item: LayoutItem): void {
+-		if (item.id in items) {
+-			throw new Error(`Item with id ${item.id} already exists`);
+-		}
+-		items[item.id] = item;
+-		updateGrid();
+-	}
++  function registerItem(item: LayoutItem): void {
++    if (item.id in items) {
++      throw new Error(`Item with id ${item.id} already exists`);
++    }
++
++    let relocated = false;
++    const occupied = Object.values(items);
++
++    if (hasCollisions(item, occupied)) {
++      const position = getAvailablePosition(
++        item,
++        occupied,
++        maxCols,
++        maxRows,
++      );
++
++      if (!position) {
++        throw new Error(`No available position for item ${item.id}`);
++      }
++
++      item.x = position.x;
++      item.y = position.y;
++      relocated = true;
++    }
++
++    items[item.id] = item;
++
++    if (relocated) {
++      item.invalidate();
++    } else {
++      updateGrid();
++    }
++  }
+ 
+ 	function unregisterItem(item: LayoutItem): void {
+ 		delete items[item.id];
+diff --git a/node_modules/@appulsauce/svelte-grid/dist/GridItem.svelte b/node_modules/@appulsauce/svelte-grid/dist/GridItem.svelte
+index 4685134..c312228 100644
+--- a/node_modules/@appulsauce/svelte-grid/dist/GridItem.svelte
++++ b/node_modules/@appulsauce/svelte-grid/dist/GridItem.svelte
+@@ -116,6 +116,19 @@
+ 		onpreviewchange?.({ item: previewItem });
+ 	});
+ 
++  $effect(() => {
++    if (!active || gridParams.collision !== "none") return;
++
++    const occupied = Object.values(gridParams.items);
++
++    if (
++      hasCollisions(previewItem, occupied) &&
++      !hasCollisions(item, occupied)
++    ) {
++      previewItem = { ...item };
++    }
++  });
++
+ 	function applyPreview() {
+ 		item.x = previewItem.x;
+ 		item.y = previewItem.y;
+@@ -138,7 +151,12 @@
+ 	}
+ 
+ 	function endInteraction(event: PointerEvent) {
+-		applyPreview();
++		if (hasCollisions(previewItem, Object.values(gridParams.items))) {
++      previewItem = { ...item };
++    } else {
++      applyPreview();
++    }
++
+ 		active = false;
+ 		initialPointerPosition.left = 0;
+ 		initialPointerPosition.top = 0;
