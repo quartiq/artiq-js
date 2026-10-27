@@ -1,3 +1,5 @@
+import type { LayoutItem } from "@appulsauce/svelte-grid";
+
 import * as dbio from "./dbio";
 import type * as ccb from "./ccb";
 
@@ -5,9 +7,6 @@ export type PolicyKey = "allowCreation" | "allowVisCtrl";
 export type DefinitePolicyValue = boolean;
 export type PolicyValue = DefinitePolicyValue | undefined; // undefined represents policy inheritance from parent
 
-type Coord = number | undefined;
-// FIXME: this is derived from GridStack
-type Geometry = { x: Coord; y: Coord; w: Coord; h: Coord };
 export type Visible = boolean;
 
 type BaseNode = {
@@ -29,7 +28,7 @@ type RootNode = GroupNode & {
 export type LeafNode = BaseNode &
   ccb.CreateArgs & {
     visible: Visible;
-    geometry?: Geometry;
+    geometry?: Pick<LayoutItem, "x" | "y" | "w" | "h">;
     children: [];
   };
 
