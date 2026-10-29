@@ -28,6 +28,7 @@
 
   const config = {
     displayModeBar: false,
+    showTips: false,
   };
 
   $effect(() => {
