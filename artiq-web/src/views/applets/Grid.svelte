@@ -17,7 +17,7 @@
 </script>
 
 <Grid cols={12} itemSize={{ height: 25 }}>
-  {#each leafs(root) as applet, index (applet)}
+  {#each leafs(root) as applet (applet)}
     {#if applet.visible}
       {@const [name, ...argv] = shellQuote.parse(applet.command) as string[]}
       {@const module = modules[`./modules/${name}.svelte`]}
@@ -26,7 +26,7 @@
         {@const View = module.default}
         <GridItem
           x={applet.geometry?.x ?? 0}
-          y={applet.geometry?.y ?? index * 6}
+          y={applet.geometry?.y ?? 0}
           w={applet.geometry?.w ?? module.size?.w ?? 3}
           h={applet.geometry?.h ?? module.size?.h ?? 10}
           min={{ w: 2, h: 3 }}
