@@ -44,6 +44,10 @@ body:has(.applet-screen) > nav a[href="/applets"] {
   padding: 20px;
 }
 
+.applet-screen .svelte-grid-extended {
+  isolation: isolate;
+}
+
 .applet-screen h1,
 .applet-screen h2,
 .applet-screen p {
@@ -313,7 +317,7 @@ body:has(.applet-screen) > nav a[href="/applets"] {
   letter-spacing: -0.04em;
 }
 
-.applet-screen .item-preview-default {
+.applet-screen .dashboard-stage .item-preview-default {
   border: 1px dashed #6398e8;
   border-radius: 6px;
   background: #2563eb12;

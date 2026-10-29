@@ -54,6 +54,7 @@
   :global(.item-default) {
     display: flex;
     flex-direction: column;
+    transition: none !important;
   }
 
   h3 {

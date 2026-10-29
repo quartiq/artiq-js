@@ -70,7 +70,7 @@
 
     const y = [...counts, 0];
 
-    return [{ x, y, line: { shape: "hv", color: "red" }, fill: "tozeroy" }];
+    return [{ x, y, line: { shape: "hv", color: "#d62728" }, fill: "tozeroy" }];
   });
 </script>
 
@@ -81,7 +81,7 @@
       selected = ev.points[0].pointIndex;
 
       const colors = toPlotArray(data.x![1]).map((_, i) =>
-        i === selected ? "red" : "blue",
+        i === selected ? "#d62728" : "#1f77b4",
       );
 
       Plotly.restyle(el, { "marker.color": [colors] }, [0]);

@@ -1,5 +1,5 @@
 <script module lang="ts">
-  export const size = { w: 3, h: 3 };
+  export const size = { w: 5, h: 3 };
 </script>
 
 <script lang="ts">
