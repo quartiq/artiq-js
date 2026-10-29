@@ -1,3 +1,7 @@
+<script module lang="ts">
+  export const size = { w: 3, h: 3 };
+</script>
+
 <script lang="ts">
   import type { Keypath } from "artiq-js/datasets";
   import { parse, resolve } from "../argparse";
