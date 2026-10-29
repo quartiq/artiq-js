@@ -35,6 +35,7 @@
         z: reshape2d(data.img[1]),
         transpose: true,
         colorscale: "Greys",
+        colorbar: { ypad: 0 },
       },
     ];
   });
