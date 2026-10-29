@@ -5,14 +5,15 @@
   import Applet from "./Applet.svelte";
 </script>
 
-<Grid cols={12} itemSize={{ height: 50 }}>
+<Grid cols={12} itemSize={{ height: 25 }}>
   {#each leafs(root) as applet, index (applet)}
     {#if applet.visible}
       <GridItem
         x={applet.geometry?.x ?? 0}
-        y={applet.geometry?.y ?? index * 3}
+        y={applet.geometry?.y ?? index * 6}
         w={applet.geometry?.w ?? 4}
-        h={applet.geometry?.h ?? 3}
+        h={applet.geometry?.h ?? 6}
+        min={{ w: 2, h: 3 }}
         onchange={({ item }) => {
           const { x, y, w, h } = item;
           applet.geometry = { x, y, w, h };
