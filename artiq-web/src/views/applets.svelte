@@ -1,13 +1,18 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
+  import "./applets/screencast.css";
+
   import * as datasets from "./applets/datasets.svelte";
   import * as ccb from "./applets/ccb";
-  import { leafFrom, newLeaf, write } from "./applets/tree.svelte";
+  import { root, leafs, leafFrom, newLeaf, write } from "./applets/tree.svelte";
   import * as permission from "./applets/permission";
 
   import Grid from "./applets/Grid.svelte";
   import Manager from "./applets/Manager.svelte";
+
+  let showManager = $state(true);
+  const applets = $derived(leafs(root));
 
   const create_applet = (args: ccb.CreateArgs) => {
     if (!permission.granted("allowCreation", args)) return;
@@ -49,5 +54,48 @@
   });
 </script>
 
-<Manager />
-<Grid />
+<section class="applet-screen">
+  <header class="dashboard-header">
+    <div>
+      <span class="eyebrow">ARTIQ / CONTROL &amp; ACQUISITION</span>
+      <h1>Experiment dashboard</h1>
+    </div>
+
+    <div class="dashboard-actions">
+      <span class="dashboard-count">
+        {applets.filter((a) => a.visible).length} / {applets.length} visible
+      </span>
+      <button
+        type="button"
+        aria-expanded={showManager}
+        aria-controls="applet-manager"
+        onclick={() => (showManager = !showManager)}
+      >
+        {showManager ? "Hide manager" : "Show manager"}
+      </button>
+    </div>
+  </header>
+
+  <div class="dashboard-workspace" class:focused={!showManager}>
+    <aside id="applet-manager" class="manager-panel" hidden={!showManager}>
+      <header>
+        <h2>Applets</h2>
+        <span class="count">{applets.length}</span>
+      </header>
+      <Manager />
+    </aside>
+
+    <div class="dashboard-stage">
+      <Grid />
+      {#if !applets.some((a) => a.visible)}
+        <div class="dashboard-empty">
+          <h2>Your experiment, in view.</h2>
+          <p>
+            Reveal an applet in the manager or run an experiment that creates
+            one.
+          </p>
+        </div>
+      {/if}
+    </div>
+  </div>
+</section>

@@ -3,6 +3,8 @@
 
   export const defaultLayout = {
     margin: { l: 0, r: 0, t: 0, b: 0 },
+    xaxis: { automargin: true },
+    yaxis: { automargin: true },
     showlegend: false,
     uirevision: "keep",
   } satisfies Partial<Layout>;

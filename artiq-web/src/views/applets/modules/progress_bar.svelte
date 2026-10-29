@@ -33,21 +33,25 @@
 
 <style>
   progress {
+    appearance: none;
+    display: block;
     width: 100%;
     height: 100%;
-    border: none;
-    background: #ddd;
+    border: 0;
+    border-radius: 2px;
+    overflow: hidden;
+    background: #f0f2f5;
   }
 
   progress::-webkit-progress-bar {
-    background: #ddd;
+    background: #f0f2f5;
   }
 
   progress::-webkit-progress-value {
-    background: lime;
+    background: #1f77b4;
   }
 
   progress::-moz-progress-bar {
-    background: lime;
+    background: #1f77b4;
   }
 </style>

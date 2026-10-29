@@ -1,0 +1,349 @@
+/* Temporary presentation skin. */
+body:has(.applet-screen) {
+  color-scheme: light;
+  background: #f4f6f8;
+  color: #243044;
+  font:
+    14px/1.45 system-ui,
+    sans-serif;
+}
+
+body:has(.applet-screen) > nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: 42px;
+  padding-inline: 22px;
+  background: #fff;
+  border-bottom: 1px solid #dde3eb;
+  font-size: 12px;
+}
+
+body:has(.applet-screen) > nav > span {
+  display: none;
+}
+
+body:has(.applet-screen) > nav a {
+  color: #64748b;
+  text-decoration: none;
+}
+
+body:has(.applet-screen) > nav a[href="/applets"] {
+  color: #2563eb;
+  font-weight: 650;
+}
+
+.applet-screen {
+  --border: #dde3eb;
+  --muted: #718096;
+  --accent: #2563eb;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: calc(100dvh - 42px);
+  padding: 20px;
+}
+
+.applet-screen h1,
+.applet-screen h2,
+.applet-screen p {
+  margin: 0;
+}
+
+.applet-screen h1 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+.applet-screen h2 {
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.applet-screen .eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+}
+
+.applet-screen .dashboard-header,
+.applet-screen .dashboard-actions,
+.applet-screen .manager-panel > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.applet-screen .dashboard-header {
+  flex: none;
+}
+
+.applet-screen .dashboard-count,
+.applet-screen .count,
+.applet-screen small {
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.applet-screen button {
+  padding: 7px 11px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.applet-screen button:hover {
+  background: #eef3f9;
+  border-color: #b8c5d6;
+}
+
+.applet-screen :is(button, input, summary):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.applet-screen input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  flex: none;
+  accent-color: var(--accent);
+}
+
+.applet-screen .dashboard-workspace {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+.applet-screen .dashboard-workspace.focused {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.applet-screen .manager-panel {
+  min-width: 0;
+  overflow: auto;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.applet-screen .manager-panel[hidden] {
+  display: none;
+}
+
+.applet-screen .manager-panel > header {
+  margin-bottom: 14px;
+}
+
+.applet-screen summary {
+  cursor: pointer;
+}
+
+.applet-screen .root-policy {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: #f8fafc;
+  font-size: 12px;
+}
+
+.applet-screen .settings {
+  display: grid;
+  gap: 10px;
+  padding-block: 12px 4px;
+}
+
+.applet-screen .settings label,
+.applet-screen .leaf-row > label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.applet-screen .settings .command {
+  display: grid;
+  gap: 5px;
+}
+
+.applet-screen .command input {
+  width: 100%;
+  min-width: 0;
+  padding: 7px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #fff;
+  color: inherit;
+  font:
+    11px/1.5 ui-monospace,
+    monospace;
+}
+
+.applet-screen .applet-tree {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.applet-screen .applet-tree .applet-tree {
+  margin: 5px 0 10px 5px;
+  padding-left: 10px;
+  border-left: 1px solid var(--border);
+}
+
+.applet-screen .group > summary {
+  padding-block: 8px;
+  font-size: 12px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.applet-screen .group > summary .count {
+  margin-left: 8px;
+  font-weight: 400;
+}
+
+.applet-screen .group > .node-settings {
+  margin: 0 0 6px 12px;
+}
+
+.applet-screen .leaf-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: start;
+  margin-block: 3px;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.applet-screen .leaf-row.visible {
+  background: #edf4ff;
+}
+
+.applet-screen .leaf-row > label {
+  min-width: 0;
+  cursor: pointer;
+}
+
+.applet-screen .leaf-row > label span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.applet-screen .node-settings {
+  min-width: 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.applet-screen .node-settings[open] {
+  grid-column: 1 / -1;
+}
+
+.applet-screen .settings {
+  color: #45556c;
+}
+
+.applet-screen button.remove {
+  justify-self: start;
+  padding: 4px 7px;
+  color: #a23d47;
+  font-size: 11px;
+}
+
+.applet-screen .dashboard-stage {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: #edf1f5;
+}
+
+.applet-screen .item-default {
+  overflow: hidden;
+  border: 1px solid #d7dfe9;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 2px 5px #24304408;
+}
+
+.applet-screen .item-default > h3 {
+  flex: none;
+  margin: 0;
+  padding: 8px 12px;
+  overflow: hidden;
+  border-bottom: 1px solid #e8edf3;
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.applet-screen .item-default > .body {
+  padding: 8px;
+  overflow: hidden;
+}
+
+.applet-screen .item-default .number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #1e3a5f;
+  font-size: clamp(24px, 4vw, 64px);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+}
+
+.applet-screen .item-preview-default {
+  border: 1px dashed #6398e8;
+  border-radius: 6px;
+  background: #2563eb12;
+}
+
+.applet-screen .dashboard-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 30px;
+  color: var(--muted);
+  text-align: center;
+  pointer-events: none;
+}
+
+@media (max-width: 850px) {
+  .applet-screen {
+    padding: 10px;
+  }
+
+  .applet-screen .dashboard-workspace {
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .applet-screen .dashboard-count {
+    display: none;
+  }
+}
