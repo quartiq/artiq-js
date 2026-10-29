@@ -3,8 +3,6 @@
 
   export const defaultLayout = {
     margin: { l: 0, r: 0, t: 0, b: 0 },
-    xaxis: { automargin: true },
-    yaxis: { automargin: true },
     showlegend: false,
     uirevision: "keep",
   } satisfies Partial<Layout>;
@@ -30,7 +28,6 @@
 
   const config = {
     displayModeBar: false,
-    responsive: true,
   };
 
   $effect(() => {
@@ -41,7 +38,9 @@
   onMount(() => {
     let active = true;
 
-    const observer = new window.ResizeObserver(() => Plotly.Plots.resize(root));
+    const observer = new window.ResizeObserver(() =>
+      Plotly.relayout(root, { autosize: true }),
+    );
 
     Plotly.newPlot(root, [], window.structuredClone(layout), config).then(
       (el) => {
