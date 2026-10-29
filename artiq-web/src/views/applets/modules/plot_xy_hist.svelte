@@ -1,3 +1,7 @@
+<script module lang="ts">
+  export const size = { w: 6, h: 10 };
+</script>
+
 <script lang="ts">
   import type { Data } from "plotly.js-dist-min";
   import type { TypedArray } from "sipyco-js/pyonutils";
