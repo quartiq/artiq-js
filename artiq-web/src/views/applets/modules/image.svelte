@@ -41,10 +41,7 @@
 
   const layout = {
     ...defaultLayout,
-    yaxis: {
-      ...defaultLayout.yaxis,
-      autorange: "reversed",
-    },
+    yaxis: { autorange: "reversed" },
   } satisfies Partial<Layout>;
 </script>
 
