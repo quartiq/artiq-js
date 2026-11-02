@@ -2,6 +2,9 @@
   import { root, detach, isLeaf } from "./tree.svelte";
   import type { Node } from "./tree.svelte";
   import PolicyCheckbox from "./PolicyCheckbox.svelte";
+
+  import Create from "./Create.svelte";
+  import Edit from "./Edit.svelte";
 </script>
 
 <label>
@@ -19,10 +22,7 @@
     {#each nodes as node (node)}
       <li>
         {#if isLeaf(node)}
-          <label>
-            {node.name}
-            <input bind:value={node.command} />
-          </label>
+          <Edit applet={node} />
 
           <label>
             <input type="checkbox" bind:checked={node.visible} />
@@ -51,4 +51,5 @@
   </ul>
 {/snippet}
 
+<Create />
 {@render siblings(root.children)}
