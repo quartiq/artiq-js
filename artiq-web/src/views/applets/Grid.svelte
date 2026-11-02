@@ -22,30 +22,30 @@
       {@const [name, ...argv] = shellQuote.parse(applet.command) as string[]}
       {@const module = modules[`./modules/${name}.svelte`]}
 
-      {#if module}
-        {@const View = module.default}
-        <GridItem
-          x={applet.geometry?.x ?? 0}
-          y={applet.geometry?.y ?? 0}
-          w={applet.geometry?.w ?? module.size?.w ?? 3}
-          h={applet.geometry?.h ?? module.size?.h ?? 10}
-          min={{ w: 2, h: 3 }}
-          onchange={({ item }) => {
-            const { x, y, w, h } = item;
-            applet.geometry = { x, y, w, h };
-          }}
-        >
-          {#snippet moveHandle({ moveStart })}
-            <h3 onpointerdown={moveStart}>{applet.name}</h3>
-          {/snippet}
+      <GridItem
+        x={applet.geometry?.x ?? 0}
+        y={applet.geometry?.y ?? 0}
+        w={applet.geometry?.w ?? module?.size?.w ?? 3}
+        h={applet.geometry?.h ?? module?.size?.h ?? 10}
+        min={{ w: 2, h: 3 }}
+        onchange={({ item }) => {
+          const { x, y, w, h } = item;
+          applet.geometry = { x, y, w, h };
+        }}
+      >
+        {#snippet moveHandle({ moveStart })}
+          <h3 onpointerdown={moveStart}>{applet.name}</h3>
+        {/snippet}
 
-          <div class="body">
+        <div class="body">
+          {#if module}
+            {@const View = module.default}
             <View {argv} />
-          </div>
-        </GridItem>
-      {:else}
-        <p>Could not load applet module: "{name}"</p>
-      {/if}
+          {:else}
+            <p>Unknown applet module: "{name}"</p>
+          {/if}
+        </div>
+      </GridItem>
     {/if}
   {/each}
 </Grid>
