@@ -1,5 +1,5 @@
 diff --git a/node_modules/@appulsauce/svelte-grid/dist/Grid.svelte b/node_modules/@appulsauce/svelte-grid/dist/Grid.svelte
-index 89b75ed..c94a118 100644
+index 89b75ed..e1abd96 100644
 --- a/node_modules/@appulsauce/svelte-grid/dist/Grid.svelte
 +++ b/node_modules/@appulsauce/svelte-grid/dist/Grid.svelte
 @@ -20,7 +20,7 @@
@@ -11,7 +11,31 @@ index 89b75ed..c94a118 100644
  	import { GridController } from './GridController';
  
  	import type {
-@@ -173,13 +173,39 @@
+@@ -84,8 +84,8 @@
+ 
+ 	let _cols = $state(0);
+ 	let _rows = $state(0);
+-	let maxCols = $state(Infinity);
+-	let maxRows = $state(Infinity);
++  const maxCols = $derived(shouldExpandCols ? Infinity : _cols);
++  const maxRows = $derived(shouldExpandRows ? Infinity : _rows);
+ 	let shouldExpandRows = $state(false);
+ 	let shouldExpandCols = $state(false);
+ 	let gridItemSize = $state<ItemSize | undefined>(undefined);
+@@ -108,12 +108,10 @@
+ 
+ 	$effect(() => {
+ 		_cols = shouldExpandCols ? calculatedGridSize.cols : _cols;
+-		maxCols = shouldExpandCols ? Infinity : _cols;
+ 	});
+ 
+ 	$effect(() => {
+ 		_rows = shouldExpandRows ? calculatedGridSize.rows : _rows;
+-		maxRows = shouldExpandRows ? Infinity : _rows;
+ 	});
+ 
+ 	$effect(() => {
+@@ -173,13 +171,39 @@
  		return () => sizeObserver.disconnect();
  	});
  
