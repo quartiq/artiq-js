@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { Group } from "./ccb";
   import { root, detach, isLeaf } from "./tree.svelte";
   import type { Node } from "./tree.svelte";
   import PolicyCheckbox from "./PolicyCheckbox.svelte";
@@ -17,7 +18,7 @@
   Allow CCB visibility control
 </label>
 
-{#snippet siblings(nodes: Node[])}
+{#snippet siblings(nodes: Node[], group: Group)}
   <ul>
     {#each nodes as node (node)}
       <li>
@@ -30,6 +31,7 @@
           </label>
         {:else}
           <strong>{node.name}</strong>
+          <Create group={[...group, node.name]} />
         {/if}
 
         <button type="button" onclick={() => detach(node)}>Remove</button>
@@ -44,7 +46,7 @@
         />
 
         {#if !isLeaf(node)}
-          {@render siblings(node.children)}
+          {@render siblings(node.children, [...group, node.name])}
         {/if}
       </li>
     {/each}
@@ -52,4 +54,4 @@
 {/snippet}
 
 <Create />
-{@render siblings(root.children)}
+{@render siblings(root.children, [])}
