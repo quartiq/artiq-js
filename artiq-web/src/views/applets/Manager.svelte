@@ -4,8 +4,9 @@
   import type { Node } from "./tree.svelte";
   import PolicyCheckbox from "./PolicyCheckbox.svelte";
 
-  import Create from "./editor/Create.svelte";
-  import Edit from "./editor/Edit.svelte";
+  import AppletCreate from "./editor/AppletCreate.svelte";
+  import AppletEdit from "./editor/AppletEdit.svelte";
+  import GroupCreate from "./editor/GroupCreate.svelte";
 </script>
 
 <label>
@@ -23,7 +24,7 @@
     {#each nodes as node (node)}
       <li>
         {#if isLeaf(node)}
-          <Edit applet={node} />
+          <AppletEdit applet={node} />
 
           <label>
             <input type="checkbox" bind:checked={node.visible} />
@@ -31,7 +32,8 @@
           </label>
         {:else}
           <strong>{node.name}</strong>
-          <Create group={[...group, node.name]} />
+          <AppletCreate group={[...group, node.name]} />
+          <GroupCreate group={[...group, node.name]} />
         {/if}
 
         <button type="button" onclick={() => detach(node)}>Remove</button>
@@ -53,5 +55,6 @@
   </ul>
 {/snippet}
 
-<Create />
+<AppletCreate />
+<GroupCreate />
 {@render siblings(root.children, [])}
