@@ -15,7 +15,7 @@ type BaseNode = {
   children: Node[];
 };
 
-type GroupNode = BaseNode & {
+export type GroupNode = BaseNode & {
   name: ccb.GroupEl;
   expanded: boolean;
 };

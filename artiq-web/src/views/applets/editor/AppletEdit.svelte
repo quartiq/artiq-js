@@ -4,22 +4,22 @@
   import type { AppletDraft } from "./AppletFields.svelte";
   import AppletEditor from "./AppletEditor.svelte";
 
-  let { applet }: { applet: LeafNode } = $props();
+  let { leaf }: { leaf: LeafNode } = $props();
   let editor: ReturnType<typeof AppletEditor>;
 
   const update = (draft: AppletDraft) => {
     const existing = leafFrom({
-      group: applet.group,
+      group: leaf.group,
       name: draft.name,
     });
 
-    if (existing && existing !== applet) return "Name already exists.";
+    if (existing && existing !== leaf) return "Name already exists.";
 
-    Object.assign(applet, draft);
+    Object.assign(leaf, draft);
   };
 </script>
 
-<button type="button" onclick={() => editor.open(applet)}>
-  {applet.name}
+<button type="button" onclick={() => editor.open(leaf)}>
+  {leaf.name}
 </button>
 <AppletEditor bind:this={editor} title="Edit applet" onsave={update} />
