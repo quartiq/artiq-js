@@ -7,6 +7,7 @@
   import AppletCreate from "./editor/AppletCreate.svelte";
   import AppletEdit from "./editor/AppletEdit.svelte";
   import GroupCreate from "./editor/GroupCreate.svelte";
+  import GroupEdit from "./editor/GroupEdit.svelte";
 </script>
 
 <label>
@@ -24,14 +25,14 @@
     {#each nodes as node (node)}
       <li>
         {#if isLeaf(node)}
-          <AppletEdit applet={node} />
+          <AppletEdit leaf={node} />
 
           <label>
             <input type="checkbox" bind:checked={node.visible} />
             Visible
           </label>
         {:else}
-          <strong>{node.name}</strong>
+          <GroupEdit branch={node} {group} />
           <AppletCreate group={[...group, node.name]} />
           <GroupCreate group={[...group, node.name]} />
         {/if}
