@@ -1,16 +1,21 @@
 <script lang="ts">
-  import { leafFrom } from "./tree.svelte";
-  import type { LeafNode } from "./tree.svelte";
+  import { leafFrom } from "../tree.svelte";
+  import type { LeafNode } from "../tree.svelte";
+  import type { AppletDraft } from "./AppletFields.svelte";
   import Editor from "./Editor.svelte";
 
   let { applet }: { applet: LeafNode } = $props();
   let editor: ReturnType<typeof Editor>;
 
-  const update = (name: string, command: string) => {
-    const existing = leafFrom({ group: applet.group, name });
+  const update = (draft: AppletDraft) => {
+    const existing = leafFrom({
+      group: applet.group,
+      name: applet.name,
+    });
+
     if (existing && existing !== applet) return "Name already exists.";
 
-    Object.assign(applet, { name, command });
+    Object.assign(applet, draft);
   };
 </script>
 

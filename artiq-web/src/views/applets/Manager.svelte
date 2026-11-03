@@ -4,8 +4,8 @@
   import type { Node } from "./tree.svelte";
   import PolicyCheckbox from "./PolicyCheckbox.svelte";
 
-  import Create from "./Create.svelte";
-  import Edit from "./Edit.svelte";
+  import Create from "./editor/Create.svelte";
+  import Edit from "./editor/Edit.svelte";
 </script>
 
 <label>
