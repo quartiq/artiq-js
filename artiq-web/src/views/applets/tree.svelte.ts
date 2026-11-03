@@ -76,6 +76,10 @@ export const groupFrom = (path: ccb.Group): GroupNode | undefined =>
     root,
   );
 
+export const newGroup = (group: ccb.Group): void => {
+  pave(group, (n) => n.children, root.children);
+};
+
 export const leafFrom = (k: ccb.AppletKey): LeafNode | undefined =>
   groupFrom(k.group)?.children.find(
     (n): n is LeafNode => n.name === k.name && isLeaf(n),

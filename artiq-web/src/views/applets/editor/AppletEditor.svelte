@@ -14,10 +14,10 @@
   let dialog: ReturnType<typeof Dialog>;
   let draft = $state<AppletDraft>({ name: "", command: "" });
 
-  export const open = (leaf: Partial<AppletDraft> = {}) => {
+  export const open = (init: Partial<AppletDraft> = {}) => {
     draft = {
-      name: leaf.name ?? "",
-      command: leaf.command ?? "",
+      name: init.name ?? "",
+      command: init.command ?? "",
     };
     dialog.open();
   };
