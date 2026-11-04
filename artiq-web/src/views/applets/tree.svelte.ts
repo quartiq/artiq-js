@@ -130,6 +130,20 @@ export const parent = (node: Node): Node | undefined => {
   return found;
 };
 
+export const contains = (subtree: Node, node: Node): boolean => {
+  let found = false;
+
+  traverse(
+    subtree,
+    (curr) => {
+      if (curr === node) found = true;
+    },
+    undefined,
+  );
+
+  return found;
+};
+
 export const detach = (node: Node): Node => {
   const p = parent(node);
   if (!p) return node;
