@@ -1,7 +1,13 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import type { Group } from "./ccb";
-  import { isRoot, parent, groupFrom, contains, dup } from "./tree.svelte";
+  import {
+    isRoot,
+    parent,
+    branchFrom,
+    contains,
+    nameTaken,
+  } from "./tree.svelte";
   import type { Node } from "./tree.svelte";
 
   let {
@@ -19,7 +25,7 @@
   let over = $state(false);
 
   const src = $derived(dragged ? parent(dragged) : undefined);
-  const dest = $derived(group ? groupFrom(group) : undefined);
+  const dest = $derived(group ? branchFrom(group) : undefined);
 
   let droppable = $derived(
     !!dragged &&
@@ -28,7 +34,7 @@
       !!dest &&
       src !== dest &&
       !contains(dragged, dest) &&
-      !dup(dragged, dest),
+      !nameTaken(dest.children, dragged),
   );
 
   let ondragstart = (ev: DragEvent) => {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Group } from "../ccb";
-  import { groupFrom } from "../tree.svelte";
-  import type { GroupNode } from "../tree.svelte";
+  import { branchFrom } from "../tree.svelte";
+  import type { BranchNode } from "../tree.svelte";
   import type { GroupDraft } from "./GroupEditor.svelte";
   import GroupEditor from "./GroupEditor.svelte";
 
@@ -9,14 +9,14 @@
     branch,
     group,
   }: {
-    branch: GroupNode;
+    branch: BranchNode;
     group: Group;
   } = $props();
 
   let editor: ReturnType<typeof GroupEditor>;
 
   const update = (draft: GroupDraft) => {
-    const existing = groupFrom([...group, draft.name]);
+    const existing = branchFrom([...group, draft.name]);
     if (existing && existing !== branch) return "Name already exists.";
 
     Object.assign(branch, draft);

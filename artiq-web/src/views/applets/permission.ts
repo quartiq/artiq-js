@@ -9,7 +9,7 @@ import {
   isLeaf,
   walk,
   traverse,
-  groupFrom,
+  branchFrom,
   leafFrom,
   root,
 } from "./tree.svelte";
@@ -22,12 +22,12 @@ export const granted = (name: PolicyKey, k: ccb.AppletKey): boolean => {
   return leaf?.policy[name] ?? inherited(name, k.group);
 };
 
-export const leafsByPolicy = (
+export const leavesByPolicy = (
   name: PolicyKey,
   k: ccb.TargetKey,
 ): LeafNode[] => {
   const node: Node | undefined =
-    k.name === null ? groupFrom(k.group) : leafFrom(k);
+    k.name === null ? branchFrom(k.group) : leafFrom(k);
   if (!node) return [];
 
   const all: LeafNode[] = [];

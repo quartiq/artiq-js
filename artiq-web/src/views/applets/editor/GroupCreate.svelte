@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Group } from "../ccb";
-  import { groupFrom, newGroup } from "../tree.svelte";
+  import { branchFrom, newBranch } from "../tree.svelte";
   import type { GroupDraft } from "./GroupEditor.svelte";
   import GroupEditor from "./GroupEditor.svelte";
 
@@ -8,8 +8,8 @@
   let editor: ReturnType<typeof GroupEditor>;
 
   const create = ({ name }: GroupDraft) => {
-    if (groupFrom([...group, name])) return "Group already exists.";
-    newGroup([...group, name]);
+    if (branchFrom([...group, name])) return "Group already exists.";
+    newBranch([...group, name]);
   };
 </script>
 

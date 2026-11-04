@@ -15,12 +15,12 @@ type BaseNode = {
   children: Node[];
 };
 
-export type GroupNode = BaseNode & {
+export type BranchNode = BaseNode & {
   name: ccb.GroupEl;
   expanded: boolean;
 };
 
-type RootNode = GroupNode & {
+type RootNode = BranchNode & {
   name: "root";
   policy: Record<PolicyKey, DefinitePolicyValue>;
 };
@@ -32,25 +32,25 @@ export type LeafNode = BaseNode &
     children: [];
   };
 
-export type Node = GroupNode | LeafNode;
+export type Node = BranchNode | LeafNode;
 
 export const isRoot = (n: Node): n is RootNode => n === root;
 export const isLeaf = (n: Node): n is LeafNode => "visible" in n;
-const isGroup = (n: Node): n is GroupNode => !isLeaf(n);
+const isBranch = (n: Node): n is BranchNode => !isLeaf(n);
 
 type WalkStep<T> = (n: Node | undefined, acc: T) => T;
 
 export const walk = <T>(
-  path: ccb.Group,
+  group: ccb.Group,
   step: WalkStep<T>,
   seed: T,
   create?: boolean,
 ): T =>
-  path.reduce(
+  group.reduce(
     ([sibs, acc], name): [Node[], T] => {
-      let group = sibs.find((n: Node) => isGroup(n) && n.name === name);
-      if (create && !group) {
-        const created = $state<GroupNode>({
+      let branch = sibs.find((n: Node) => isBranch(n) && n.name === name);
+      if (create && !branch) {
+        const created = $state<BranchNode>({
           name,
           policy: { allowCreation: undefined, allowVisCtrl: undefined },
           expanded: false,
@@ -58,30 +58,30 @@ export const walk = <T>(
         });
 
         sibs.push(created);
-        group = created;
+        branch = created;
       }
 
-      return [group?.children ?? [], step(group, acc)];
+      return [branch?.children ?? [], step(branch, acc)];
     },
     [root.children, seed] as [Node[], T],
   )[1];
 
-const pave = <T>(path: ccb.Group, step: (n: Node, acc: T) => T, seed: T): T =>
-  walk(path, step as WalkStep<T>, seed, true);
+const pave = <T>(group: ccb.Group, step: (n: Node, acc: T) => T, seed: T): T =>
+  walk(group, step as WalkStep<T>, seed, true);
 
-export const groupFrom = (path: ccb.Group): GroupNode | undefined =>
-  walk<GroupNode | undefined>(
-    path,
-    (n) => (n && isGroup(n) ? n : undefined),
+export const branchFrom = (group: ccb.Group): BranchNode | undefined =>
+  walk<BranchNode | undefined>(
+    group,
+    (n) => (n && isBranch(n) ? n : undefined),
     root,
   );
 
-export const newGroup = (group: ccb.Group): void => {
+export const newBranch = (group: ccb.Group): void => {
   pave(group, (n) => n.children, root.children);
 };
 
 export const leafFrom = (k: ccb.AppletKey): LeafNode | undefined =>
-  groupFrom(k.group)?.children.find(
+  branchFrom(k.group)?.children.find(
     (n): n is LeafNode => n.name === k.name && isLeaf(n),
   );
 
@@ -108,7 +108,7 @@ export const traverse = <T>(
   node.children.forEach((c) => traverse(c, step, next));
 };
 
-export const leafs = (node: Node): LeafNode[] => {
+export const leaves = (node: Node): LeafNode[] => {
   const all: LeafNode[] = [];
   traverse(node, (n) => isLeaf(n) && all.push(n), undefined);
   return all;
@@ -144,10 +144,14 @@ export const contains = (subtree: Node, node: Node): boolean => {
   return found;
 };
 
-export const dup = (node: Node, target: Node, name = node.name): boolean =>
-  target.children.some(
-    (other) =>
-      other !== node && other.name === name && isLeaf(other) === isLeaf(node),
+export const nameTaken = (
+  sibs: Node[],
+  node: Node,
+  name = node.name,
+): boolean =>
+  sibs.some(
+    (curr) =>
+      curr !== node && curr.name === name && isLeaf(curr) === isLeaf(node),
   );
 
 export const detach = (node: Node): Node => {

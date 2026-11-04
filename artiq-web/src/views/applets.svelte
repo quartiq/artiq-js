@@ -20,13 +20,13 @@
   };
 
   const restart_applet = (key: ccb.TargetKey) => {
-    permission.leafsByPolicy("allowVisCtrl", key).forEach((applet) => {
+    permission.leavesByPolicy("allowVisCtrl", key).forEach((applet) => {
       applet.visible = true;
     });
   };
 
   const disable_applet = (key: ccb.TargetKey) => {
-    permission.leafsByPolicy("allowVisCtrl", key).forEach((applet) => {
+    permission.leavesByPolicy("allowVisCtrl", key).forEach((applet) => {
       applet.visible = false;
     });
   };

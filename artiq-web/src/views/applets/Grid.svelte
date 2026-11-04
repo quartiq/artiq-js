@@ -4,7 +4,7 @@
   import Grid, { GridItem } from "@appulsauce/svelte-grid";
   import shellQuote from "shell-quote";
 
-  import { root, leafs } from "./tree.svelte";
+  import { root, leaves } from "./tree.svelte";
 
   type AppletModule = {
     default: Component<{ argv: string[] }>;
@@ -17,7 +17,7 @@
 </script>
 
 <Grid cols={12} itemSize={{ height: 25 }}>
-  {#each leafs(root) as applet (applet)}
+  {#each leaves(root) as applet (applet)}
     {#if applet.visible}
       {@const [name, ...argv] = shellQuote.parse(applet.command) as string[]}
       {@const module = modules[`./modules/${name}.svelte`]}

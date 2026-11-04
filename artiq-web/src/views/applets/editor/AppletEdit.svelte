@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { dup, parent } from "../tree.svelte";
+  import { nameTaken, parent } from "../tree.svelte";
   import type { LeafNode } from "../tree.svelte";
   import type { AppletDraft } from "./AppletEditor.svelte";
   import AppletEditor from "./AppletEditor.svelte";
@@ -10,7 +10,7 @@
   const update = (draft: AppletDraft) => {
     const p = parent(leaf);
     if (!p) return "Applet no longer exists.";
-    if (dup(leaf, p, draft.name)) return "Name already exists.";
+    if (nameTaken(p.children, leaf, draft.name)) return "Name already exists.";
 
     Object.assign(leaf, draft);
   };
