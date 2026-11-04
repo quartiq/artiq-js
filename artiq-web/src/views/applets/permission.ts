@@ -1,9 +1,11 @@
 import type * as ccb from "./ccb";
-import {
+import type {
   PolicyKey,
   DefinitePolicyValue,
   Node,
   LeafNode,
+} from "./tree.svelte";
+import {
   isLeaf,
   walk,
   traverse,

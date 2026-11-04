@@ -1,25 +1,15 @@
 import * as broadcast from "sipyco-js/broadcast";
-import { Dict } from "sipyco-js/pyon";
 
 export type Name = string;
-export type Command = string;
-export type Code = string;
+type Command = string;
+type Code = string;
 export type GroupEl = string;
 export type Group = GroupEl[];
 
-export const isGroup = (g: unknown): g is Group =>
-  Array.isArray(g) && g.every((v) => typeof v === "string");
-
-export type GroupKey = { group: Group };
+type GroupKey = { group: Group };
 export type AppletKey = GroupKey & { name: Name };
 export type TargetKey = AppletKey | (GroupKey & { name: null });
 export type CreateArgs = AppletKey & { command: Command; code: Code };
-
-export const sameKey = (a: AppletKey, b: AppletKey): boolean => {
-  const keys = new Dict<Partial<AppletKey>, true>();
-  keys.set({ group: a.group, name: a.name }, true);
-  return keys.has({ group: b.group, name: b.name });
-};
 
 // what "args" may consist of:
 // { name: "code_applet_example", command: "code_applet_dataset", code: 'from PyQt6 import QtWidgets\n\nfrom artiq.applets.simple import SimpleApplet\n\n\nclass DemoWidget(QtWidgets.QLabel):\n    def __init__(self, args, ctl):\n        QtWidgets.QLabel.__init__(self)\n        self.dataset_name = args.dataset\n\n    def data_changed(self, value, metadata, persist, mods):\n        try:\n            n = str(value[self.dataset_name])\n        except (KeyError, ValueError, TypeError):\n            n = "---"\n        n = "<font size=15>" + n + "</font>"\n        self.setText(n)\n\n\ndef main():\n    applet = SimpleApplet(DemoWidget)\n    applet.add_dataset("dataset", "dataset to show")\n    applet.run()\n\nif __name__ == "__main__":\n    main()\n', group: "autoapplet" }
