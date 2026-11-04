@@ -8,7 +8,14 @@
   import AppletEdit from "./editor/AppletEdit.svelte";
   import GroupCreate from "./editor/GroupCreate.svelte";
   import GroupEdit from "./editor/GroupEdit.svelte";
+  import TreeItem from "./TreeItem.svelte";
+
+  let dragged = $state<Node>();
 </script>
+
+<TreeItem node={root} group={[]} bind:dragged>
+  <strong>Root</strong>
+</TreeItem>
 
 <label>
   <input type="checkbox" bind:checked={root.policy.allowCreation} />
@@ -25,14 +32,18 @@
     {#each nodes as node (node)}
       <li>
         {#if isLeaf(node)}
-          <AppletEdit leaf={node} />
+          <TreeItem {node} bind:dragged>
+            <AppletEdit leaf={node} />
+          </TreeItem>
 
           <label>
             <input type="checkbox" bind:checked={node.visible} />
             Visible
           </label>
         {:else}
-          <GroupEdit branch={node} {group} />
+          <TreeItem {node} group={[...group, node.name]} bind:dragged>
+            <GroupEdit branch={node} {group} />
+          </TreeItem>
           <AppletCreate group={[...group, node.name]} />
           <GroupCreate group={[...group, node.name]} />
         {/if}
