@@ -114,35 +114,20 @@ export const leaves = (node: Node): LeafNode[] => {
   return all;
 };
 
-// FIXME: this does not stop traversal on find
-export const parent = (node: Node): Node | undefined => {
-  let found: Node | undefined;
+const find = (node: Node, callback: (n: Node) => boolean): Node | undefined => {
+  if (callback(node)) return node;
 
-  traverse<Node | undefined>(
-    root,
-    (curr, p) => {
-      if (curr === node) found = p;
-      return curr;
-    },
-    undefined,
-  );
-
-  return found;
+  for (const child of node.children) {
+    const found = find(child, callback);
+    if (found) return found;
+  }
 };
 
-export const contains = (subtree: Node, node: Node): boolean => {
-  let found = false;
+export const parent = (node: Node): Node | undefined =>
+  find(root, (curr) => curr.children.includes(node));
 
-  traverse(
-    subtree,
-    (curr) => {
-      if (curr === node) found = true;
-    },
-    undefined,
-  );
-
-  return found;
-};
+export const contains = (subtree: Node, node: Node): boolean =>
+  find(subtree, (curr) => curr === node) !== undefined;
 
 export const nameTaken = (
   sibs: Node[],
