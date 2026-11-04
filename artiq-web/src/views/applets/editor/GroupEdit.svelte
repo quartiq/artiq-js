@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Group } from "../ccb";
-  import { groupFrom, leafs } from "../tree.svelte";
+  import { groupFrom } from "../tree.svelte";
   import type { GroupNode } from "../tree.svelte";
   import type { GroupDraft } from "./GroupFields.svelte";
   import GroupEditor from "./GroupEditor.svelte";
@@ -18,14 +18,6 @@
   const update = (draft: GroupDraft) => {
     const existing = groupFrom([...group, draft.name]);
     if (existing && existing !== branch) return "Name already exists.";
-
-    leafs(branch).forEach((leaf) => {
-      leaf.group = [
-        ...group,
-        draft.name,
-        ...leaf.group.slice(group.length + 1),
-      ];
-    });
 
     Object.assign(branch, draft);
   };

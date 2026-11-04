@@ -26,7 +26,7 @@ type RootNode = GroupNode & {
 };
 
 export type LeafNode = BaseNode &
-  ccb.CreateArgs & {
+  Omit<ccb.CreateArgs, "group"> & {
     visible: Visible;
     geometry?: Pick<LayoutItem, "x" | "y" | "w" | "h">;
     children: [];
@@ -85,8 +85,8 @@ export const leafFrom = (k: ccb.AppletKey): LeafNode | undefined =>
     (n): n is LeafNode => n.name === k.name && isLeaf(n),
   );
 
-export const newLeaf = (args: ccb.CreateArgs): LeafNode => {
-  const sibs = pave(args.group, (n) => n.children, root.children);
+export const newLeaf = ({ group, ...args }: ccb.CreateArgs): LeafNode => {
+  const sibs = pave(group, (n) => n.children, root.children);
   const leaf = $state<LeafNode>({
     ...args,
     visible: false,
@@ -143,6 +143,18 @@ export const contains = (subtree: Node, node: Node): boolean => {
 
   return found;
 };
+
+export const dup = (
+  node: Node,
+  target: Node,
+  name = node.name,
+): boolean =>
+  target.children.some(
+    (other) =>
+      other !== node &&
+      other.name === name &&
+      isLeaf(other) === isLeaf(node),
+  );
 
 export const detach = (node: Node): Node => {
   const p = parent(node);
