@@ -1,7 +1,10 @@
+<script module lang="ts">
+  import type { LeafNode } from "../tree.svelte";
+  export type AppletDraft = Pick<LeafNode, "name" | "command">;
+</script>
+
 <script lang="ts">
   import Dialog from "./Dialog.svelte";
-  import AppletFields from "./AppletFields.svelte";
-  import type { AppletDraft } from "./AppletFields.svelte";
 
   let {
     title,
@@ -35,5 +38,6 @@
   onsave={save}
   disabled={!draft.name.trim() || !draft.command.trim()}
 >
-  <AppletFields bind:draft />
+  <label>Name <input bind:value={draft.name} required /></label>
+  <label>Command <input bind:value={draft.command} required /></label>
 </Dialog>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { dup, parent } from "../tree.svelte";
   import type { LeafNode } from "../tree.svelte";
-  import type { AppletDraft } from "./AppletFields.svelte";
+  import type { AppletDraft } from "./AppletEditor.svelte";
   import AppletEditor from "./AppletEditor.svelte";
 
   let { leaf }: { leaf: LeafNode } = $props();
