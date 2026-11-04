@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Group } from "../ccb";
   import { leafFrom, newLeaf } from "../tree.svelte";
-  import type { AppletDraft } from "./AppletFields.svelte";
+  import type { AppletDraft } from "./AppletEditor.svelte";
   import AppletEditor from "./AppletEditor.svelte";
 
   let { group = [] }: { group?: Group } = $props();

@@ -1,7 +1,10 @@
+<script module lang="ts">
+  import type { Node } from "../tree.svelte";
+  export type GroupDraft = Pick<Node, "name">;
+</script>
+
 <script lang="ts">
   import Dialog from "./Dialog.svelte";
-  import GroupFields from "./GroupFields.svelte";
-  import type { GroupDraft } from "./GroupFields.svelte";
 
   let {
     title,
@@ -23,5 +26,5 @@
 </script>
 
 <Dialog bind:this={dialog} {title} onsave={save} disabled={!draft.name.trim()}>
-  <GroupFields bind:draft />
+  <label>Name <input bind:value={draft.name} required /></label>
 </Dialog>

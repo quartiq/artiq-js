@@ -2,7 +2,7 @@
   import type { Group } from "../ccb";
   import { groupFrom } from "../tree.svelte";
   import type { GroupNode } from "../tree.svelte";
-  import type { GroupDraft } from "./GroupFields.svelte";
+  import type { GroupDraft } from "./GroupEditor.svelte";
   import GroupEditor from "./GroupEditor.svelte";
 
   let {
