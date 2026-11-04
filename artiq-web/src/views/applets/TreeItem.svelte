@@ -1,13 +1,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import type { Group } from "./ccb";
-  import {
-    isRoot,
-    parent,
-    groupFrom,
-    contains,
-    dup,
-  } from "./tree.svelte";
+  import { isRoot, parent, groupFrom, contains, dup } from "./tree.svelte";
   import type { Node } from "./tree.svelte";
 
   let {

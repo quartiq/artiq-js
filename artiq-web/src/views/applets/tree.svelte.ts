@@ -7,7 +7,7 @@ export type PolicyKey = "allowCreation" | "allowVisCtrl";
 export type DefinitePolicyValue = boolean;
 export type PolicyValue = DefinitePolicyValue | undefined; // undefined represents policy inheritance from parent
 
-export type Visible = boolean;
+type Visible = boolean;
 
 type BaseNode = {
   name: ccb.GroupEl | ccb.Name;
@@ -36,7 +36,7 @@ export type Node = GroupNode | LeafNode;
 
 export const isRoot = (n: Node): n is RootNode => n === root;
 export const isLeaf = (n: Node): n is LeafNode => "visible" in n;
-export const isGroup = (n: Node): n is GroupNode => !isLeaf(n);
+const isGroup = (n: Node): n is GroupNode => !isLeaf(n);
 
 type WalkStep<T> = (n: Node | undefined, acc: T) => T;
 
@@ -144,16 +144,10 @@ export const contains = (subtree: Node, node: Node): boolean => {
   return found;
 };
 
-export const dup = (
-  node: Node,
-  target: Node,
-  name = node.name,
-): boolean =>
+export const dup = (node: Node, target: Node, name = node.name): boolean =>
   target.children.some(
     (other) =>
-      other !== node &&
-      other.name === name &&
-      isLeaf(other) === isLeaf(node),
+      other !== node && other.name === name && isLeaf(other) === isLeaf(node),
   );
 
 export const detach = (node: Node): Node => {
