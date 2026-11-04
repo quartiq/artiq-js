@@ -12,7 +12,8 @@
   const create_applet = (args: ccb.CreateArgs) => {
     if (!permission.granted("allowCreation", args)) return;
 
-    const leaf = Object.assign(leafFrom(args) ?? newLeaf(args), args);
+    const { group, ...props } = args;
+    const leaf = Object.assign(leafFrom(args) ?? newLeaf(args), props);
     if (!permission.granted("allowVisCtrl", args)) return;
 
     leaf.visible = true;

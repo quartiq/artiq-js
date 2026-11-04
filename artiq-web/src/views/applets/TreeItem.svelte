@@ -6,8 +6,7 @@
     parent,
     groupFrom,
     contains,
-    isLeaf,
-    traverse,
+    dup,
   } from "./tree.svelte";
   import type { Node } from "./tree.svelte";
 
@@ -27,11 +26,6 @@
 
   const src = $derived(dragged ? parent(dragged) : undefined);
   const dest = $derived(group ? groupFrom(group) : undefined);
-
-  const dup = (node: Node, target: Node) =>
-    target.children.some(
-      (other) => other.name === node.name && isLeaf(other) === isLeaf(node),
-    );
 
   let droppable = $derived(
     !!dragged &&
@@ -84,18 +78,6 @@
 
     src.children.splice(src.children.indexOf(dragged), 1);
     dest.children.push(dragged);
-
-    traverse<Group>(
-      dragged,
-      (curr, path) => {
-        if (isLeaf(curr)) {
-          curr.group = [...path];
-          return path;
-        }
-        return [...path, curr.name];
-      },
-      group,
-    );
 
     dragged = undefined;
   };
