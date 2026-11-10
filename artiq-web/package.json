@@ -9,7 +9,7 @@
     "@appulsauce/svelte-grid": "^2.0.2",
     "artiq-js": "file:../artiq-js",
     "minimist": "^1.2.8",
-    "plotly.js-dist-min": "^3.5.1",
+    "plotly.js-dist-min": "^3.7.0",
     "shell-quote": "^1.8.4",
     "sipyco-js": "file:../sipyco-js",
     "svelte": "^5.57.1"
