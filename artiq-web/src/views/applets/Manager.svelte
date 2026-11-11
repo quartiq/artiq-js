@@ -31,13 +31,13 @@
 {#snippet visibilityControls(node: Node)}
   <button
     type="button"
-    onclick={() => leaves(node).forEach((leaf) => (leaf.visible = true))}
+    onclick={() => leaves(node).forEach(({ leaf }) => (leaf.visible = true))}
   >
     Show all
   </button>
   <button
     type="button"
-    onclick={() => leaves(node).forEach((leaf) => (leaf.visible = false))}
+    onclick={() => leaves(node).forEach(({ leaf }) => (leaf.visible = false))}
   >
     Hide all
   </button>

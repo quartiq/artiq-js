@@ -17,7 +17,7 @@
 </script>
 
 <Grid cols={12} itemSize={{ height: 25 }}>
-  {#each leaves(root) as applet (applet)}
+  {#each leaves(root) as { leaf: applet, path } (applet)}
     {#if applet.visible}
       {@const [name, ...argv] = shellQuote.parse(applet.command) as string[]}
       {@const module = modules[`./modules/${name}.svelte`]}
@@ -34,7 +34,7 @@
         }}
       >
         {#snippet moveHandle({ moveStart })}
-          <h3 onpointerdown={moveStart}>{applet.name}</h3>
+          <h3 onpointerdown={moveStart}>{path.join(" / ")}</h3>
         {/snippet}
 
         <div class="body">

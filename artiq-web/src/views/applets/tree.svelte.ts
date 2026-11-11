@@ -108,9 +108,20 @@ export const traverse = <T>(
   node.children.forEach((c) => traverse(c, step, next));
 };
 
-export const leaves = (node: Node): LeafNode[] => {
-  const all: LeafNode[] = [];
-  traverse(node, (n) => isLeaf(n) && all.push(n), undefined);
+export const leaves = (node: Node): { leaf: LeafNode; path: string[] }[] => {
+  const all: { leaf: LeafNode; path: string[] }[] = [];
+
+  traverse(
+    node,
+    (ncurr, pcurr: string[]) => {
+      const path = isRoot(ncurr) ? pcurr : [...pcurr, ncurr.name];
+
+      if (isLeaf(ncurr)) all.push({ leaf: ncurr, path });
+      return path;
+    },
+    [],
+  );
+
   return all;
 };
 
