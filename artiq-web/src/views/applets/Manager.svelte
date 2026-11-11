@@ -41,6 +41,14 @@
             Visible
           </label>
         {:else}
+          <button
+            type="button"
+            aria-expanded={node.expanded}
+            aria-label={`${node.expanded ? "Collapse" : "Expand"} ${node.name}`}
+            onclick={() => (node.expanded = !node.expanded)}
+          >
+            {node.expanded ? "▾" : "▸"}
+          </button>
           <TreeItem {node} group={[...group, node.name]} bind:dragged>
             <GroupEdit branch={node} {group} />
           </TreeItem>
@@ -59,7 +67,7 @@
           label="Allow CCB visibility control"
         />
 
-        {#if !isLeaf(node)}
+        {#if !isLeaf(node) && node.expanded}
           {@render siblings(node.children, [...group, node.name])}
         {/if}
       </li>
