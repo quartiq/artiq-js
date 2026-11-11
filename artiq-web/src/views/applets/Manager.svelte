@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Group } from "./ccb";
-  import { root, detach, isLeaf } from "./tree.svelte";
+  import { root, detach, isLeaf, leaves } from "./tree.svelte";
   import type { Node } from "./tree.svelte";
   import PolicyCheckbox from "./PolicyCheckbox.svelte";
 
@@ -16,6 +16,7 @@
 <TreeItem node={root} group={[]} bind:dragged>
   <strong>Root</strong>
 </TreeItem>
+{@render visibilityControls(root)}
 
 <label>
   <input type="checkbox" bind:checked={root.policy.allowCreation} />
@@ -26,6 +27,21 @@
   <input type="checkbox" bind:checked={root.policy.allowVisCtrl} />
   Allow CCB visibility control
 </label>
+
+{#snippet visibilityControls(node: Node)}
+  <button
+    type="button"
+    onclick={() => leaves(node).forEach((leaf) => (leaf.visible = true))}
+  >
+    Show all
+  </button>
+  <button
+    type="button"
+    onclick={() => leaves(node).forEach((leaf) => (leaf.visible = false))}
+  >
+    Hide all
+  </button>
+{/snippet}
 
 {#snippet siblings(nodes: Node[], group: Group)}
   <ul>
@@ -52,6 +68,7 @@
           <TreeItem {node} group={[...group, node.name]} bind:dragged>
             <GroupEdit branch={node} {group} />
           </TreeItem>
+          {@render visibilityControls(node)}
           <AppletCreate group={[...group, node.name]} />
           <GroupCreate group={[...group, node.name]} />
         {/if}
