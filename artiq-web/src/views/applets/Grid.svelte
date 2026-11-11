@@ -38,12 +38,21 @@
         {/snippet}
 
         <div class="body">
-          {#if module}
-            {@const View = module.default}
-            <View {argv} />
-          {:else}
-            <p>Unknown applet module: "{name}"</p>
-          {/if}
+          {#key applet.command}
+            <svelte:boundary>
+              {#if module}
+                {@const View = module.default}
+                <View {argv} />
+              {:else}
+                <p>Unknown applet module: "{name}"</p>
+              {/if}
+
+              {#snippet failed(error, reset)}
+                <p>{error instanceof Error ? error.message : String(error)}</p>
+                <button type="button" onclick={reset}>Retry</button>
+              {/snippet}
+            </svelte:boundary>
+          {/key}
         </div>
       </GridItem>
     {/if}
