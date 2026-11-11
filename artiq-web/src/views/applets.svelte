@@ -50,5 +50,6 @@
   });
 </script>
 
+<svelte:window onhashchange={() => window.location.reload()} />
 <Manager />
 <Grid />
