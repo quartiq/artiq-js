@@ -21,11 +21,13 @@
   {/each}
 </nav>
 
-{#if load}
-  {#await load() then { default: View }}
-    <View />
-  {/await}
-{/if}
+<main>
+  {#if load}
+    {#await load() then { default: View }}
+      <View />
+    {/await}
+  {/if}
+</main>
 
 {#if failed}
   <div class="status">
@@ -38,12 +40,24 @@
     box-sizing: border-box;
   }
 
-  :global(body) {
-    margin: 0;
-  }
-
   :global(.hidden) {
     display: none !important;
+  }
+
+  :global(body) {
+    margin: 0;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  nav {
+    flex-shrink: 0;
+  }
+
+  main {
+    flex: 1;
+    min-height: 0;
   }
 
   .status {

@@ -51,5 +51,24 @@
 </script>
 
 <svelte:window onhashchange={() => window.location.reload()} />
-<Manager />
-<Grid />
+
+<aside>
+  <Manager />
+</aside>
+
+<section>
+  <Grid />
+</section>
+
+<style>
+  :global(main) {
+    display: grid;
+    grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
+  }
+
+  aside,
+  section {
+    min-height: 0;
+    overflow: auto;
+  }
+</style>
