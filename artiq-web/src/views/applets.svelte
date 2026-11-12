@@ -6,6 +6,7 @@
   import { leafFrom, newLeaf, write } from "./applets/tree.svelte";
   import * as permission from "./applets/permission";
 
+  import SplitPane from "../SplitPane.svelte";
   import Grid from "./applets/Grid.svelte";
   import Manager from "./applets/Manager.svelte";
 
@@ -52,23 +53,11 @@
 
 <svelte:window onhashchange={() => window.location.reload()} />
 
-<aside>
-  <Manager />
-</aside>
-
-<section>
-  <Grid />
-</section>
-
-<style>
-  :global(main) {
-    display: grid;
-    grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
-  }
-
-  aside,
-  section {
-    min-height: 0;
-    overflow: auto;
-  }
-</style>
+<SplitPane>
+  {#snippet left()}
+    <Manager />
+  {/snippet}
+  {#snippet right()}
+    <Grid />
+  {/snippet}
+</SplitPane>
