@@ -6,6 +6,9 @@
   import { onMount } from "svelte";
   import * as net from "sipyco-js/net";
 
+  import Navigation from "./Navigation.svelte";
+  import "./colors.css";
+
   const views = import.meta.glob<{ default: Component }>("./views/*.svelte");
   const names = Object.keys(views).map((path) =>
     path.slice("./views/".length, -".svelte".length),
@@ -17,12 +20,7 @@
   onMount(() => net.onChange((status) => (failed = status === "failed")));
 </script>
 
-<nav>
-  <span>Available views:</span>
-  {#each names as n}
-    <a href={`/${n}`}>{n}</a>
-  {/each}
-</nav>
+<Navigation {names} />
 
 <main>
   {#if load}
@@ -51,8 +49,8 @@
     font-family: "Atkinson Hyperlegible Next";
     margin: 0;
     height: 100dvh;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
   :global(button),
@@ -62,12 +60,7 @@
     font: inherit;
   }
 
-  nav {
-    flex-shrink: 0;
-  }
-
   main {
-    flex: 1;
     min-height: 0;
   }
 
