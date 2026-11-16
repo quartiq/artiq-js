@@ -42,7 +42,6 @@
 
 <style>
   .number {
-    font-family: monospace;
     font-size: 72px;
   }
 </style>

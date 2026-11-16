@@ -1,12 +1,19 @@
 <script module lang="ts">
   import type { Layout, PlotlyHTMLElement } from "plotly.js-dist-min";
 
+  const font = {
+    family: '"Atkinson Hyperlegible Next"',
+    size: 16,
+  };
+
   export const defaultLayout = {
     margin: { l: 0, r: 0, t: 0, b: 0 },
     xaxis: { automargin: true },
     yaxis: { automargin: true },
     showlegend: false,
     uirevision: "keep",
+    font,
+    hoverlabel: { font },
   } satisfies Partial<Layout>;
 </script>
 

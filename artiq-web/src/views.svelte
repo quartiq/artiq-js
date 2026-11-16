@@ -1,4 +1,7 @@
 <script lang="ts">
+  import "@fontsource/atkinson-hyperlegible-next/400.css";
+  import "@fontsource/atkinson-hyperlegible-next/700.css";
+
   import type { Component } from "svelte";
   import { onMount } from "svelte";
   import * as net from "sipyco-js/net";
@@ -45,10 +48,18 @@
   }
 
   :global(body) {
+    font-family: "Atkinson Hyperlegible Next";
     margin: 0;
     height: 100dvh;
     display: flex;
     flex-direction: column;
+  }
+
+  :global(button),
+  :global(input),
+  :global(select),
+  :global(textarea) {
+    font: inherit;
   }
 
   nav {
