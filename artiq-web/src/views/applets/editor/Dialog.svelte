@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Snippet } from "svelte";
+  import { onMount, type Snippet } from "svelte";
 
   let {
     title,
@@ -28,6 +28,11 @@
     error = onsave() || undefined;
     if (!error) dialog.close();
   };
+
+  onMount(() => {
+    document.body.append(dialog);
+    return () => dialog.remove();
+  });
 </script>
 
 <dialog bind:this={dialog}>

@@ -86,7 +86,6 @@
   .divider {
     position: absolute;
     inset-block: 0;
-    border-radius: 0;
     width: 4px;
     transform: translateX(-50%);
     z-index: 1;

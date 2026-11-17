@@ -21,7 +21,20 @@
   ⋮
 </button>
 
-<div {id} popover style:left={`${left}px`} style:top={`${top}px`}>
+<div
+  {id}
+  popover
+  style:left={`${left}px`}
+  style:top={`${top}px`}
+  onclickcapture={(ev) => {
+    if (!(ev.target instanceof Element)) return;
+
+    const button = ev.target.closest("button");
+    if (button?.parentElement !== ev.currentTarget) return;
+
+    ev.currentTarget.hidePopover();
+  }}
+>
   {@render children()}
 </div>
 
@@ -42,7 +55,26 @@
     gap: 0.25rem;
   }
 
-  div[popover] :global(button:enabled:hover) {
+  div[popover] :global(button) {
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  div[popover] :global(label) {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
+
+  div[popover] :global(input[type="checkbox"]) {
+    margin-inline: 0;
+  }
+
+  div[popover] :global(button:hover),
+  div[popover] :global(label:hover) {
     background: var(--color-bg-beta);
   }
 </style>
