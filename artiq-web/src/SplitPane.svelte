@@ -25,6 +25,7 @@
   bind:this={panels}
   class="panels"
   style:grid-template-columns={`${width}px minmax(0, 1fr)`}
+  style:--divider-position={`${width}px`}
 >
   <section>
     {@render left()}
@@ -66,6 +67,16 @@
     height: 100%;
   }
 
+  .panels::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: var(--divider-position);
+    width: 1px;
+    transform: translateX(-50%);
+    background: var(--color-bg-beta);
+  }
+
   section {
     min-width: 0;
     min-height: 0;
@@ -75,6 +86,7 @@
   .divider {
     position: absolute;
     inset-block: 0;
+    border-radius: 0;
     width: 4px;
     transform: translateX(-50%);
     z-index: 1;
@@ -87,6 +99,6 @@
 
   .divider:hover,
   .divider:focus-visible {
-    background: #ccc;
+    background: var(--color-interaction);
   }
 </style>
