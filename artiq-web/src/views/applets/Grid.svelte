@@ -34,7 +34,9 @@
         }}
       >
         {#snippet moveHandle({ moveStart })}
-          <h3 onpointerdown={moveStart}>{path.join(" / ")}</h3>
+          <h3 onpointerdown={moveStart} title={path.join(" / ")}>
+            {path.toReversed().join(" ∈ ")}
+          </h3>
         {/snippet}
 
         <div class="body">
@@ -67,6 +69,9 @@
 
   h3 {
     cursor: move;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .body {
