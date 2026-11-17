@@ -1,14 +1,14 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import type { Group } from "./ccb";
+  import type { Group } from "../ccb";
   import {
     isRoot,
     parent,
     branchFrom,
     contains,
     nameTaken,
-  } from "./tree.svelte";
-  import type { Node } from "./tree.svelte";
+  } from "../tree.svelte";
+  import type { Node } from "../tree.svelte";
 
   let {
     node,

@@ -1,97 +1,52 @@
 <script lang="ts">
   import type { Group } from "./ccb";
-  import { root, detach, isLeaf, leaves } from "./tree.svelte";
+  import { root, isLeaf } from "./tree.svelte";
   import type { Node } from "./tree.svelte";
-  import PolicyCheckbox from "./PolicyCheckbox.svelte";
 
-  import AppletCreate from "./editor/AppletCreate.svelte";
-  import AppletEdit from "./editor/AppletEdit.svelte";
-  import GroupCreate from "./editor/GroupCreate.svelte";
-  import GroupEdit from "./editor/GroupEdit.svelte";
-  import TreeItem from "./TreeItem.svelte";
+  import LeafRow from "./manager/LeafRow.svelte";
+  import BranchRow from "./manager/BranchRow.svelte";
+  import RootRow from "./manager/RootRow.svelte";
 
   let dragged = $state<Node>();
 </script>
 
-<TreeItem node={root} group={[]} bind:dragged>
-  <strong>Root</strong>
-</TreeItem>
-{@render visibilityControls(root)}
-
-<label>
-  <input type="checkbox" bind:checked={root.policy.allowCreation} />
-  Allow CCB creation and update
-</label>
-
-<label>
-  <input type="checkbox" bind:checked={root.policy.allowVisCtrl} />
-  Allow CCB visibility control
-</label>
-
-{#snippet visibilityControls(node: Node)}
-  <button
-    type="button"
-    onclick={() => leaves(node).forEach(({ leaf }) => (leaf.visible = true))}
-  >
-    Show all
-  </button>
-  <button
-    type="button"
-    onclick={() => leaves(node).forEach(({ leaf }) => (leaf.visible = false))}
-  >
-    Hide all
-  </button>
+{#snippet siblings(nodes: Node[], group: Group, depth: number)}
+  {#each nodes as node, i (node)}
+    {#if isLeaf(nodes[i])}
+      <LeafRow bind:leaf={nodes[i]} {depth} bind:dragged />
+    {:else}
+      <BranchRow bind:branch={nodes[i]} {group} {depth} bind:dragged />
+      {#if nodes[i].expanded}
+        {@render siblings(
+          nodes[i].children,
+          [...group, nodes[i].name],
+          depth + 1,
+        )}
+      {/if}
+    {/if}
+  {/each}
 {/snippet}
 
-{#snippet siblings(nodes: Node[], group: Group)}
-  <ul>
-    {#each nodes as node (node)}
-      <li>
-        {#if isLeaf(node)}
-          <TreeItem {node} bind:dragged>
-            <AppletEdit leaf={node} />
-          </TreeItem>
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Visible</th>
+      <th scope="col">CCB update</th>
+      <th scope="col">CCB visibility</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
 
-          <label>
-            <input type="checkbox" bind:checked={node.visible} />
-            Visible
-          </label>
-        {:else}
-          <button
-            type="button"
-            aria-expanded={node.expanded}
-            aria-label={`${node.expanded ? "Collapse" : "Expand"} ${node.name}`}
-            onclick={() => (node.expanded = !node.expanded)}
-          >
-            {node.expanded ? "▾" : "▸"}
-          </button>
-          <TreeItem {node} group={[...group, node.name]} bind:dragged>
-            <GroupEdit branch={node} {group} />
-          </TreeItem>
-          {@render visibilityControls(node)}
-          <AppletCreate group={[...group, node.name]} />
-          <GroupCreate group={[...group, node.name]} />
-        {/if}
+  <tbody>
+    <RootRow bind:dragged />
+    {@render siblings(root.children, [], 1)}
+  </tbody>
+</table>
 
-        <button type="button" onclick={() => detach(node)}>Remove</button>
-
-        <PolicyCheckbox
-          bind:value={node.policy.allowCreation}
-          label="Allow CCB creation and update"
-        />
-        <PolicyCheckbox
-          bind:value={node.policy.allowVisCtrl}
-          label="Allow CCB visibility control"
-        />
-
-        {#if !isLeaf(node) && node.expanded}
-          {@render siblings(node.children, [...group, node.name])}
-        {/if}
-      </li>
-    {/each}
-  </ul>
-{/snippet}
-
-<AppletCreate />
-<GroupCreate />
-{@render siblings(root.children, [])}
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+</style>

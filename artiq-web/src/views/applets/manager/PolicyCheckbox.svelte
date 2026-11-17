@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PolicyValue } from "./tree.svelte";
+  import type { PolicyValue } from "../tree.svelte";
 
   let {
     value = $bindable(),
@@ -14,12 +14,9 @@
     vals[(vals.indexOf(v) + 1) % vals.length];
 </script>
 
-<label>
-  <input
-    type="checkbox"
-    checked={value === true}
-    indeterminate={value === undefined}
-    onchange={() => (value = next(value))}
-  />
-  {label}
-</label>
+<input
+  type="checkbox"
+  checked={value === true}
+  indeterminate={value === undefined}
+  onchange={() => (value = next(value))}
+/>
