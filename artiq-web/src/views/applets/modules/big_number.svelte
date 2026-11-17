@@ -1,4 +1,6 @@
 <script module lang="ts">
+  import "@fontsource/atkinson-hyperlegible-mono/400.css";
+
   export const size = { w: 4, h: 5 };
 </script>
 
@@ -42,6 +44,7 @@
 
 <style>
   .number {
+    font-family: "Atkinson Hyperlegible Mono";
     font-size: 72px;
   }
 </style>
