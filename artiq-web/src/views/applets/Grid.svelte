@@ -67,6 +67,10 @@
     flex-direction: column;
   }
 
+  :global(.svelte-grid-extended .item-default.non-active-default) {
+    transition: none;
+  }
+
   h3 {
     cursor: move;
     white-space: nowrap;
