@@ -2,8 +2,11 @@
   import type { Group } from "../ccb";
   import { detach, type BranchNode, type Node } from "../tree.svelte";
   import TreeItem from "./TreeItem.svelte";
+
   import PolicyCheckbox from "./PolicyCheckbox.svelte";
   import VisibilityControls from "./VisibilityControls.svelte";
+  import ActionMenu from "./ActionMenu.svelte";
+
   import GroupEdit from "../editor/GroupEdit.svelte";
   import AppletCreate from "../editor/AppletCreate.svelte";
   import GroupCreate from "../editor/GroupCreate.svelte";
@@ -34,12 +37,18 @@
       {branch.expanded ? "▾" : "▸"}
     </button>
     <TreeItem node={branch} group={path} bind:dragged>
-      <GroupEdit {branch} {group} />
+      {branch.name}
     </TreeItem>
   </td>
 
   <td>
-    <VisibilityControls node={branch} />
+    <ActionMenu>
+      <GroupEdit {branch} {group} />
+      <VisibilityControls node={branch} />
+      <AppletCreate group={path} />
+      <GroupCreate group={path} />
+      <button type="button" onclick={() => detach(branch)}>Remove</button>
+    </ActionMenu>
   </td>
 
   <td>
@@ -54,11 +63,5 @@
       bind:value={branch.policy.allowVisCtrl}
       label="Allow CCB visibility control"
     />
-  </td>
-
-  <td>
-    <AppletCreate group={path} />
-    <GroupCreate group={path} />
-    <button type="button" onclick={() => detach(branch)}>Remove</button>
   </td>
 </tr>

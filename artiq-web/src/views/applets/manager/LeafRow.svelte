@@ -1,7 +1,10 @@
 <script lang="ts">
   import { detach, type LeafNode, type Node } from "../tree.svelte";
   import TreeItem from "./TreeItem.svelte";
+
   import PolicyCheckbox from "./PolicyCheckbox.svelte";
+  import ActionMenu from "./ActionMenu.svelte";
+
   import AppletEdit from "../editor/AppletEdit.svelte";
 
   let {
@@ -18,12 +21,19 @@
 <tr>
   <td style:padding-left={`${depth}rem`}>
     <TreeItem node={leaf} bind:dragged>
-      <AppletEdit {leaf} />
+      {leaf.name}
     </TreeItem>
   </td>
 
   <td>
-    <input type="checkbox" bind:checked={leaf.visible} />
+    <ActionMenu>
+      <AppletEdit {leaf} />
+      <label>
+        <input type="checkbox" bind:checked={leaf.visible} />
+        Visible
+      </label>
+      <button type="button" onclick={() => detach(leaf)}>Remove</button>
+    </ActionMenu>
   </td>
 
   <td>
@@ -38,9 +48,5 @@
       bind:value={leaf.policy.allowVisCtrl}
       label="Allow CCB visibility control"
     />
-  </td>
-
-  <td>
-    <button type="button" onclick={() => detach(leaf)}>Remove</button>
   </td>
 </tr>

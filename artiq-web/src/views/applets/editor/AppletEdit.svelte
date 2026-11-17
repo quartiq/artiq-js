@@ -17,6 +17,6 @@
 </script>
 
 <button type="button" onclick={() => editor.open(leaf)}>
-  {leaf.name}
+  Edit
 </button>
 <AppletEditor bind:this={editor} title="Edit applet" onsave={update} />

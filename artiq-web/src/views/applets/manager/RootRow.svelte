@@ -1,7 +1,10 @@
 <script lang="ts">
   import { root, type Node } from "../tree.svelte";
   import TreeItem from "./TreeItem.svelte";
+
   import VisibilityControls from "./VisibilityControls.svelte";
+  import ActionMenu from "./ActionMenu.svelte";
+
   import AppletCreate from "../editor/AppletCreate.svelte";
   import GroupCreate from "../editor/GroupCreate.svelte";
 
@@ -16,7 +19,11 @@
   </td>
 
   <td>
-    <VisibilityControls node={root} />
+    <ActionMenu>
+      <VisibilityControls node={root} />
+      <AppletCreate />
+      <GroupCreate />
+    </ActionMenu>
   </td>
 
   <td>
@@ -25,10 +32,5 @@
 
   <td>
     <input type="checkbox" bind:checked={root.policy.allowVisCtrl} />
-  </td>
-
-  <td>
-    <AppletCreate />
-    <GroupCreate />
   </td>
 </tr>

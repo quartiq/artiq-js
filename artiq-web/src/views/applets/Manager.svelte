@@ -30,11 +30,13 @@
 <table>
   <thead>
     <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Visible</th>
-      <th scope="col">CCB update</th>
-      <th scope="col">CCB visibility</th>
-      <th scope="col">Actions</th>
+      <th rowspan="2" scope="col">Name</th>
+      <th rowspan="2" scope="col">Actions</th>
+      <th colspan="2" scope="colgroup">CCB</th>
+    </tr>
+    <tr>
+      <th scope="col">Update</th>
+      <th scope="col">Visibility</th>
     </tr>
   </thead>
 
