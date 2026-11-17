@@ -21,12 +21,7 @@
   ⋮
 </button>
 
-<div
-  {id}
-  popover
-  style:left={`${left}px`}
-  style:top={`${top}px`}
->
+<div {id} popover style:left={`${left}px`} style:top={`${top}px`}>
   {@render children()}
 </div>
 
@@ -45,5 +40,9 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+  }
+
+  div[popover] :global(button:enabled:hover) {
+    background: var(--color-bg-beta);
   }
 </style>

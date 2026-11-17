@@ -60,6 +60,16 @@
     font: inherit;
   }
 
+  :global(button) {
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    text-align: left;
+  }
+
   main {
     min-height: 0;
   }

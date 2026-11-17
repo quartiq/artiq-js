@@ -4,6 +4,8 @@
 
   import VisibilityControls from "./VisibilityControls.svelte";
   import ActionMenu from "./ActionMenu.svelte";
+  import { labels } from "./PolicyCheckbox.svelte";
+  import ExpandButton from "./ExpandButton.svelte";
 
   import AppletCreate from "../editor/AppletCreate.svelte";
   import GroupCreate from "../editor/GroupCreate.svelte";
@@ -13,12 +15,6 @@
 
 <tr>
   <td>
-    <TreeItem node={root} group={[]} bind:dragged>
-      <strong>Root</strong>
-    </TreeItem>
-  </td>
-
-  <td>
     <ActionMenu>
       <VisibilityControls node={root} />
       <AppletCreate />
@@ -27,10 +23,27 @@
   </td>
 
   <td>
-    <input type="checkbox" bind:checked={root.policy.allowCreation} />
+    <input
+      type="checkbox"
+      bind:checked={root.policy.allowCreation}
+      title={labels.allowCreation}
+      aria-label={labels.allowCreation}
+    />
   </td>
 
   <td>
-    <input type="checkbox" bind:checked={root.policy.allowVisCtrl} />
+    <input
+      type="checkbox"
+      bind:checked={root.policy.allowVisCtrl}
+      title={labels.allowVisCtrl}
+      aria-label={labels.allowVisCtrl}
+    />
+  </td>
+
+  <td>
+    <ExpandButton bind:expanded={root.expanded} name="root" />
+    <TreeItem node={root} group={[]} bind:dragged>
+      <strong>Root</strong>
+    </TreeItem>
   </td>
 </tr>

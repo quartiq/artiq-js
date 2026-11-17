@@ -28,27 +28,35 @@
 {/snippet}
 
 <table>
-  <thead>
-    <tr>
-      <th rowspan="2" scope="col">Name</th>
-      <th rowspan="2" scope="col">Actions</th>
-      <th colspan="2" scope="colgroup">CCB</th>
-    </tr>
-    <tr>
-      <th scope="col">Update</th>
-      <th scope="col">Visibility</th>
-    </tr>
-  </thead>
-
   <tbody>
     <RootRow bind:dragged />
-    {@render siblings(root.children, [], 1)}
+    {#if root.expanded}
+      {@render siblings(root.children, [], 1)}
+    {/if}
   </tbody>
 </table>
 
 <style>
   table {
+    margin: 1rem 0;
     width: 100%;
     border-collapse: collapse;
+  }
+
+  table :global(.invisible) {
+    opacity: 0.5;
+    font-style: italic;
+  }
+
+  table :global(td) {
+    white-space: nowrap;
+  }
+
+  table :global(td:not(:last-child)) {
+    width: 1%;
+  }
+
+  table :global(tr:hover) {
+    background: var(--color-bg-beta);
   }
 </style>

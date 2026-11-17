@@ -23,7 +23,5 @@
   };
 </script>
 
-<button type="button" onclick={() => editor.open(branch)}>
-  Edit
-</button>
+<button type="button" onclick={() => editor.open(branch)}> Edit </button>
 <GroupEditor bind:this={editor} title="Edit group" onsave={update} />

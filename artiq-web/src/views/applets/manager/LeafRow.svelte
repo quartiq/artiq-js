@@ -19,12 +19,6 @@
 </script>
 
 <tr>
-  <td style:padding-left={`${depth}rem`}>
-    <TreeItem node={leaf} bind:dragged>
-      {leaf.name}
-    </TreeItem>
-  </td>
-
   <td>
     <ActionMenu>
       <AppletEdit {leaf} />
@@ -39,14 +33,29 @@
   <td>
     <PolicyCheckbox
       bind:value={leaf.policy.allowCreation}
-      label="Allow CCB creation and update"
+      policy="allowCreation"
     />
   </td>
 
   <td>
     <PolicyCheckbox
       bind:value={leaf.policy.allowVisCtrl}
-      label="Allow CCB visibility control"
+      policy="allowVisCtrl"
     />
   </td>
+
+  <td style:padding-left={`${depth}rem`}>
+    <span class="symbol">▪</span>
+    <TreeItem node={leaf} bind:dragged>
+      <span class:invisible={!leaf.visible}>{leaf.name}</span>
+    </TreeItem>
+  </td>
 </tr>
+
+<style>
+  .symbol {
+    display: inline-block;
+    width: 2rem;
+    text-align: center;
+  }
+</style>

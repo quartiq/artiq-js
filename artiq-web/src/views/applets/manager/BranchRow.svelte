@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { Group } from "../ccb";
-  import { detach, type BranchNode, type Node } from "../tree.svelte";
+  import { detach, leaves, type BranchNode, type Node } from "../tree.svelte";
   import TreeItem from "./TreeItem.svelte";
 
   import PolicyCheckbox from "./PolicyCheckbox.svelte";
   import VisibilityControls from "./VisibilityControls.svelte";
   import ActionMenu from "./ActionMenu.svelte";
+  import ExpandButton from "./ExpandButton.svelte";
 
   import GroupEdit from "../editor/GroupEdit.svelte";
   import AppletCreate from "../editor/AppletCreate.svelte";
@@ -24,23 +25,13 @@
   } = $props();
 
   const path = $derived([...group, branch.name]);
+
+  const hasInvisible = $derived(
+    leaves(branch).some(({ leaf }) => !leaf.visible),
+  );
 </script>
 
 <tr>
-  <td style:padding-left={`${depth}rem`}>
-    <button
-      type="button"
-      aria-expanded={branch.expanded}
-      aria-label={`${branch.expanded ? "Collapse" : "Expand"} ${branch.name}`}
-      onclick={() => (branch.expanded = !branch.expanded)}
-    >
-      {branch.expanded ? "▾" : "▸"}
-    </button>
-    <TreeItem node={branch} group={path} bind:dragged>
-      {branch.name}
-    </TreeItem>
-  </td>
-
   <td>
     <ActionMenu>
       <GroupEdit {branch} {group} />
@@ -54,14 +45,21 @@
   <td>
     <PolicyCheckbox
       bind:value={branch.policy.allowCreation}
-      label="Allow CCB creation and update"
+      policy="allowCreation"
     />
   </td>
 
   <td>
     <PolicyCheckbox
       bind:value={branch.policy.allowVisCtrl}
-      label="Allow CCB visibility control"
+      policy="allowVisCtrl"
     />
+  </td>
+
+  <td style:padding-left={`${depth}rem`}>
+    <ExpandButton bind:expanded={branch.expanded} name={branch.name} />
+    <TreeItem node={branch} group={path} bind:dragged>
+      <span class:invisible={hasInvisible}>{branch.name}</span>
+    </TreeItem>
   </td>
 </tr>
