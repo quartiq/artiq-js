@@ -9,10 +9,16 @@
   import AppletCreate from "../editor/AppletCreate.svelte";
   import GroupCreate from "../editor/GroupCreate.svelte";
 
-  let { dragged = $bindable() }: { dragged?: Node } = $props();
+  let {
+    dragged = $bindable(),
+    target = $bindable(),
+  }: {
+    dragged?: Node;
+    target?: Node;
+  } = $props();
 </script>
 
-<tr>
+<tr class:dropTarget={target === root}>
   <td>
     <ActionMenu>
       <VisibilityControls node={root} />
@@ -40,7 +46,13 @@
   </td>
 
   <td class="name">
-    <TreeItem node={root} group={[]} bind:expanded={root.expanded} bind:dragged>
+    <TreeItem
+      node={root}
+      group={[]}
+      bind:expanded={root.expanded}
+      bind:dragged
+      bind:target
+    >
       <strong>Root</strong>
     </TreeItem>
   </td>

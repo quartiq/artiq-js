@@ -15,6 +15,7 @@
     group,
     depth = 0,
     dragged = $bindable(),
+    target = $bindable(),
     expanded = $bindable(),
     children,
   }: {
@@ -22,11 +23,10 @@
     group?: Group;
     depth?: number;
     dragged?: Node;
+    target?: Node;
     expanded?: boolean;
     children: Snippet;
   } = $props();
-
-  let over = $state(false);
 
   const src = $derived(dragged ? parent(dragged) : undefined);
   const dest = $derived(group ? branchFrom(group) : undefined);
@@ -51,11 +51,11 @@
 
   let ondragend = () => {
     dragged = undefined;
-    over = false;
+    target = undefined;
   };
 
   let ondragover = (ev: DragEvent) => {
-    over = droppable;
+    target = droppable ? node : undefined;
 
     if (ev.dataTransfer)
       ev.dataTransfer.dropEffect = droppable ? "move" : "none";
@@ -70,11 +70,11 @@
     )
       return;
 
-    over = false;
+    if (target === node) target = undefined;
   };
 
   let ondrop = (ev: DragEvent) => {
-    over = false;
+    target = undefined;
     if (!droppable || !dragged || !src || !dest || !group) return;
 
     ev.preventDefault();
@@ -98,7 +98,6 @@
   class="item"
   role="group"
   draggable={!isRoot(node)}
-  class:over={over && droppable}
   {ondragstart}
   {ondragend}
   {ondragover}

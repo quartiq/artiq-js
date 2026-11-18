@@ -8,14 +8,21 @@
   import RootRow from "./manager/RootRow.svelte";
 
   let dragged = $state<Node>();
+  let target = $state<Node>();
 </script>
 
 {#snippet siblings(nodes: Node[], group: Group, depth: number)}
   {#each nodes as node, i (node)}
     {#if isLeaf(nodes[i])}
-      <LeafRow bind:leaf={nodes[i]} {depth} bind:dragged />
+      <LeafRow bind:leaf={nodes[i]} {depth} bind:dragged bind:target />
     {:else}
-      <BranchRow bind:branch={nodes[i]} {group} {depth} bind:dragged />
+      <BranchRow
+        bind:branch={nodes[i]}
+        {group}
+        {depth}
+        bind:dragged
+        bind:target
+      />
       {#if nodes[i].expanded}
         {@render siblings(
           nodes[i].children,
@@ -29,7 +36,7 @@
 
 <table>
   <tbody>
-    <RootRow bind:dragged />
+    <RootRow bind:dragged bind:target />
     {#if root.expanded}
       {@render siblings(root.children, [], 1)}
     {/if}
@@ -64,9 +71,7 @@
     background: var(--color-bg-beta);
   }
 
-  table :global(tr:has(.over)) {
-    outline: 1px solid Highlight;
-    outline-offset: -1px;
+  table :global(tr.dropTarget) {
     background: color-mix(in srgb, Highlight 12%, transparent);
   }
 </style>
