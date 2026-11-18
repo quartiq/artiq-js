@@ -9,6 +9,7 @@
     nameTaken,
   } from "../tree.svelte";
   import type { Node } from "../tree.svelte";
+  import Icon from "../../../Icon.svelte";
 
   let {
     node,
@@ -88,8 +89,17 @@
 </script>
 
 {#snippet content()}
-  <span class="symbol" aria-hidden="true">
-    {expanded === undefined ? "▪" : expanded ? "▾" : "▸"}
+  <span
+    class="symbol"
+    style:color={expanded === undefined
+      ? "var(--color-fg-alpha)"
+      : "var(--color-fg-beta)"}
+    aria-hidden="true"
+  >
+    <Icon
+      name={expanded === undefined ? "chart-spline" : "chevron-right"}
+      rotate={expanded === true ? 90 : 0}
+    />
   </span>
   {@render children()}
 {/snippet}
@@ -135,6 +145,8 @@
 
   .symbol {
     flex: 0 0 1.5rem;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>
