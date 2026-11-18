@@ -91,6 +91,6 @@
 
   .divider:hover,
   .divider:focus-visible {
-    background: var(--color-interaction);
+    background: Highlight;
   }
 </style>
