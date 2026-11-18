@@ -53,7 +53,7 @@
       bind:dragged
       bind:target
     >
-      <strong>Root</strong>
+      <span title="All applets">𝕌<sub>applets</sub></span>
     </TreeItem>
   </td>
 </tr>
