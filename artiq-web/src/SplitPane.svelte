@@ -25,7 +25,6 @@
   bind:this={panels}
   class="panels"
   style:grid-template-columns={`${width}px minmax(0, 1fr)`}
-  style:--divider-position={`${width}px`}
 >
   <section>
     {@render left()}
@@ -33,7 +32,7 @@
 
   <button
     class="divider"
-    style:left={`${width}px`}
+    style:left={`${width + 0.5}px`}
     type="button"
     aria-label="Divider"
     onpointerdown={(event) => {
@@ -67,20 +66,14 @@
     height: 100%;
   }
 
-  .panels::before {
-    content: "";
-    position: absolute;
-    inset-block: 0;
-    left: var(--divider-position);
-    width: 1px;
-    transform: translateX(-50%);
-    background: var(--color-bg-beta);
-  }
-
   section {
     min-width: 0;
     min-height: 0;
     overflow: auto;
+  }
+
+  button + section {
+    border-left: 1px solid var(--color-bg-beta);
   }
 
   .divider {

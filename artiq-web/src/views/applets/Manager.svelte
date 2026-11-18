@@ -52,11 +52,21 @@
     white-space: nowrap;
   }
 
+  table :global(td.name) {
+    padding: 0;
+  }
+
   table :global(td:not(:last-child)) {
     width: 1%;
   }
 
   table :global(tr:hover) {
     background: var(--color-bg-beta);
+  }
+
+  table :global(tr:has(.over)) {
+    outline: 1px solid Highlight;
+    outline-offset: -1px;
+    background: color-mix(in srgb, Highlight 12%, transparent);
   }
 </style>

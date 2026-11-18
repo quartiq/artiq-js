@@ -13,12 +13,16 @@
   let {
     node,
     group,
+    depth = 0,
     dragged = $bindable(),
+    expanded = $bindable(),
     children,
   }: {
     node: Node;
     group?: Group;
+    depth?: number;
     dragged?: Node;
+    expanded?: boolean;
     children: Snippet;
   } = $props();
 
@@ -83,7 +87,15 @@
   };
 </script>
 
+{#snippet content()}
+  <span class="symbol" aria-hidden="true">
+    {expanded === undefined ? "▪" : expanded ? "▾" : "▸"}
+  </span>
+  {@render children()}
+{/snippet}
+
 <div
+  class="item"
   role="group"
   draggable={!isRoot(node)}
   class:over={over && droppable}
@@ -93,22 +105,37 @@
   {ondragleave}
   {ondrop}
 >
-  {@render children()}
+  {#if expanded === undefined}
+    <div class="content" style:padding-left={`${depth}rem`}>
+      {@render content()}
+    </div>
+  {:else}
+    <button
+      class="content"
+      type="button"
+      aria-expanded={expanded}
+      style:padding-left={`${depth}rem`}
+      onclick={() => (expanded = !expanded)}
+    >
+      {@render content()}
+    </button>
+  {/if}
 </div>
 
 <style>
-  div {
-    display: inline-block;
-    border: 1px solid transparent;
-    padding: 0.2rem;
+  .item[draggable="true"],
+  .item[draggable="true"] > .content {
+    cursor: pointer;
   }
 
-  div[draggable="true"] {
-    cursor: grab;
+  .content {
+    display: flex;
+    width: 100%;
+    padding: 0.25rem 0;
   }
 
-  .over {
-    border-color: Highlight;
-    background: color-mix(in srgb, Highlight 12%, transparent);
+  .symbol {
+    flex: 0 0 1.5rem;
+    text-align: center;
   }
 </style>

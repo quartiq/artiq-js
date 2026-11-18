@@ -6,7 +6,6 @@
   import PolicyCheckbox from "./PolicyCheckbox.svelte";
   import VisibilityControls from "./VisibilityControls.svelte";
   import ActionMenu from "./ActionMenu.svelte";
-  import ExpandButton from "./ExpandButton.svelte";
 
   import GroupEdit from "../editor/GroupEdit.svelte";
   import AppletCreate from "../editor/AppletCreate.svelte";
@@ -56,9 +55,14 @@
     />
   </td>
 
-  <td style:padding-left={`${depth}rem`}>
-    <ExpandButton bind:expanded={branch.expanded} name={branch.name} />
-    <TreeItem node={branch} group={path} bind:dragged>
+  <td class="name">
+    <TreeItem
+      node={branch}
+      group={path}
+      {depth}
+      bind:expanded={branch.expanded}
+      bind:dragged
+    >
       <span class:invisible={hasInvisible}>{branch.name}</span>
     </TreeItem>
   </td>

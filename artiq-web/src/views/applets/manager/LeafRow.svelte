@@ -44,18 +44,9 @@
     />
   </td>
 
-  <td style:padding-left={`${depth}rem`}>
-    <span class="symbol">▪</span>
-    <TreeItem node={leaf} bind:dragged>
+  <td class="name">
+    <TreeItem node={leaf} {depth} bind:dragged>
       <span class:invisible={!leaf.visible}>{leaf.name}</span>
     </TreeItem>
   </td>
 </tr>
-
-<style>
-  .symbol {
-    display: inline-block;
-    width: 2rem;
-    text-align: center;
-  }
-</style>
