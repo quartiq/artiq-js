@@ -23,12 +23,14 @@
     depth,
     dragged = $bindable(),
     target = $bindable(),
+    filtering = false,
   }: {
     branch: BranchNode;
     group: Group;
     depth: number;
     dragged?: Node;
     target?: Node;
+    filtering?: boolean;
   } = $props();
 
   const path = $derived([...group, branch.name]);
@@ -71,6 +73,7 @@
       bind:expanded={branch.expanded}
       bind:dragged
       bind:target
+      {filtering}
     >
       <span class:invisible={hasInvisible}>{branch.name}</span>
     </TreeItem>

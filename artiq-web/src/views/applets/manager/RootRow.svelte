@@ -12,9 +12,11 @@
   let {
     dragged = $bindable(),
     target = $bindable(),
+    filtering = false,
   }: {
     dragged?: Node;
     target?: Node;
+    filtering?: boolean;
   } = $props();
 </script>
 
@@ -52,6 +54,7 @@
       bind:expanded={root.expanded}
       bind:dragged
       bind:target
+      {filtering}
     >
       <span title="All applets">𝕌<sub>applets</sub></span>
     </TreeItem>

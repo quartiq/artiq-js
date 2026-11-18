@@ -18,6 +18,7 @@
     dragged = $bindable(),
     target = $bindable(),
     expanded = $bindable(),
+    filtering = false,
     children,
   }: {
     node: Node;
@@ -26,11 +27,16 @@
     dragged?: Node;
     target?: Node;
     expanded?: boolean;
+    filtering?: boolean;
     children: Snippet;
   } = $props();
 
   const src = $derived(dragged ? parent(dragged) : undefined);
   const dest = $derived(group ? branchFrom(group) : undefined);
+
+  const open = $derived(
+    expanded === undefined ? undefined : filtering || expanded,
+  );
 
   let droppable = $derived(
     !!dragged &&
@@ -91,14 +97,14 @@
 {#snippet content()}
   <span
     class="symbol"
-    style:color={expanded === undefined
+    style:color={open === undefined
       ? "var(--color-fg-alpha)"
       : "var(--color-fg-beta)"}
     aria-hidden="true"
   >
     <Icon
-      name={expanded === undefined ? "chart-spline" : "chevron-right"}
-      rotate={expanded === true ? 90 : 0}
+      name={open === undefined ? "chart-spline" : "chevron-right"}
+      rotate={open === true ? 90 : 0}
     />
   </span>
   {@render children()}
@@ -114,7 +120,7 @@
   {ondragleave}
   {ondrop}
 >
-  {#if expanded === undefined}
+  {#if open === undefined}
     <div class="content" style:padding-left={`${depth}rem`}>
       {@render content()}
     </div>
@@ -122,7 +128,8 @@
     <button
       class="content"
       type="button"
-      aria-expanded={expanded}
+      aria-expanded={open}
+      disabled={filtering}
       style:padding-left={`${depth}rem`}
       onclick={() => (expanded = !expanded)}
     >

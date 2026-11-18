@@ -3,6 +3,7 @@
   import { root, isLeaf } from "./tree.svelte";
   import type { Node } from "./tree.svelte";
 
+  import TreeFilter from "./manager/TreeFilter.svelte";
   import LeafRow from "./manager/LeafRow.svelte";
   import BranchRow from "./manager/BranchRow.svelte";
   import RootRow from "./manager/RootRow.svelte";
@@ -11,41 +12,53 @@
   let target = $state<Node>();
 </script>
 
-{#snippet siblings(nodes: Node[], group: Group, depth: number)}
+{#snippet siblings(
+  nodes: Node[],
+  group: Group,
+  depth: number,
+  matches: Set<Node> | undefined,
+)}
   {#each nodes as node, i (node)}
-    {#if isLeaf(nodes[i])}
-      <LeafRow bind:leaf={nodes[i]} {depth} bind:dragged bind:target />
-    {:else}
-      <BranchRow
-        bind:branch={nodes[i]}
-        {group}
-        {depth}
-        bind:dragged
-        bind:target
-      />
-      {#if nodes[i].expanded}
-        {@render siblings(
-          nodes[i].children,
-          [...group, nodes[i].name],
-          depth + 1,
-        )}
+    {#if matches === undefined || matches.has(node)}
+      {#if isLeaf(nodes[i])}
+        <LeafRow bind:leaf={nodes[i]} {depth} bind:dragged bind:target />
+      {:else}
+        <BranchRow
+          bind:branch={nodes[i]}
+          {group}
+          {depth}
+          filtering={matches !== undefined}
+          bind:dragged
+          bind:target
+        />
+        {#if matches !== undefined || nodes[i].expanded}
+          {@render siblings(
+            nodes[i].children,
+            [...group, nodes[i].name],
+            depth + 1,
+            matches,
+          )}
+        {/if}
       {/if}
     {/if}
   {/each}
 {/snippet}
 
-<table>
-  <tbody>
-    <RootRow bind:dragged bind:target />
-    {#if root.expanded}
-      {@render siblings(root.children, [], 1)}
-    {/if}
-  </tbody>
-</table>
+<TreeFilter {root}>
+  {#snippet children(matches)}
+    <table>
+      <tbody>
+        <RootRow filtering={matches !== undefined} bind:dragged bind:target />
+        {#if matches !== undefined || root.expanded}
+          {@render siblings(root.children, [], 1, matches)}
+        {/if}
+      </tbody>
+    </table>
+  {/snippet}
+</TreeFilter>
 
 <style>
   table {
-    margin: 1rem 0;
     width: 100%;
     border-collapse: collapse;
   }
