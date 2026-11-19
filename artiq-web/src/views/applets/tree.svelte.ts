@@ -97,30 +97,30 @@ export const newLeaf = ({ group, ...args }: ccb.CreateArgs): LeafNode => {
   return leaf;
 };
 
-type TraverseStep<T> = (n: Node, acc: T) => T;
-
-export const traverse = <T>(
+export const traverse = (
   node: Node,
-  step: TraverseStep<T>,
-  acc: T,
+  step: (node: Node, path: readonly Node[]) => void,
 ): void => {
-  const next = step(node, acc);
-  node.children.forEach((c) => traverse(c, step, next));
+  const visit = (ncurr: Node, pcurr: readonly Node[]): void => {
+    step(ncurr, pcurr);
+    ncurr.children.forEach((child) => visit(child, [...pcurr, ncurr]));
+  };
+
+  visit(node, []);
 };
 
 export const leaves = (node: Node): { leaf: LeafNode; path: string[] }[] => {
   const all: { leaf: LeafNode; path: string[] }[] = [];
 
-  traverse(
-    node,
-    (ncurr, pcurr: string[]) => {
-      const path = isRoot(ncurr) ? pcurr : [...pcurr, ncurr.name];
+  traverse(node, (ncurr, pcurr) => {
+    if (!isLeaf(ncurr)) return;
 
-      if (isLeaf(ncurr)) all.push({ leaf: ncurr, path });
-      return path;
-    },
-    [],
-  );
+    const path = [...pcurr, ncurr]
+      .filter((node) => !isRoot(node))
+      .map((node) => node.name);
+
+    all.push({ leaf: ncurr, path });
+  });
 
   return all;
 };

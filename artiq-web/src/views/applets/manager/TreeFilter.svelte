@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import { isLeaf, type Node } from "../tree.svelte";
+  import { isLeaf, traverse, type Node } from "../tree.svelte";
 
   let {
     root,
@@ -13,24 +13,25 @@
   let search = $state("");
   const query = $derived(search.trim().toLowerCase());
 
+  const match = (n: Node, s: string) =>
+    isLeaf(n) && n.name.toLowerCase().includes(s);
+
+  const matchingPathNodes = () => {
+    const all = new Set<Node>();
+
+    traverse(root, (ncurr, pcurr) => {
+      if (!match(ncurr, query)) return;
+
+      pcurr.forEach((node) => all.add(node));
+      all.add(ncurr);
+    });
+
+    return all;
+  };
+
   const matches = $derived.by(() => {
     if (!query) return undefined;
-
-    const result = new Set<Node>();
-
-    function visit(node: Node): boolean {
-      let matched = isLeaf(node) && node.name.toLowerCase().includes(query);
-
-      for (const child of node.children) {
-        if (visit(child)) matched = true;
-      }
-
-      if (matched) result.add(node);
-      return matched;
-    }
-
-    visit(root);
-    return result;
+    return matchingPathNodes();
   });
 </script>
 

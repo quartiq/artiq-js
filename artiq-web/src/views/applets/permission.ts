@@ -5,14 +5,7 @@ import type {
   Node,
   LeafNode,
 } from "./tree.svelte";
-import {
-  isLeaf,
-  walk,
-  traverse,
-  branchFrom,
-  leafFrom,
-  root,
-} from "./tree.svelte";
+import { isLeaf, walk, branchFrom, leafFrom, root } from "./tree.svelte";
 
 const inherited = (name: PolicyKey, path: ccb.Group): DefinitePolicyValue =>
   walk(path, (n, acc) => n?.policy[name] ?? acc, root.policy[name]);
@@ -26,21 +19,22 @@ export const leavesByPolicy = (
   name: PolicyKey,
   k: ccb.TargetKey,
 ): LeafNode[] => {
-  const node: Node | undefined =
-    k.name === null ? branchFrom(k.group) : leafFrom(k);
+  const node = k.name === null ? branchFrom(k.group) : leafFrom(k);
   if (!node) return [];
 
   const all: LeafNode[] = [];
 
-  traverse(
-    node,
-    (n, inherited) => {
-      const granted = n.policy[name] ?? inherited;
-      if (granted && isLeaf(n)) all.push(n);
-      return granted;
-    },
-    inherited(name, k.group),
-  );
+  const collect = (ncurr: Node, inherited: DefinitePolicyValue): void => {
+    const allowed = ncurr.policy[name] ?? inherited;
 
+    if (isLeaf(ncurr)) {
+      if (allowed) all.push(ncurr);
+      return;
+    }
+
+    ncurr.children.forEach((child) => collect(child, allowed));
+  };
+
+  collect(node, inherited(name, k.group));
   return all;
 };
