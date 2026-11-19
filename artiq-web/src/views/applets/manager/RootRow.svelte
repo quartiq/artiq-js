@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { root, type Node } from "../tree.svelte";
-  import TreeItem from "./TreeItem.svelte";
+  import { root } from "../tree.svelte";
+  import * as drag from "./drag.svelte";
+  import NodeLabel from "./NodeLabel.svelte";
 
   import VisibilityControls from "./VisibilityControls.svelte";
   import ActionMenu from "./ActionMenu.svelte";
@@ -9,18 +10,10 @@
   import AppletCreate from "../editor/AppletCreate.svelte";
   import GroupCreate from "../editor/GroupCreate.svelte";
 
-  let {
-    dragged = $bindable(),
-    target = $bindable(),
-    filtering = false,
-  }: {
-    dragged?: Node;
-    target?: Node;
-    filtering?: boolean;
-  } = $props();
+  let { filtering = false }: { filtering?: boolean } = $props();
 </script>
 
-<tr class:dropTarget={target === root}>
+<tr class:dropTarget={drag.state.target === root}>
   <td>
     <ActionMenu>
       <VisibilityControls node={root} />
@@ -48,15 +41,8 @@
   </td>
 
   <td class="name">
-    <TreeItem
-      node={root}
-      group={[]}
-      bind:expanded={root.expanded}
-      bind:dragged
-      bind:target
-      {filtering}
-    >
+    <NodeLabel node={root} bind:expanded={root.expanded} {filtering}>
       <span title="All applets">𝕌<sub>applets</sub></span>
-    </TreeItem>
+    </NodeLabel>
   </td>
 </tr>

@@ -1,13 +1,8 @@
 <script lang="ts">
   import type { Group } from "../ccb";
-  import {
-    detach,
-    contains,
-    leaves,
-    type BranchNode,
-    type Node,
-  } from "../tree.svelte";
-  import TreeItem from "./TreeItem.svelte";
+  import { detach, contains, leaves, type BranchNode } from "../tree.svelte";
+  import * as drag from "./drag.svelte";
+  import NodeLabel from "./NodeLabel.svelte";
 
   import PolicyCheckbox from "./PolicyCheckbox.svelte";
   import VisibilityControls from "./VisibilityControls.svelte";
@@ -21,15 +16,11 @@
     branch = $bindable(),
     group,
     depth,
-    dragged = $bindable(),
-    target = $bindable(),
     filtering = false,
   }: {
     branch: BranchNode;
     group: Group;
     depth: number;
-    dragged?: Node;
-    target?: Node;
     filtering?: boolean;
   } = $props();
 
@@ -40,7 +31,9 @@
   );
 </script>
 
-<tr class:dropTarget={!!target && contains(target, branch)}>
+<tr
+  class:dropTarget={!!drag.state.target && contains(drag.state.target, branch)}
+>
   <td>
     <ActionMenu>
       <GroupEdit {branch} {group} />
@@ -66,16 +59,13 @@
   </td>
 
   <td class="name">
-    <TreeItem
+    <NodeLabel
       node={branch}
-      group={path}
       {depth}
       bind:expanded={branch.expanded}
-      bind:dragged
-      bind:target
       {filtering}
     >
       <span class:invisible={hasInvisible}>{branch.name}</span>
-    </TreeItem>
+    </NodeLabel>
   </td>
 </tr>

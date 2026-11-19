@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { detach, contains, type LeafNode, type Node } from "../tree.svelte";
-  import TreeItem from "./TreeItem.svelte";
+  import { detach, contains, type LeafNode } from "../tree.svelte";
+  import * as drag from "./drag.svelte";
+  import NodeLabel from "./NodeLabel.svelte";
 
   import PolicyCheckbox from "./PolicyCheckbox.svelte";
   import ActionMenu from "./ActionMenu.svelte";
@@ -10,17 +11,13 @@
   let {
     leaf = $bindable(),
     depth,
-    dragged = $bindable(),
-    target = $bindable(),
   }: {
     leaf: LeafNode;
     depth: number;
-    dragged?: Node;
-    target?: Node;
   } = $props();
 </script>
 
-<tr class:dropTarget={!!target && contains(target, leaf)}>
+<tr class:dropTarget={!!drag.state.target && contains(drag.state.target, leaf)}>
   <td>
     <ActionMenu>
       <AppletEdit {leaf} />
@@ -47,8 +44,8 @@
   </td>
 
   <td class="name">
-    <TreeItem node={leaf} {depth} bind:dragged bind:target>
+    <NodeLabel node={leaf} {depth}>
       <span class:invisible={!leaf.visible}>{leaf.name}</span>
-    </TreeItem>
+    </NodeLabel>
   </td>
 </tr>
