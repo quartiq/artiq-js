@@ -1,0 +1,11 @@
+.button {
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.25rem;
+  background: var(--color-bg-beta);
+  text-align: center;
+}
+
+.button.primary {
+  background: var(--color-fg-alpha);
+  color: var(--color-bg-alpha);
+}

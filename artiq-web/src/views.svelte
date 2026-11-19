@@ -7,7 +7,11 @@
   import * as net from "sipyco-js/net";
 
   import Navigation from "./Navigation.svelte";
+  import "./reset.css";
+  import "./typo.css";
   import "./colors.css";
+  import "./inputs.css";
+  import "./buttons.css";
 
   const views = import.meta.glob<{ default: Component }>("./views/*.svelte");
   const names = Object.keys(views).map((path) =>
@@ -37,27 +41,14 @@
 {/if}
 
 <style>
-  :global(*) {
-    box-sizing: border-box;
-  }
-
   :global(.hidden) {
     display: none !important;
   }
 
   :global(body) {
-    font-family: "Atkinson Hyperlegible Next";
-    margin: 0;
     height: 100dvh;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
-  }
-
-  :global(button),
-  :global(input),
-  :global(select),
-  :global(textarea) {
-    font: inherit;
   }
 
   :global(button) {

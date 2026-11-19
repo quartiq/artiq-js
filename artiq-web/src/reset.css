@@ -1,0 +1,16 @@
+* {
+  box-sizing: border-box;
+}
+
+body,
+p,
+h2 {
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}

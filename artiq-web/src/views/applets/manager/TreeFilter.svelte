@@ -52,15 +52,6 @@
   input {
     width: calc(100% - 1rem);
     margin: 0.5rem;
-    padding: 0.4rem 0.6rem;
-    background: var(--color-bg-beta);
-    border: none;
-    border-radius: 0.25rem;
-  }
-
-  input:focus-visible {
-    outline: 2px solid var(--color-fg-alpha);
-    outline-offset: -2px;
   }
 
   p {

@@ -83,8 +83,6 @@
     transform: translateX(-50%);
     z-index: 1;
     padding: 0;
-    border: 0;
-    background: transparent;
     cursor: col-resize;
     touch-action: none;
   }

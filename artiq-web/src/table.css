@@ -16,6 +16,6 @@ td {
   border: 1px solid gray;
 }
 
-input {
+table input:not([type]) {
   background-color: transparent;
 }
