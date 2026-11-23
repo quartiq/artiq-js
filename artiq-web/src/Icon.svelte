@@ -10,6 +10,9 @@
       "M3 3v16a2 2 0 0 0 2 2h16",
       "M7 14c2 0 2-8 4-8s2 12 4 12 2-8 6-8",
     ],
+
+    // https://lucide.dev/icons/minus
+    minus: ["M5 12h14"],
   };
 </script>
 

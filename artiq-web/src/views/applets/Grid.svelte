@@ -4,6 +4,7 @@
   import Grid, { GridItem } from "@appulsauce/svelte-grid";
   import shellQuote from "shell-quote";
 
+  import Icon from "../../Icon.svelte";
   import { root, leaves } from "./tree.svelte";
 
   type AppletModule = {
@@ -35,9 +36,19 @@
         previewClass="applet-preview"
       >
         {#snippet moveHandle({ moveStart })}
-          <h3 onpointerdown={moveStart} title={path.join(" / ")}>
-            {path.toReversed().join(" ∈ ")}
-          </h3>
+          <header>
+            <h3 onpointerdown={moveStart} title={path.join(" / ")}>
+              {path.toReversed().join(" ∈ ")}
+            </h3>
+            <button
+              type="button"
+              title="Hide applet"
+              aria-label={`Hide ${applet.name}`}
+              onclick={() => (applet.visible = false)}
+            >
+              <Icon name="minus" />
+            </button>
+          </header>
         {/snippet}
 
         <div class="body">
@@ -74,13 +85,24 @@
     transition: none;
   }
 
-  h3 {
+  header {
+    display: flex;
+    background: var(--color-bg-beta);
+  }
+
+  header h3 {
+    flex: 1;
     cursor: move;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 0.25rem 0.5rem;
-    background: var(--color-bg-beta);
+  }
+
+  header button {
+    display: grid;
+    place-items: center;
+    padding: 0.25rem 0.5rem;
   }
 
   .body {

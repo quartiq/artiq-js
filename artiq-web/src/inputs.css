@@ -6,7 +6,6 @@ textarea {
   border: 0;
   border-radius: 0.25rem;
   background: var(--color-bg-beta);
-  color: inherit;
 }
 
 input:not([type]):focus-visible,
