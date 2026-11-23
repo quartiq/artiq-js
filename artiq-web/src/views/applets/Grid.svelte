@@ -16,7 +16,7 @@
   });
 </script>
 
-<Grid cols={12} itemSize={{ height: 25 }}>
+<Grid cols={12} itemSize={{ height: 25 }} collision="push">
   {#each leaves(root) as { leaf: applet, path } (applet)}
     {#if applet.visible}
       {@const [name, ...argv] = shellQuote.parse(applet.command) as string[]}
@@ -32,6 +32,7 @@
           const { x, y, w, h } = item;
           applet.geometry = { x, y, w, h };
         }}
+        previewClass="applet-preview"
       >
         {#snippet moveHandle({ moveStart })}
           <h3 onpointerdown={moveStart} title={path.join(" / ")}>
@@ -65,6 +66,8 @@
   :global(.item-default) {
     display: flex;
     flex-direction: column;
+    border: 1px solid var(--color-bg-beta);
+    border-radius: 0.25rem;
   }
 
   :global(.svelte-grid-extended .item-default.non-active-default) {
@@ -76,6 +79,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding: 0.25rem 0.5rem;
+    background: var(--color-bg-beta);
   }
 
   .body {
@@ -83,5 +88,11 @@
     min-width: 0;
     min-height: 0;
     overflow: hidden;
+  }
+
+  :global(.applet-preview) {
+    border-radius: 0.25rem;
+    background: color-mix(in srgb, Highlight 15%, transparent);
+    border: 1px solid Highlight;
   }
 </style>

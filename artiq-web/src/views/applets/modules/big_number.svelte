@@ -1,7 +1,7 @@
 <script module lang="ts">
   import "@fontsource/atkinson-hyperlegible-mono/400.css";
 
-  export const size = { w: 4, h: 5 };
+  export const size = { w: 4, h: 4 };
 </script>
 
 <script lang="ts">
