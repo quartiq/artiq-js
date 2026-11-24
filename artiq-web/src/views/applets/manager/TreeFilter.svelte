@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import { isLeaf, traverse, type Node } from "../tree.svelte";
+  import { isRoot, traverse, type Node } from "../tree.svelte";
 
   let {
     root,
@@ -11,16 +11,27 @@
   } = $props();
 
   let search = $state("");
-  const query = $derived(search.trim().toLowerCase());
 
-  const match = (n: Node, s: string) =>
-    isLeaf(n) && n.name.toLowerCase().includes(s);
+  // Whitespace separates terms; quotes preserve phrases, even while unfinished.
+  const terms = $derived(
+    (search.toLowerCase().match(/"[^"]*(?:"|$)|[^\s"]+/g) ?? [])
+      .map((term) => term.replace(/^"|"$/g, "").trim())
+      .filter(Boolean),
+  );
+
+  const match = (nodes: Node[], strings: string[]): boolean => {
+    const names = nodes
+      .filter((n) => !isRoot(n))
+      .map((n) => n.name.toLowerCase());
+
+    return strings.every((s) => names.some((n) => n.includes(s)));
+  };
 
   const matchingPathNodes = () => {
     const all = new Set<Node>();
 
     traverse(root, (ncurr, pcurr) => {
-      if (!match(ncurr, query)) return;
+      if (!match([...pcurr, ncurr], terms)) return;
 
       pcurr.forEach((node) => all.add(node));
       all.add(ncurr);
@@ -30,7 +41,7 @@
   };
 
   const matches = $derived.by(() => {
-    if (!query) return undefined;
+    if (!terms.length) return undefined;
     return matchingPathNodes();
   });
 </script>
@@ -38,12 +49,13 @@
 <input
   type="search"
   bind:value={search}
-  placeholder="Filter applets…"
-  aria-label="Filter applets by name"
+  placeholder="Filter applets and groups…"
+  aria-label="Filter applets and groups"
+  title="All terms must match. Use quotes for phrases."
 />
 
 {#if matches?.size === 0}
-  <p>No matching applets.</p>
+  <p>No matching applets or groups.</p>
 {/if}
 
 {@render children(matches)}
