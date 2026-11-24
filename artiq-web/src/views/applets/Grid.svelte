@@ -6,6 +6,7 @@
 
   import Icon from "../../Icon.svelte";
   import { root, leaves } from "./tree.svelte";
+  import * as navigation from "./navigation";
 
   type AppletModule = {
     default: Component<{ argv: string[] }>;
@@ -36,7 +37,7 @@
         previewClass="applet-preview"
       >
         {#snippet moveHandle({ moveStart })}
-          <header>
+          <header {@attach (el) => navigation.register(applet, el)}>
             <h3 onpointerdown={moveStart} title={path.join(" / ")}>
               {path.toReversed().join(" ∈ ")}
             </h3>

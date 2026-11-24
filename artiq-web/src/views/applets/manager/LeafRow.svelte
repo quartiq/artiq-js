@@ -7,6 +7,7 @@
   import ActionMenu from "./ActionMenu.svelte";
 
   import AppletEdit from "../editor/AppletEdit.svelte";
+  import * as navigation from "../navigation";
 
   let {
     leaf = $bindable(),
@@ -44,7 +45,7 @@
   </td>
 
   <td class="name">
-    <NodeLabel node={leaf} {depth}>
+    <NodeLabel node={leaf} {depth} onclick={() => navigation.locate(leaf)}>
       <span class:invisible={!leaf.visible}>{leaf.name}</span>
     </NodeLabel>
   </td>

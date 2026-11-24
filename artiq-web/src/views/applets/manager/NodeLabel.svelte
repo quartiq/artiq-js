@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import { isRoot } from "../tree.svelte";
+  import { isRoot, isLeaf } from "../tree.svelte";
   import type { Node } from "../tree.svelte";
   import * as drag from "./drag.svelte";
   import Icon from "../../../Icon.svelte";
@@ -10,31 +10,31 @@
     depth = 0,
     expanded = $bindable(),
     filtering = false,
+    onclick,
     children,
   }: {
     node: Node;
     depth?: number;
     expanded?: boolean;
     filtering?: boolean;
+    onclick?: () => void;
     children: Snippet;
   } = $props();
 
-  const open = $derived(
-    expanded === undefined ? undefined : filtering || expanded,
-  );
+  const open = $derived(filtering || expanded);
 </script>
 
 {#snippet content()}
   <span
     class="symbol"
-    style:color={open === undefined
+    style:color={isLeaf(node)
       ? "var(--color-fg-alpha)"
       : "var(--color-fg-beta)"}
     aria-hidden="true"
   >
     <Icon
-      name={open === undefined ? "chart-spline" : "chevron-right"}
-      rotate={open === true ? 90 : 0}
+      name={isLeaf(node) ? "chart-spline" : "chevron-right"}
+      rotate={!isLeaf(node) && open ? 90 : 0}
     />
   </span>
   {@render children()}
@@ -50,10 +50,15 @@
   ondragleave={(ev) => drag.leave(ev, node)}
   ondrop={(ev) => drag.drop(ev, node)}
 >
-  {#if open === undefined}
-    <div class="content" style:padding-left={`${depth}rem`}>
+  {#if isLeaf(node)}
+    <button
+      class="content"
+      type="button"
+      style:padding-left={`${depth}rem`}
+      {onclick}
+    >
       {@render content()}
-    </div>
+    </button>
   {:else}
     <button
       class="content"
