@@ -19,7 +19,7 @@
   {#each keys as k (k.name)}
     <li>
       <a href={target + k.name}>
-        {#if k.name}<span>{k.name}</span>{:else}<i>default</i>{/if}
+        {#if k.name}<span>{k.name}</span>{:else}<i>(default)</i>{/if}
       </a>
       <button
         onclick={() => {

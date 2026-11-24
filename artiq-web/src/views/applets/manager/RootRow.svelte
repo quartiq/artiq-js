@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { root } from "../tree.svelte";
+  import { root, leaves } from "../tree.svelte";
   import * as drag from "./drag.svelte";
   import NodeLabel from "./NodeLabel.svelte";
 
@@ -9,6 +9,8 @@
 
   import AppletCreate from "../editor/AppletCreate.svelte";
   import GroupCreate from "../editor/GroupCreate.svelte";
+
+  const hasInvisible = $derived(leaves(root).some(({ leaf }) => !leaf.visible));
 
   let { filtering = false }: { filtering?: boolean } = $props();
 </script>
@@ -42,7 +44,7 @@
 
   <td class="name">
     <NodeLabel node={root} bind:expanded={root.expanded} {filtering}>
-      <span title="All applets">𝕌<sub>applets</sub></span>
+      <i class:invisible={hasInvisible}>(root)</i>
     </NodeLabel>
   </td>
 </tr>

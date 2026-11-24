@@ -63,7 +63,6 @@
 
   table :global(.invisible) {
     opacity: 0.5;
-    font-style: italic;
   }
 
   table :global(td) {
