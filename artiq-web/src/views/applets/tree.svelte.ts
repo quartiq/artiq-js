@@ -109,17 +109,17 @@ export const traverse = (
   visit(node, []);
 };
 
-export const leaves = (node: Node): { leaf: LeafNode; path: string[] }[] => {
-  const all: { leaf: LeafNode; path: string[] }[] = [];
+export const leaves = (node: Node): { leaf: LeafNode; group: ccb.Group }[] => {
+  const all: { leaf: LeafNode; group: ccb.Group }[] = [];
 
   traverse(node, (ncurr, pcurr) => {
     if (!isLeaf(ncurr)) return;
 
-    const path = [...pcurr, ncurr]
+    const group = pcurr
       .filter((node) => !isRoot(node))
       .map((node) => node.name);
 
-    all.push({ leaf: ncurr, path });
+    all.push({ leaf: ncurr, group });
   });
 
   return all;

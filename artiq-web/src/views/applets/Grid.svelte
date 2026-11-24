@@ -4,6 +4,7 @@
   import Grid, { GridItem } from "@appulsauce/svelte-grid";
   import shellQuote from "shell-quote";
 
+  import type { Group } from "./ccb";
   import Icon from "../../Icon.svelte";
   import { root, leaves } from "./tree.svelte";
   import * as navigation from "./navigation";
@@ -16,10 +17,12 @@
   const modules = import.meta.glob<AppletModule>("./modules/*.svelte", {
     eager: true,
   });
+
+  const fmt = (group: Group) => (group.length ? ` · ${group.join(" › ")}` : "");
 </script>
 
 <Grid cols={12} itemSize={{ height: 25 }} collision="push">
-  {#each leaves(root) as { leaf: applet, path } (applet)}
+  {#each leaves(root) as { leaf: applet, group } (applet)}
     {#if applet.visible}
       {@const [name, ...argv] = shellQuote.parse(applet.command) as string[]}
       {@const module = modules[`./modules/${name}.svelte`]}
@@ -38,8 +41,8 @@
       >
         {#snippet moveHandle({ moveStart })}
           <header {@attach (el) => navigation.register(applet, el)}>
-            <h3 onpointerdown={moveStart} title={path.join(" / ")}>
-              {path.toReversed().join(" ∈ ")}
+            <h3 onpointerdown={moveStart} title={applet.name + fmt(group)}>
+              <strong>{applet.name}</strong><span>{fmt(group)}</span>
             </h3>
             <button
               type="button"
@@ -98,12 +101,18 @@
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 0.25rem 0.5rem;
+    font-weight: normal;
+    color: var(--color-fg-beta);
   }
 
   header button {
     display: grid;
     place-items: center;
     padding: 0.25rem 0.5rem;
+  }
+
+  h3 strong {
+    color: initial;
   }
 
   .body {
