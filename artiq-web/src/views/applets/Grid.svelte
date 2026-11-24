@@ -120,6 +120,7 @@
     min-width: 0;
     min-height: 0;
     overflow: hidden;
+    user-select: text;
   }
 
   :global(.applet-preview) {
