@@ -11,6 +11,7 @@
     expanded = $bindable(),
     filtering = false,
     onclick,
+    oncontextmenu,
     children,
   }: {
     node: Node;
@@ -18,6 +19,7 @@
     expanded?: boolean;
     filtering?: boolean;
     onclick?: () => void;
+    oncontextmenu?: (ev: MouseEvent) => void;
     children: Snippet;
   } = $props();
 
@@ -43,6 +45,7 @@
 <div
   class="item"
   role="group"
+  {oncontextmenu}
   draggable={!isRoot(node)}
   ondragstart={(ev) => drag.start(ev, node)}
   ondragend={drag.end}

@@ -29,21 +29,13 @@
   const hasInvisible = $derived(
     leaves(branch).some(({ leaf }) => !leaf.visible),
   );
+
+  let menu: ActionMenu;
 </script>
 
 <tr
   class:dropTarget={!!drag.state.target && contains(drag.state.target, branch)}
 >
-  <td>
-    <ActionMenu>
-      <GroupEdit {branch} {group} />
-      <VisibilityControls node={branch} />
-      <AppletCreate group={path} />
-      <GroupCreate group={path} />
-      <button type="button" onclick={() => detach(branch)}>Remove</button>
-    </ActionMenu>
-  </td>
-
   <td>
     <PolicyCheckbox
       bind:value={branch.policy.allowCreation}
@@ -64,8 +56,17 @@
       {depth}
       bind:expanded={branch.expanded}
       {filtering}
+      oncontextmenu={(ev) => menu.open(ev)}
     >
       <span class:invisible={hasInvisible}>{branch.name}</span>
     </NodeLabel>
+
+    <ActionMenu bind:this={menu}>
+      <GroupEdit {branch} {group} />
+      <VisibilityControls node={branch} />
+      <AppletCreate group={path} />
+      <GroupCreate group={path} />
+      <button type="button" onclick={() => detach(branch)}>Remove</button>
+    </ActionMenu>
   </td>
 </tr>

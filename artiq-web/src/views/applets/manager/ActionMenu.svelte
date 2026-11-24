@@ -3,26 +3,32 @@
 
   let { children }: { children: Snippet } = $props();
 
-  const id = $props.id();
   let left = $state(0);
   let top = $state(0);
+
+  let menu: HTMLDivElement;
+
+  export const open = (ev: MouseEvent) => {
+    ev.preventDefault();
+    left = ev.clientX;
+    top = ev.clientY;
+
+    const show = () => {
+      if (menu.isConnected) menu.showPopover();
+    };
+
+    // Opening before mouse release causes native popover dismissal.
+    if (ev.buttons) {
+      window.addEventListener("mouseup", show, { once: true });
+      return;
+    }
+
+    show();
+  };
 </script>
 
-<button
-  type="button"
-  popovertarget={id}
-  aria-label="Actions"
-  onclick={(event) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    left = rect.left;
-    top = rect.bottom;
-  }}
->
-  ⋮
-</button>
-
 <div
-  {id}
+  bind:this={menu}
   popover
   style:left={`${left}px`}
   style:top={`${top}px`}
