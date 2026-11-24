@@ -67,9 +67,10 @@
       class="content"
       type="button"
       aria-expanded={open}
-      disabled={filtering}
       style:padding-left={`${depth}rem`}
-      onclick={() => (expanded = !expanded)}
+      onclick={() => {
+        if (!filtering) expanded = !expanded;
+      }}
     >
       {@render content()}
     </button>
