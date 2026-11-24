@@ -8,14 +8,20 @@
 
   let menu: HTMLDivElement;
 
+  const show = () => {
+    if (!menu.isConnected) return;
+
+    menu.showPopover();
+
+    if (top + menu.offsetHeight > window.innerHeight) {
+      top -= menu.offsetHeight;
+    }
+  };
+
   export const open = (ev: MouseEvent) => {
     ev.preventDefault();
     left = ev.clientX;
     top = ev.clientY;
-
-    const show = () => {
-      if (menu.isConnected) menu.showPopover();
-    };
 
     // Opening before mouse release causes native popover dismissal.
     if (ev.buttons) {
