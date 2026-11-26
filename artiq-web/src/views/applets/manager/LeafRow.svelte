@@ -18,6 +18,7 @@
   } = $props();
 
   let menu: ActionMenu;
+  let editor: ReturnType<typeof AppletEdit>;
 </script>
 
 <tr
@@ -45,12 +46,13 @@
       {depth}
       oncontextmenu={(ev) => menu.open(ev)}
       onclick={() => selectItem(leaf)}
+      ondblclick={() => editor.open()}
     >
       <span class:invisible={!leaf.visible}>{leaf.name}</span>
     </NodeLabel>
 
     <ActionMenu bind:this={menu}>
-      <AppletEdit {leaf} />
+      <AppletEdit {leaf} bind:this={editor} />
       <label>
         <input type="checkbox" bind:checked={leaf.visible} />
         Visible

@@ -11,6 +11,7 @@
     expanded = $bindable(),
     filtering = false,
     onclick,
+    ondblclick,
     oncontextmenu,
     children,
   }: {
@@ -19,6 +20,7 @@
     expanded?: boolean;
     filtering?: boolean;
     onclick?: () => void;
+    ondblclick?: () => void;
     oncontextmenu?: (ev: MouseEvent) => void;
     children: Snippet;
   } = $props();
@@ -59,6 +61,7 @@
       type="button"
       style:padding-left={`${depth}rem`}
       {onclick}
+      {ondblclick}
     >
       {@render content()}
     </button>
