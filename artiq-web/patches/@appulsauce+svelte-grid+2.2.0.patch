@@ -1,0 +1,91 @@
+diff --git a/node_modules/@appulsauce/svelte-grid/dist/GridItem.svelte b/node_modules/@appulsauce/svelte-grid/dist/GridItem.svelte
+index e2471fc..4358818 100644
+--- a/node_modules/@appulsauce/svelte-grid/dist/GridItem.svelte
++++ b/node_modules/@appulsauce/svelte-grid/dist/GridItem.svelte
+@@ -120,6 +120,8 @@
+ 		gridParams.registerItem(item);
+ 		registered = true;
+ 		writeBackIfNormalized();
++    itemRef.addEventListener('pointerdown', resetClick, true);
++    itemRef.addEventListener('click', handleClick, true);
+ 		return () => {
+ 			registered = false;
+ 			// A drag or resize only removes its window listeners on pointerup. Destroyed
+@@ -131,6 +133,8 @@
+ 			abortShift();
+ 			if (active) gridParams.setDragTarget(null);
+ 			gridParams.unregisterItem(item);
++      itemRef.removeEventListener('pointerdown', resetClick, true);
++      itemRef.removeEventListener('click', handleClick, true);
+ 		};
+ 	});
+ 
+@@ -457,6 +461,39 @@
+ 	let gesturePointer: number | undefined;
+ 	/** A touch held down on the item, not yet long enough to start its gesture. */
+ 	let press = $state.raw<{ x: number; y: number; timer: ReturnType<typeof setTimeout> } | undefined>();
++  let pendingMouse: PointerEvent | undefined;
++  let suppressClick = false;
++
++  function mouseMove(event: PointerEvent) {
++    if (!pendingMouse || event.pointerId !== gesturePointer) return;
++
++    if (
++      Math.hypot(
++        event.clientX - pendingMouse.clientX,
++        event.clientY - pendingMouse.clientY
++      ) <= 4
++    ) return;
++
++    const down = pendingMouse;
++    pendingMouse = undefined;
++    window.removeEventListener('pointermove', mouseMove);
++
++    suppressClick = true;
++    startMove(down);
++    move(event);
++  }
++
++  function resetClick() {
++    suppressClick = false;
++  }
++
++  function handleClick(event: MouseEvent) {
++    if (!suppressClick || event.detail === 0) return;
++
++    suppressClick = false;
++    event.preventDefault();
++    event.stopImmediatePropagation();
++  }
+ 
+ 	/**
+ 	 * Starts a drag or resize for a primary-button press. A finger or pen on a part of the item
+@@ -464,12 +501,17 @@
+ 	 * swipe across the grid still scrolls the page.
+ 	 */
+ 	function beginGesture(event: PointerEvent, start: (event: PointerEvent) => void) {
+-		if (event.button !== 0 || active || press) return;
++    if (event.button !== 0 || active || press || pendingMouse) return;
+ 		event.stopPropagation();
+ 		if (!gridParams.claimGesture(item.id)) return;
+ 		gesturePointer = event.pointerId;
+ 		window.addEventListener('pointerup', gestureEnd);
+ 		window.addEventListener('pointercancel', cancelGesture);
++    if (event.pointerType === 'mouse' && start === startMove) {
++      pendingMouse = event;
++      window.addEventListener('pointermove', mouseMove);
++      return;
++    }
+ 		if (!waitsForPress(event, gridParams.touchDelay)) {
+ 			start(event);
+ 			return;
+@@ -530,6 +572,9 @@
+ 	}
+ 
+ 	function stopListening() {
++    pendingMouse = undefined;
++    window.removeEventListener('pointermove', mouseMove);
++
+ 		endPress();
+ 		window.removeEventListener('pointermove', move);
+ 		window.removeEventListener('pointermove', resize);
