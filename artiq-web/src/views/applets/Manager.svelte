@@ -81,6 +81,10 @@
     background: var(--color-bg-beta);
   }
 
+  table :global(tr.selected) {
+    background: color-mix(in srgb, Highlight 20%, var(--color-bg-alpha));
+  }
+
   table :global(tr.dropTarget) {
     background: color-mix(in srgb, Highlight 12%, transparent);
   }

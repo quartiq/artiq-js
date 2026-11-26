@@ -7,7 +7,7 @@
   import ActionMenu from "./ActionMenu.svelte";
 
   import AppletEdit from "../editor/AppletEdit.svelte";
-  import * as navigation from "../navigation";
+  import { isSelected, registerRow, selectItem } from "../select.svelte";
 
   let {
     leaf = $bindable(),
@@ -20,7 +20,11 @@
   let menu: ActionMenu;
 </script>
 
-<tr class:dropTarget={!!drag.state.target && contains(drag.state.target, leaf)}>
+<tr
+  class:dropTarget={!!drag.state.target && contains(drag.state.target, leaf)}
+  class:selected={isSelected(leaf)}
+  {@attach (el) => registerRow(leaf, el)}
+>
   <td>
     <PolicyCheckbox
       bind:value={leaf.policy.allowCreation}
@@ -39,8 +43,8 @@
     <NodeLabel
       node={leaf}
       {depth}
-      onclick={() => navigation.locate(leaf)}
       oncontextmenu={(ev) => menu.open(ev)}
+      onclick={() => selectItem(leaf)}
     >
       <span class:invisible={!leaf.visible}>{leaf.name}</span>
     </NodeLabel>

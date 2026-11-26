@@ -115,14 +115,22 @@ export const leaves = (node: Node): { leaf: LeafNode; group: ccb.Group }[] => {
   traverse(node, (ncurr, pcurr) => {
     if (!isLeaf(ncurr)) return;
 
-    const group = pcurr
-      .filter((node) => !isRoot(node))
-      .map((node) => node.name);
+    const group = pcurr.filter((n) => !isRoot(n)).map((n) => n.name);
 
     all.push({ leaf: ncurr, group });
   });
 
   return all;
+};
+
+export const expand = (node: Node): void => {
+  traverse(root, (ncurr, pcurr) => {
+    if (ncurr !== node) return;
+
+    pcurr.forEach((n) => {
+      if (!isLeaf(n)) n.expanded = true;
+    });
+  });
 };
 
 const find = (node: Node, callback: (n: Node) => boolean): Node | undefined => {

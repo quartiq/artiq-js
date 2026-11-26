@@ -7,7 +7,7 @@
   import type { Group } from "./ccb";
   import Icon from "../../Icon.svelte";
   import { root, leaves } from "./tree.svelte";
-  import * as navigation from "./navigation";
+  import { isSelected, registerItem, selectRow } from "./select.svelte";
 
   type AppletModule = {
     default: Component<{ argv: string[] }>;
@@ -40,12 +40,19 @@
         previewClass="applet-preview"
       >
         {#snippet moveHandle({ moveStart })}
-          <header {@attach (el) => navigation.register(applet, el)}>
-            <h3 onpointerdown={moveStart} title={applet.name + fmt(group)}>
-              <strong>{applet.name}</strong><span>{fmt(group)}</span>
-            </h3>
+          <header
+            class:selected={isSelected(applet)}
+            {@attach (el) => registerItem(applet, el.parentElement!)}
+          >
             <button
-              type="button"
+              class="title"
+              title={applet.name + fmt(group)}
+              onpointerdown={moveStart}
+              onclick={() => selectRow(applet)}
+            >
+              <strong>{applet.name}</strong><span>{fmt(group)}</span>
+            </button>
+            <button
               title="Hide applet"
               aria-label={`Hide ${applet.name}`}
               onclick={() => (applet.visible = false)}
@@ -94,7 +101,11 @@
     background: var(--color-bg-beta);
   }
 
-  header h3 {
+  header.selected {
+    background: color-mix(in srgb, Highlight 20%, var(--color-bg-alpha));
+  }
+
+  header .title {
     flex: 1;
     cursor: move;
     white-space: nowrap;
@@ -105,13 +116,13 @@
     color: var(--color-fg-beta);
   }
 
-  header button {
+  header button:not(.title) {
     display: grid;
     place-items: center;
     padding: 0.25rem 0.5rem;
   }
 
-  h3 strong {
+  .title strong {
     color: initial;
   }
 
