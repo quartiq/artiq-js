@@ -10,6 +10,8 @@
   import Grid from "./applets/Grid.svelte";
   import Manager from "./applets/Manager.svelte";
 
+  const readOnly = new URLSearchParams(window.location.search).has("readonly");
+
   const create_applet = (args: ccb.CreateArgs) => {
     if (!permission.granted("allowCreation", args)) return;
 
@@ -53,11 +55,24 @@
 
 <svelte:window onhashchange={() => window.location.reload()} />
 
-<SplitPane>
-  {#snippet left()}
-    <Manager />
-  {/snippet}
-  {#snippet right()}
-    <Grid />
-  {/snippet}
-</SplitPane>
+{#if readOnly}
+  <section class="readonly">
+    <Grid {readOnly} />
+  </section>
+{:else}
+  <SplitPane>
+    {#snippet left()}
+      <Manager />
+    {/snippet}
+    {#snippet right()}
+      <Grid />
+    {/snippet}
+  </SplitPane>
+{/if}
+
+<style>
+  .readonly {
+    height: 100%;
+    overflow: auto;
+  }
+</style>

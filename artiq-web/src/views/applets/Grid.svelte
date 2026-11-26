@@ -4,10 +4,8 @@
   import Grid, { GridItem } from "@appulsauce/svelte-grid";
   import shellQuote from "shell-quote";
 
-  import type { Group } from "./ccb";
-  import Icon from "../../Icon.svelte";
   import { root, leaves } from "./tree.svelte";
-  import { isSelected, registerItem, selectRow } from "./select.svelte";
+  import AppletHeader from "./AppletHeader.svelte";
 
   type AppletModule = {
     default: Component<{ argv: string[] }>;
@@ -18,10 +16,10 @@
     eager: true,
   });
 
-  const fmt = (group: Group) => (group.length ? ` · ${group.join(" › ")}` : "");
+  let { readOnly = false }: { readOnly?: boolean } = $props();
 </script>
 
-<Grid cols={12} itemSize={{ height: 25 }} collision="push">
+<Grid cols={12} itemSize={{ height: 25 }} collision="push" {readOnly}>
   {#each leaves(root) as { leaf: applet, group } (applet)}
     {#if applet.visible}
       {@const [name, ...argv] = shellQuote.parse(applet.command) as string[]}
@@ -40,27 +38,17 @@
         previewClass="applet-preview"
       >
         {#snippet moveHandle({ moveStart })}
-          <header
-            class:selected={isSelected(applet)}
-            {@attach (el) => registerItem(applet, el.parentElement!)}
-          >
-            <button
-              class="title"
-              title={applet.name + fmt(group)}
-              onpointerdown={moveStart}
-              onclick={() => selectRow(applet)}
-            >
-              <strong>{applet.name}</strong><span>{fmt(group)}</span>
-            </button>
-            <button
-              title="Hide applet"
-              aria-label={`Hide ${applet.name}`}
-              onclick={() => (applet.visible = false)}
-            >
-              <Icon name="minus" />
-            </button>
-          </header>
+          <AppletHeader
+            {applet}
+            {group}
+            {moveStart}
+            onhide={() => (applet.visible = false)}
+          />
         {/snippet}
+
+        {#if readOnly}
+          <AppletHeader {applet} {group} {readOnly} />
+        {/if}
 
         <div class="body">
           {#key applet.command}
@@ -94,36 +82,6 @@
 
   :global(.svelte-grid-extended .item-default.non-active-default) {
     transition: none;
-  }
-
-  header {
-    display: flex;
-    background: var(--color-bg-beta);
-  }
-
-  header.selected {
-    background: color-mix(in srgb, Highlight 20%, var(--color-bg-alpha));
-  }
-
-  header .title {
-    flex: 1;
-    cursor: move;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0.25rem 0.5rem;
-    font-weight: normal;
-    color: var(--color-fg-beta);
-  }
-
-  header button:not(.title) {
-    display: grid;
-    place-items: center;
-    padding: 0.25rem 0.5rem;
-  }
-
-  .title strong {
-    color: initial;
   }
 
   .body {
